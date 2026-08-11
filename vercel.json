@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "redirects": [
+    {
+      "source": "/jackspot/",
+      "destination": "/jackspot",
+      "permanent": false
+    },
+    {
+      "source": "/gorai",
+      "destination": "/jackspot",
+      "permanent": false
+    },
+    {
+      "source": "/gourai",
+      "destination": "/jackspot",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index?path=$1"
+    },
+    {
+      "source": "/",
+      "destination": "/jackspot.html"
+    },
+    {
+      "source": "/jackspot",
+      "destination": "/jackspot.html"
+    }
+  ],
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": "."
+}

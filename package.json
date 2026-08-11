@@ -1,0 +1,11 @@
+{
+  "name": "jackspot",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "check": "node --check server.js && node --check api/index.mjs && node --check api/health.mjs"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
