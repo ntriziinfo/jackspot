@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const { URL } = require("url");
 const {machineTotalFor} = require("./machine-totals.cjs");
 
-const PORT = Number(process.env.PORT || 8787);
+const PORT = Number(process.env.JACKSPOT_PORT || process.env.PORT || 8787);
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const STATE_FILE = path.join(DATA_DIR, "admin-state.json");
