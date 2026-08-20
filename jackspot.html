@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RISING!</title>
+  <title>JACsPOT</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23030005'/%3E%3Cpath d='M9 39 32 7l23 32H40l-8 18-8-18H9z' fill='%23ff2334' stroke='%23ffd761' stroke-width='4'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="assets/symbols/sym_hourglass.png">
 <link rel="preload" as="image" href="assets/symbols/sym_cherry.png">
@@ -11,15 +11,10 @@
 <link rel="preload" as="image" href="assets/symbols/sym_suika.png">
 <link rel="preload" as="image" href="assets/symbols/sym_coin.webp">
 <link rel="preload" as="image" href="assets/symbols/sym_grape.png">
-<link rel="preload" as="image" href="assets/symbols/sym_seven.png">
+<link rel="preload" as="image" href="assets/symbols/sym_seven_jackspot.png">
 <link rel="preload" as="image" href="assets/symbols/sym_bar.png">
 <link rel="preload" as="image" href="assets/symbols/sym_replay.png">
 <link rel="preload" as="image" href="assets/cabinet/edit_parts/piero.png">
-<link rel="preload" as="image" href="assets/logo/rising_logo.svg">
-<link rel="preload" as="image" href="assets/ui/rising_chance_lamp_bg.png">
-<link rel="preload" as="image" href="assets/ui/rising_chance_lamp_text.png">
-<link rel="preload" as="image" href="assets/ui/rising_chance_bar_confirm.png">
-<link rel="preload" as="image" href="assets/frames/rising_reel_frame_on.svg">
 <link rel="preload" as="image" href="assets/buttons/btn_auto_gold_transparent.png">
 <link rel="preload" as="image" href="assets/buttons/btn_speed_half_blue.png">
 <link rel="preload" as="image" href="assets/controls/start_lever_ball.png">
@@ -1928,29 +1923,6 @@ body.debugOpen .debugDrawer .secret{
   color:rgba(255,54,93,.28);
   text-shadow:0 0 8px rgba(255,54,93,.18);
 }
-.dzHoldBadge{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:min(250px,88%);
-  transform:translate(-50%, -52%) scale(.96);
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  z-index:3;
-  filter:
-    drop-shadow(0 0 12px rgba(255,66,0,.78))
-    drop-shadow(0 8px 14px rgba(0,0,0,.84));
-  transition:opacity .16s ease, visibility .16s ease, transform .16s ease;
-}
-.sevenSegPanel.zoneHold .dzHoldBadge{
-  opacity:.86;
-  visibility:visible;
-  transform:translate(-50%, -52%) scale(1);
-}
-.sevenSegPanel.zoneHold .sevenSegValue{
-  opacity:.42;
-}
 .centerButtons{
   display:flex;
   gap:12px;
@@ -2734,26 +2706,6 @@ body::after{display:none !important;content:none !important;}
 .wd-info-strip div:first-child b{
   color:#fff !important;
   text-shadow:0 0 9px rgba(255,255,255,.72),0 0 12px rgba(255,0,0,.35) !important;
-}
-.wd-info-strip div.zoneHold{
-  overflow:visible !important;
-}
-.wd-info-strip div.zoneHold::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:145%;
-  height:190%;
-  transform:translate(-50%, -50%);
-  background:url("assets/effects/dz_hold_badge_custom.png") center/contain no-repeat;
-  opacity:.94;
-  z-index:8;
-  pointer-events:none;
-  filter:drop-shadow(0 0 9px rgba(255,194,44,.82)) drop-shadow(0 7px 10px rgba(0,0,0,.72));
-}
-.wd-info-strip div.zoneHold b{
-  opacity:.28;
 }
 .main{
   grid-template-columns:230px minmax(760px, 1fr) 270px !important;
@@ -6993,6 +6945,201 @@ body{
   .machine{min-height:1615px !important;}
 }
 
+/* JACsPOT black + silver cabinet skin. */
+.cabinetPartTop,
+.cabinetPartReelBack,
+.cabinetPartControls,
+.cabinetPartLower,
+.cabinetPartReelFront{
+  height:auto;
+  object-fit:contain;
+}
+.cabinetPartsScene::after{
+  content:"";
+  position:absolute;
+  inset:5px 24px 6px;
+  z-index:5;
+  border-radius:14px;
+  pointer-events:none;
+  background:
+    linear-gradient(104deg,rgba(255,255,255,.20),transparent 7% 45%,rgba(142,214,255,.07) 49%,transparent 54% 94%,rgba(255,255,255,.14)),
+    linear-gradient(90deg,rgba(111,205,255,.13),transparent 4% 96%,rgba(111,205,255,.13));
+  mix-blend-mode:screen;
+  opacity:.78;
+}
+.cabinetLowerBrand{
+  position:absolute;
+  left:8.5%;
+  top:1192px;
+  z-index:8;
+  width:83%;
+  height:142px;
+  display:grid;
+  grid-template-rows:1fr 24px;
+  place-items:center;
+  pointer-events:none;
+  filter:drop-shadow(0 10px 10px rgba(0,0,0,.72));
+}
+.cabinetLowerBrand strong{
+  align-self:end;
+  color:#eef5fb;
+  font:1000 86px/.86 Impact,"Arial Black",sans-serif;
+  letter-spacing:.055em;
+  -webkit-text-stroke:2px rgba(7,12,18,.96);
+  background:linear-gradient(180deg,#ffffff 0%,#cbd3dc 30%,#66717c 50%,#f8fbff 73%,#8d98a5 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 2px 0 #fff,0 5px 0 #111820,0 0 20px rgba(113,206,255,.44);
+}
+.cabinetLowerBrand span{
+  align-self:start;
+  color:#bfeaff;
+  font:900 13px/1.2 "Arial Narrow",Arial,sans-serif;
+  letter-spacing:.34em;
+  text-shadow:0 2px 2px #000,0 0 9px rgba(85,199,255,.82);
+}
+.jackspotPayoutRoulette{
+  border-color:#d9e3ec;
+  color:#f4f8fb;
+  background:
+    linear-gradient(110deg,rgba(3,6,10,.99),rgba(27,34,42,.98) 48%,rgba(3,6,10,.99)),
+    radial-gradient(circle at 50% 50%,rgba(93,194,255,.18),transparent 66%);
+  box-shadow:
+    inset 0 0 0 3px rgba(0,0,0,.90),
+    inset 0 0 34px rgba(97,195,255,.16),
+    0 5px 13px rgba(0,0,0,.76),
+    0 0 18px rgba(113,204,255,.28);
+}
+.jackspotRouletteKicker{
+  color:#bdeaff;
+  text-shadow:0 2px 0 #06111c,0 0 10px rgba(90,197,255,.76);
+}
+.jackspotRouletteTitle{
+  color:#f7fbff;
+  text-shadow:0 3px 0 #111922,0 0 13px rgba(115,207,255,.60);
+}
+.jackspotRouletteCost{
+  color:#c6d0da;
+}
+.jackspotRouletteStage{
+  filter:drop-shadow(0 0 10px rgba(121,207,255,.46));
+}
+.jackspotRouletteStage::before{
+  border-top-color:#ecf8ff;
+  filter:drop-shadow(0 2px 2px #071019) drop-shadow(0 0 5px rgba(111,209,255,.72));
+}
+.jackspotPayoutDiscOuter{
+  border-color:#dce6ef;
+  background:repeating-conic-gradient(from -15deg,#0a0d11 0 30deg,#424c57 30deg 60deg,#151c24 60deg 90deg,#70808e 90deg 120deg);
+  box-shadow:inset 0 0 0 3px #030507,inset 0 0 18px rgba(0,0,0,.76),0 0 0 3px #55616c;
+}
+.jackspotPayoutDiscMiddle{
+  border-color:#cdd7e0;
+  background:repeating-conic-gradient(from -22.5deg,#11161d 0 45deg,#64717d 45deg 90deg,#172430 90deg 135deg,#8996a1 135deg 180deg);
+  box-shadow:inset 0 0 0 2px #030507,inset 0 0 12px rgba(0,0,0,.72),0 0 0 2px #60717f;
+}
+.jackspotPayoutDiscInner{
+  border-color:#edf6fc;
+  background:conic-gradient(from -90deg,#151c23 0 180deg,#77838e 180deg 360deg);
+  box-shadow:inset 0 0 0 2px #05080b,inset 0 0 9px rgba(0,0,0,.66),0 0 0 2px #81909d;
+}
+.jackspotPayoutDisc span{
+  color:#f6fbff;
+  text-shadow:0 1px 2px #000,0 0 5px rgba(165,223,255,.72);
+}
+.jackspotPayoutDisc .is-up{
+  color:#8cdbff;
+  text-shadow:0 0 6px rgba(65,190,255,.96),0 1px 2px #00121e;
+}
+.jackspotRouletteHub{
+  border-color:#e9f7ff;
+  background:radial-gradient(circle at 35% 30%,#fff,#aebbc7 42%,#111820 76%);
+  box-shadow:0 0 9px rgba(115,209,255,.82);
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel{
+  box-shadow:
+    inset 0 0 0 3px rgba(0,0,0,.96),
+    inset 0 0 42px rgba(88,190,255,.28),
+    0 0 25px rgba(126,213,255,.54) !important;
+}
+.jackspotRouletteBlackout{
+  border-color:rgba(213,238,252,.94);
+  background:
+    repeating-conic-gradient(from -7deg at 50% 52%,rgba(118,210,255,.13) 0 5deg,transparent 5deg 15deg),
+    radial-gradient(circle at 50% 54%,rgba(58,164,224,.32),transparent 38%),
+    linear-gradient(180deg,#020406 0%,#08121a 48%,#010203 100%);
+  box-shadow:inset 0 0 40px #000,0 0 26px rgba(112,205,255,.68);
+}
+.jackspotRouletteBlackout::before{
+  color:#eaf8ff;
+  text-shadow:0 3px 0 #0a1823,0 0 14px rgba(99,200,255,.96),0 0 36px rgba(225,247,255,.54);
+}
+.jackspotOutcomeLegend{
+  border-color:#cbd8e2;
+  color:#f5fbff;
+  background:
+    radial-gradient(ellipse at 50% 20%,rgba(108,203,255,.18),transparent 62%),
+    linear-gradient(180deg,#202a33,#030609 56%,#111820);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.96),inset 0 0 18px rgba(93,194,255,.18),0 3px 8px rgba(0,0,0,.66);
+  text-shadow:0 2px 0 #000,0 0 8px rgba(125,211,255,.50);
+}
+.jackspotOutcomeLegendLabel,
+.jackspotOutcomeLegendSeven{
+  color:#dff5ff;
+}
+.jackspotOutcomeLegendSlash{
+  color:#7c8995;
+}
+.payline{
+  border-top-color:rgba(190,232,255,.96) !important;
+  box-shadow:0 0 6px rgba(91,197,255,.92),0 0 14px rgba(184,231,255,.46) !important;
+}
+.reelCenterBandLayer::before{
+  background:radial-gradient(ellipse at 50% 50%,rgba(21,30,39,.98),rgba(4,8,12,.99) 70%);
+  border-color:rgba(199,229,245,.54);
+  box-shadow:inset 0 0 18px rgba(100,199,255,.18),0 0 10px rgba(0,0,0,.76);
+}
+.reelCenterBandLayer::after{
+  color:#f3fbff;
+  text-shadow:0 2px 0 #08131b,0 0 9px rgba(123,212,255,.88);
+  background:radial-gradient(circle at 34% 28%,#fff 0 8%,#c7d1d9 30%,#53616d 68%,#090e13 100%);
+  border-color:#dbe8f0;
+  box-shadow:inset 0 0 0 3px #303b45,0 0 12px rgba(117,207,255,.72);
+}
+.reelArea .wd-reel-data-panel::after{
+  content:"JACsPOT DATA" !important;
+  border-color:rgba(185,226,248,.42);
+  background:linear-gradient(180deg,rgba(31,44,55,.98),rgba(2,5,8,.96)) !important;
+  color:#eefaff !important;
+  text-shadow:0 0 9px rgba(115,208,255,.80) !important;
+}
+.reelArea .wd-reel-counter-panel::after{
+  content:"JACsPOT STATUS";
+  border-color:rgba(185,226,248,.42);
+  background:linear-gradient(180deg,rgba(31,44,55,.98),rgba(2,5,8,.96));
+  color:#eefaff;
+  text-shadow:0 0 9px rgba(115,208,255,.80);
+}
+
+/* JACsPOT is a roulette-only machine. Keep the visible shell free of legacy RISING UI. */
+html{
+  background-color:#02050a !important;
+  background-image:
+    radial-gradient(circle at 50% 18%,rgba(79,153,196,.14),transparent 32%),
+    linear-gradient(120deg,rgba(255,255,255,.025),transparent 28% 72%,rgba(255,255,255,.025)),
+    linear-gradient(180deg,#071018 0%,#020407 48%,#000 100%) !important;
+  background-position:center top !important;
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+}
+.reelArea .wd-reel-data-panel::before,
+.reelArea .wd-reel-data-panel::after,
+.reelArea .wd-reel-counter-panel::before,
+.reelArea .wd-reel-counter-panel::after{
+  content:none !important;
+}
+
   body:not(.debugMode) .debugToggleBtn{display:none!important}
 </style>
 </head>
@@ -7002,20 +7149,12 @@ body{
 <button class="debugToggleBtn" id="debugToggleBtn" type="button">デバッグ</button>
 
 <div class="wrap">
-  <section class="wd-hero" id="top">
-    <div class="wd-vertical-copy">
-      <img src="assets/hero/kv_vertical_copy_rising.svg" alt="光れば、RISING!">
-    </div>
-    <div class="wd-hero-center">
-      <img class="wd-logo" src="assets/logo/rising_logo.svg" alt="RISING!">
-      <div class="wd-subtitle">RISING! A-TYPE <b>SLOT</b></div>
-    </div>
-  </section>
+  <section class="wd-hero" id="top" aria-hidden="true"></section>
 
   <div class="header">
     <div class="titleBox">
-      <div class="badge">A-TYPE / BB・RB BONUS</div>
-      <h1 id="titleView">RISING! SLOT</h1>
+      <div class="badge">1 LINE / PAYOUT ROULETTE</div>
+      <h1 id="titleView">JACsPOT</h1>
     </div>
     <div class="notice">配信・RP・ゲーム内ポイント専用。現金・換金・景品交換・実利益化には使用しないでください。</div>
   </div>
@@ -7024,15 +7163,19 @@ body{
     <section class="machine normal" id="machine">
       <div class="jackspotCabinetShell" aria-hidden="true">
         <div class="cabinetPartsScene" aria-hidden="true">
-          <img class="cabinetPart cabinetPartTop" src="assets/cabinet/parts/rising_part_top.png" alt="">
+          <img class="cabinetPart cabinetPartTop" src="assets/cabinet/black_silver/jackspot_black_silver_top.png" alt="">
           <div class="cabinetTopSevenOverlay" aria-hidden="true">
-            <img src="assets/symbols/sym_seven.png" alt="">
-            <img src="assets/symbols/sym_seven.png" alt="">
-            <img src="assets/symbols/sym_seven.png" alt="">
+            <img src="assets/symbols/sym_seven_jackspot.png" alt="">
+            <img src="assets/symbols/sym_seven_jackspot.png" alt="">
+            <img src="assets/symbols/sym_seven_jackspot.png" alt="">
           </div>
-          <img class="cabinetPart cabinetPartReelBack" src="assets/cabinet/parts/rising_part_reel_back_roles.png" alt="">
-          <img class="cabinetPart cabinetPartControls" src="assets/cabinet/parts/rising_part_controls.png" alt="">
-          <img class="cabinetPart cabinetPartLower" src="assets/cabinet/parts/rising_part_lower.png" alt="">
+          <img class="cabinetPart cabinetPartReelBack" src="assets/cabinet/black_silver/jackspot_black_silver_reel_frame.png" alt="">
+          <img class="cabinetPart cabinetPartControls" src="assets/cabinet/black_silver/jackspot_black_silver_controls.png" alt="">
+          <img class="cabinetPart cabinetPartLower" src="assets/cabinet/black_silver/jackspot_black_silver_lower.png" alt="">
+          <div class="cabinetLowerBrand" aria-hidden="true">
+            <strong>JACsPOT</strong>
+            <span>BLACK SILVER EDITION</span>
+          </div>
         </div>
         <div class="jackspotPayoutRoulette" id="jackspotPayoutRoulette" aria-label="大当たり払い出しルーレット">
           <div class="jackspotRouletteIntro">
@@ -7060,46 +7203,6 @@ body{
             <span class="jackspotRouletteStatus" id="jackspotRouletteStatus" aria-live="polite">中央777でルーレット始動</span>
           </div>
         </div>
-        <div class="jackspotSideRail jackspotSideRailLeft"></div>
-        <div class="jackspotSideRail jackspotSideRailRight"></div>
-        <div class="jackspotTopBeacon">
-          <div class="jackspotTopRed jackspotTopRedUpper"></div>
-          <div class="jackspotTopGreen">
-            <span class="jackspotTopStar"></span>
-          </div>
-          <div class="jackspotTopRed jackspotTopRedLower"></div>
-          <div class="jackspotSideLamps jackspotSideLampsLeft"><span></span><span></span><span></span></div>
-          <div class="jackspotSideLamps jackspotSideLampsRight"><span></span><span></span><span></span></div>
-        </div>
-        <div class="jackspotTopSevenPanel">
-          <div class="jackspotBigChanceText">BIG CHANCE</div>
-          <div class="jackspotGoldGarland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <div class="jackspotTopRibbon jackspotTopRibbonLeft"></div>
-          <div class="jackspotTopRibbon jackspotTopRibbonRight"></div>
-          <div class="jackspotSparkSpray jackspotSparkSprayTop"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <div class="jackspotSevenMarquee">
-            <span>7</span><span>7</span><span>7</span>
-          </div>
-          <div class="jackspotMiniMascot jackspotMiniMascotLeft"></div>
-          <div class="jackspotMiniMascot jackspotMiniMascotRight"></div>
-        </div>
-        <div class="jackspotNameBridge">
-          <div class="jackspotBridgeSpeaker jackspotBridgeSpeakerLeft"></div>
-          <div class="jackspotBridgeLogo">RISING!</div>
-          <div class="jackspotBridgeSpeaker jackspotBridgeSpeakerRight"></div>
-        </div>
-        <div class="jackspotMainFace">
-          <div class="jackspotMainIllustrationLayer">
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-          <div class="jackspotCornerBadge jackspotCornerBadgeLeft"></div>
-          <div class="jackspotCornerBadge jackspotCornerBadgeRight"></div>
-          <div class="jackspotMainHeader">BONUS GAME</div>
-          <div class="jackspotStageNumbers"><span>3</span><span>2</span><span>1</span></div>
-          <div class="jackspotStatusLamps"><span>START</span><span>REPLAY</span><span>WAIT</span><span>INSERT</span></div>
-          <div class="jackspotChanceSplash">CHANCE</div>
-        </div>
-        <div class="jackspotControlDeck"></div>
       </div>
       <div class="audioDock" id="audioDock">
         <button class="utilityToggleBtn" id="slumpToggleBtn" type="button" aria-label="スランプグラフを開く" aria-expanded="false" title="スランプグラフ">
@@ -7145,48 +7248,12 @@ body{
               </div>
             </div>
             <div class="layoutEditGroup">
-              <div class="layoutEditGroupTitle">RISING! CHANCE</div>
-              <div class="layoutEditRows">
-                <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="90" step="0.1" data-layout-target="chance" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="chance-x"></b></label>
-                <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="chance" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="chance-y"></b></label>
-                <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="4" max="40" step="0.1" data-layout-target="chance" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="chance-w"></b></label>
-                <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="4" max="45" step="0.1" data-layout-target="chance" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="chance-h"></b></label>
-              </div>
-            </div>
-            <div class="layoutEditGroup">
               <div class="layoutEditGroupTitle">7SEG CREDIT</div>
               <div class="layoutEditRows">
                 <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="credit" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="credit-x"></b></label>
                 <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="credit" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="credit-y"></b></label>
                 <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="4" max="35" step="0.1" data-layout-target="credit" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="credit-w"></b></label>
                 <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="2" max="24" step="0.1" data-layout-target="credit" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="credit-h"></b></label>
-              </div>
-            </div>
-            <div class="layoutEditGroup">
-              <div class="layoutEditGroupTitle">7SEG COUNT</div>
-              <div class="layoutEditRows">
-                <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="count" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="count-x"></b></label>
-                <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="count" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="count-y"></b></label>
-                <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="4" max="35" step="0.1" data-layout-target="count" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="count-w"></b></label>
-                <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="2" max="24" step="0.1" data-layout-target="count" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="count-h"></b></label>
-              </div>
-            </div>
-            <div class="layoutEditGroup">
-              <div class="layoutEditGroupTitle">7SEG PAYOUT</div>
-              <div class="layoutEditRows">
-                <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="payout" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="payout-x"></b></label>
-                <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="payout" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="payout-y"></b></label>
-                <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="4" max="35" step="0.1" data-layout-target="payout" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="payout-w"></b></label>
-                <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="2" max="24" step="0.1" data-layout-target="payout" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="payout-h"></b></label>
-              </div>
-            </div>
-            <div class="layoutEditGroup">
-              <div class="layoutEditGroupTitle">BONUS DATA</div>
-              <div class="layoutEditRows">
-                <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="bonusdata" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="bonusdata-x"></b></label>
-                <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="40" step="0.1" data-layout-target="bonusdata" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="bonusdata-y"></b></label>
-                <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="20" max="95" step="0.1" data-layout-target="bonusdata" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="bonusdata-w"></b></label>
-                <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="4" max="24" step="0.1" data-layout-target="bonusdata" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="bonusdata-h"></b></label>
               </div>
             </div>
           </div>
@@ -7287,55 +7354,46 @@ body{
           <div class="settingInfo">
             設定 <b id="settingViewLegacy">1</b><br>
             機械割 <b id="targetRtpViewLegacy">90.0%</b><br>
-            Aタイプ <b id="stInfoViewLegacy">通常</b><br>
+            ゲーム <b id="stInfoViewLegacy">777／ハズレ</b><br>
             払出補正 <b id="payoutScaleViewLegacy">なし</b>
           </div>
         </div>
         <div class="stLampWrap">
-          <div class="stLamp" id="stLamp">BONUS</div>
+          <div class="stLamp" id="stLamp">ROULETTE</div>
         </div>
 
         <div class="message" id="message">READY</div>
         <div class="subMessage" id="subMessage">100pt BET / 成立役は777・ハズレのみ / 777後に払い出しルーレット</div>
 
         <div class="sevenSegPanel">
-          <div class="sevenSegLabel">BONUS</div>
-          <img class="dzHoldBadge" id="dzHoldBadge" src="assets/effects/dz_hold_badge_custom.png" alt="HOLD" decoding="async" draggable="false" aria-hidden="true">
+          <div class="sevenSegLabel">PAYOUT</div>
           <div class="sevenSegValue" id="stRemainBigView">--</div>
         </div>
 
         <div class="stats">
           <div class="stat"><div class="k">回転数</div><div class="v" id="totalSpinsView">0</div></div>
           <div class="stat"><div class="k">777</div><div class="v" id="bigCountView">0</div></div>
-          <div class="stat"><div class="k">RB</div><div class="v" id="midCountView">0</div></div>
+          <div class="stat"><div class="k">MISS</div><div class="v" id="midCountView">0</div></div>
           <div class="stat"><div class="k">ブドウ</div><div class="v" id="grapeCountView">0</div></div>
           <div class="stat"><div class="k">損益</div><div class="v" id="totalProfitView">0</div></div>
         </div>
       </div>
 
       <section class="wd-info-strip" id="data-area">
-        <div><span>TYPE</span><b id="wdMirrorSt">A</b></div>
-        <div><span>BB</span><b id="wdMirrorBig">0</b></div>
-        <div><span>RB</span><b id="wdMirrorReg">0</b></div>
+        <div><span>MODE</span><b id="wdMirrorSt">1 LINE</b></div>
+        <div><span>777</span><b id="wdMirrorBig">0</b></div>
+        <div><span>MISS</span><b id="wdMirrorReg">0</b></div>
         <div><span>総回転数</span><b id="wdMirrorSpin">0G</b></div>
         <div><span>損益</span><b id="wdMirrorProfit">+0</b></div>
       </section>
 
       <div class="reelArea">
-        <div class="risingReelBackplate" aria-hidden="true"></div>
         <div class="jackspotRouletteBlackout" id="jackspotRouletteBlackout" aria-hidden="true"></div>
         <div class="jackspotOutcomeLegend" aria-label="成立役は777またはハズレ">
           <span class="jackspotOutcomeLegendLabel">成立役</span>
           <strong class="jackspotOutcomeLegendSeven">777</strong>
           <span class="jackspotOutcomeLegendSlash">/</span>
           <strong class="jackspotOutcomeLegendMiss">MISS</strong>
-        </div>
-        <img class="reelFrameOnOverlay" src="assets/frames/rising_reel_frame_on.svg" alt="" aria-hidden="true" loading="eager" decoding="sync" draggable="false">
-        <div class="premiumBigReelMovie" id="premiumBigReelMovie" aria-hidden="true">
-          <video muted loop playsinline preload="auto"></video>
-        </div>
-        <div class="atNaviLayer" id="atNaviLayer" aria-hidden="true">
-          <video id="atNaviVideo" muted loop playsinline preload="auto"></video>
         </div>
         <div class="wd-public-panels wd-st-status-panel wd-reel-data-panel" id="bonus-info">
           <div class="wd-st-emblem" id="wdStEmblem">JACsPOT<br>1 LINE</div>
@@ -7364,56 +7422,24 @@ body{
         <div class="payline"></div>
         <div class="reels">
           <div class="reel" data-reel="0"><div class="window">
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
           </div></div>
           <div class="reel" data-reel="1"><div class="window">
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
           </div></div>
           <div class="reel" data-reel="2"><div class="window">
             <div class="cell"><div class="sym blankSym" aria-label="blank"></div></div>
-            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
             <div class="cell"><div class="sym blankSym" aria-label="blank"></div></div>
           </div></div>
         </div>
-        <div class="reelCenterBandLayer" aria-hidden="true">
-          <img src="assets/cabinet/parts/rising_part_reel_center_bands.png" alt="">
-        </div>
+        <div class="reelCenterBandLayer" aria-hidden="true"></div>
         <div class="cabinetFrontParts" aria-hidden="true">
-          <img class="cabinetPart cabinetPartReelFront" src="assets/cabinet/parts/rising_part_reel_front_roles.png" alt="">
-        </div>
-        <div class="jackspotBonusDataMeters" aria-label="BONUS GAME DATA">
-          <div class="jackspotBonusDataMeter">
-            <span>総回転</span>
-            <b id="jackspotTotalGameDataMeter">00000</b>
-          </div>
-          <div class="jackspotBonusDataMeter">
-            <span>ボーナス後</span>
-            <b id="jackspotAfterBonusDataMeter">0000</b>
-          </div>
-          <div class="jackspotBonusDataMeter">
-            <span>BIG</span>
-            <b id="jackspotBigDataMeter">000</b>
-          </div>
-          <div class="jackspotBonusDataMeter">
-            <span>REG</span>
-            <b id="jackspotRegDataMeter">000</b>
-          </div>
-        </div>
-        <div class="jackspotGogoChance" id="jackspotGogoChance" aria-label="GOGO CHANCE">
-          <span class="jackspotGogoChanceBack" aria-hidden="true"></span>
-          <img class="jackspotGogoChanceText" src="assets/ui/rising_chance_lamp_text.png" alt="RISING CHANCE" loading="eager" decoding="async" draggable="false">
-          <img class="jackspotGogoChanceBar" src="assets/ui/rising_chance_bar_confirm.png" alt="BAR RISING CHANCE" loading="eager" decoding="async" draggable="false">
-          <span class="jackspotGogoChanceLabel">CHANCE</span>
-        </div>
-        <div class="jackspotFrameLamps" aria-hidden="true">
-          <span>START</span>
-          <span>REPLAY</span>
-          <span>WAIT</span>
-          <span>INSERT</span>
+          <img class="cabinetPart cabinetPartReelFront" src="assets/cabinet/black_silver/jackspot_black_silver_reel_frame.png" alt="">
         </div>
         <div class="jackspotPayoutMeters" aria-label="CREDIT表示">
           <div class="jackspotPayoutMeter jackspotPayoutMeterCreditOnly">
@@ -7452,26 +7478,6 @@ body{
             </div>
           </div>
           <button class="effectSkipBtn" id="effectSkipBtn" type="button">SKIP</button>
-        </div>
-      </div>
-      <div class="risingLowerCabinet" aria-hidden="true">
-        <div class="risingLowerPanel">
-          <div class="jackspotLowerStarfield"><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <div class="jackspotLowerSideArt jackspotLowerSideArtLeft"></div>
-          <div class="jackspotLowerSideArt jackspotLowerSideArtRight"></div>
-          <div class="risingLowerLogo">RISING!</div>
-          <div class="risingPanelRibbon risingPanelRibbonLeft"></div>
-          <div class="risingPanelRibbon risingPanelRibbonRight"></div>
-        </div>
-        <div class="risingMedalTray">
-          <div class="risingTraySpeaker risingTraySpeakerLeft"></div>
-          <div class="risingTrayBowl"></div>
-          <div class="risingTraySpeaker risingTraySpeakerRight"></div>
-        </div>
-        <div class="risingCabinetBase">
-          <div class="risingBasePocket risingBasePocketLeft"></div>
-          <div class="risingBaseLabel">RISING! SLOT</div>
-          <div class="risingBaseBadge">RISING!</div>
         </div>
       </div>
       <div class="resultBox resultBoxWide" id="resultText">-</div>
@@ -7514,15 +7520,15 @@ body{
         <h2>基本設定</h2>
         <div class="field">
           <label>台名</label>
-          <input id="titleInput" value="RISING!" />
+          <input id="titleInput" value="JACsPOT" />
         </div>
         <div class="field">
           <label>設定</label>
           <select id="settingSelect">
             <option value="1">設定1 / 90%</option>
-            <option value="2">設定2 / 96%</option>
-            <option value="3">設定3 / 98%</option>
-            <option value="4">設定4 / 101%</option>
+            <option value="2">設定2 / 97%</option>
+            <option value="3">設定3 / 98.5%</option>
+            <option value="4">設定4 / 101.3%</option>
             <option value="5">設定5 / 103%</option>
             <option value="6">設定6 / 105%</option>
           </select>
@@ -7567,7 +7573,7 @@ body{
           <button class="dangerBtn" id="resetBtn">初期化</button>
         </div>
         <div class="help" style="margin-top:10px">
-          1プレイごとに100ptを消費します。成立役は777またはハズレのみ。777成立後は設定別の非単調な振り分けで払い出しを決定します。
+          1プレイごとに100ptを消費します。成立役は777またはハズレのみ。奇数設定は当選が重く高額払い出し寄り、偶数設定は当選が軽い設計です。
         </div>
       </div>
 
@@ -7637,7 +7643,7 @@ body{
           </div>
         </div>
         <div class="help" style="margin-top:10px">
-          このメニューは液晶5回クリックで開閉します。直行操作はAタイプの次ゲーム結果として反映します。
+          このメニューは液晶5回クリックで開閉します。直行操作はJACsPOTの次ゲーム結果として反映します。
         </div>
       </div>
 
@@ -7651,7 +7657,7 @@ body{
             </div>
             <div class="wd-menu-item">
               <div class="wd-menu-icon">◎</div>
-              <div class="wd-menu-label"><strong>ボーナス</strong><small>BONUS</small></div>
+              <div class="wd-menu-label"><strong>ルーレット</strong><small>ROULETTE</small></div>
               <div class="wd-menu-arrow">›</div>
             </div>
             <div class="wd-menu-item">
@@ -7668,22 +7674,19 @@ body{
           <div class="wd-news">
             <div class="wd-news-title">NEWS</div>
             <div class="wd-news-lines">
-              <div><span>2024.05.25</span>「Rising」公式サイトオープン！</div>
-              <div><span>2024.05.25</span>機種情報ページを更新しました。</div>
+              <div><span>開発中</span>JACsPOTルーレット仕様を更新しました。</div>
+              <div><span>開発中</span>黒銀筐体と1ライン仕様を更新しました。</div>
             </div>
           </div>
         </div>
         <div class="wd-history-panel">
-          <div class="wd-history-title">BONUS HISTORY</div>
+          <div class="wd-history-title">ROULETTE HISTORY</div>
           <table class="wd-history-table">
-            <tr><th>回転数</th><th>当選</th><th>種別</th></tr>
-            <tr><td>1234G</td><td>777</td><td class="red">BB</td></tr>
-            <tr><td>112G</td><td>77BAR</td><td class="blue">RB</td></tr>
-            <tr><td>45G</td><td>777</td><td class="red">BB</td></tr>
-            <tr><td>789G</td><td>777</td><td class="red">BB</td></tr>
-            <tr><td>33G</td><td>77BAR</td><td class="blue">RB</td></tr>
-            <tr><td>256G</td><td>77BAR</td><td class="blue">RB</td></tr>
-            <tr><td>654G</td><td>777</td><td class="red">BB</td></tr>
+            <tr><th>回転数</th><th>出目</th><th>払い出し</th></tr>
+            <tr><td>1234G</td><td>777</td><td class="red">2,000pt</td></tr>
+            <tr><td>112G</td><td>MISS</td><td class="blue">0pt</td></tr>
+            <tr><td>45G</td><td>777</td><td class="red">500pt</td></tr>
+            <tr><td>789G</td><td>777</td><td class="red">5,000pt</td></tr>
           </table>
           <div class="wd-history-more">もっと見る</div>
         </div>
@@ -7783,9 +7786,9 @@ body{
 
   const SETTING = {
     1:{target:0.90},
-    2:{target:0.96},
-    3:{target:0.98},
-    4:{target:1.01},
+    2:{target:0.97},
+    3:{target:0.985},
+    4:{target:1.013},
     5:{target:1.03},
     6:{target:1.05}
   };
@@ -7889,7 +7892,7 @@ body{
   const SUICA_IMAGE_SRC = "assets/symbols/sym_suika.png";
   const CHERRY_IMAGE_SRC = "assets/symbols/sym_cherry.png";
   const BELL_IMAGE_SRC = "assets/symbols/sym_bell.png";
-  const SEVEN_IMAGE_SRC = "assets/symbols/sym_seven.png";
+  const SEVEN_IMAGE_SRC = "assets/symbols/sym_seven_jackspot.png";
   const MISS_IMAGE_SRC = "assets/symbols/sym_coin.webp";
   const GRAPE_IMAGE_SRC = "assets/symbols/sym_grape.png";
   const BAR_IMAGE_SRC = "assets/symbols/sym_bar.png";
@@ -7943,7 +7946,7 @@ body{
     MID_CHERRY:{name:"RB（チェリー同時）", reel:["7","7","BAR"], label:"RB", cls:"purple", kind:"payadd"},
     GRAPE:{name:"ブドウ", reel:[GRAPE_SYMBOL,GRAPE_SYMBOL,GRAPE_SYMBOL], label:"ブドウ", cls:"green", kind:"pay"},
     BAR3:{name:"BAR揃い", reel:["BAR","BAR","BAR"], label:"BAR", cls:"purple", kind:"add"},
-    BIG:{name:"BB", reel:["7","7","7"], label:"BB", cls:"red", kind:"payadd"},
+    BIG:{name:"777", reel:["7","7","7"], label:"777", cls:"red", kind:"payadd"},
     DEVIL_ZONE:{name:"DEVIL ZONE", reel:["7","7","BAR"], label:"DZ", cls:"purple", kind:"payadd"},
     SUPER_DEVIL_ZONE:{name:"SUPER DEVIL ZONE", reel:["7","7","7"], label:"SUPER DZ", cls:"red", kind:"payadd"},
     BELL:{name:"ベル", reel:[BELL_SYMBOL,BELL_SYMBOL,BELL_SYMBOL], label:"BELL", cls:"gold", kind:"pay"},
@@ -8068,7 +8071,7 @@ body{
   }
 
   let settings = {
-    title:"RISING!",
+    title:"JACsPOT",
     setting:1,
     fee:100,
     stSpins:10,
@@ -8196,21 +8199,23 @@ body{
   const SPIN_COST = 100;
   const JACKSPOT_TARGET_RTP = Object.freeze({
     1:0.90,
-    2:0.96,
-    3:0.98,
-    4:1.01,
+    2:0.97,
+    3:0.985,
+    4:1.013,
     5:1.03,
     6:1.05
   });
   const JACKSPOT_ROULETTE_PAYOUTS = Object.freeze([200,500,750,1000,1500,2000,5000,10000]);
-  const JACKSPOT_FIXED_HIT_PROBABILITY = 8 / 165;
+  // Odd settings: heavier hits with a stronger 5,000/10,000pt tail.
+  // Even settings: faster hits with more weight on the 200-2,000pt range.
+  // Hit probability is derived from target RTP and each setting's average payout.
   const JACKSPOT_PAYOUT_WEIGHTS_BY_SETTING = Object.freeze({
-    1:Object.freeze([0.1750,0.1675,0.0800,0.1650,0.1500,0.1250,0.0675,0.0700]),
-    2:Object.freeze([0.1875,0.1350,0.1650,0.1375,0.0775,0.0925,0.1475,0.0575]),
-    3:Object.freeze([0.1625,0.1075,0.1500,0.1125,0.1600,0.1475,0.0850,0.0750]),
-    4:Object.freeze([0.1875,0.1350,0.1375,0.1525,0.0750,0.1300,0.0950,0.0875]),
-    5:Object.freeze([0.1625,0.1250,0.1725,0.0725,0.1400,0.1275,0.1275,0.0725]),
-    6:Object.freeze([0.1625,0.1625,0.1125,0.1300,0.1350,0.0925,0.1200,0.0850])
+    1:Object.freeze([0.150,0.140,0.120,0.120,0.120,0.100,0.170,0.080]),
+    2:Object.freeze([0.185,0.170,0.160,0.140,0.090,0.120,0.095,0.040]),
+    3:Object.freeze([0.110,0.160,0.100,0.140,0.110,0.110,0.210,0.060]),
+    4:Object.freeze([0.165,0.180,0.122,0.150,0.138,0.110,0.095,0.040]),
+    5:Object.freeze([0.160,0.120,0.110,0.100,0.120,0.130,0.220,0.040]),
+    6:Object.freeze([0.150,0.150,0.160,0.150,0.130,0.130,0.090,0.040])
   });
   const JACKSPOT_ROULETTE_DISC_SPIN_MS = 1450;
   const JACKSPOT_ROULETTE_UP_DELAY_MS = 260;
@@ -8361,6 +8366,7 @@ body{
   const DEBUG_FAST_SPINS_PER_SECOND = 1000;
   const DEBUG_FAST_INTERVAL_MS = 100;
   const DEBUG_FAST_BATCH_SIZE = Math.max(1, Math.round(DEBUG_FAST_SPINS_PER_SECOND * DEBUG_FAST_INTERVAL_MS / 1000));
+  const DEBUG_QUICK_SIM_SPINS = 1000;
   const DEBUG_ONE_CLICK_SIM_SPINS = 10000;
   const AUTO_SPEED_MULTIPLIER = 2;
   const SPEED_MODE_MAX_SPINS_PER_SECOND = 10;
@@ -9452,6 +9458,7 @@ body{
   }
 
   function isGoraiZoneActive(){
+    if(JACKSPOT_SINGLE_LINE_MODE) return false;
     return !!(session.active && session.bigZone > 0);
   }
 
@@ -9464,6 +9471,7 @@ body{
   }
 
   function atInternalResult(result){
+    if(JACKSPOT_SINGLE_LINE_MODE) return result;
     if(result === "MID") return "DEVIL_ZONE";
     if(result === "BIG") return "SUPER_DEVIL_ZONE";
     return result;
@@ -9477,6 +9485,7 @@ body{
   }
 
   function isZoneEntryResult(result){
+    if(JACKSPOT_SINGLE_LINE_MODE) return false;
     return result === "DEVIL_ZONE" || result === "SUPER_DEVIL_ZONE";
   }
 
@@ -9485,6 +9494,7 @@ body{
   }
 
   function drawZoneChallengeResult(type=currentGoraiZoneType()){
+    if(JACKSPOT_SINGLE_LINE_MODE) return "MISS";
     return Math.random() < zoneSevenChance(type) ? "SUPER_DEVIL_ZONE" : "MISS";
   }
 
@@ -9557,12 +9567,14 @@ body{
   }
 
   function startZoneForResult(result, activeType=currentGoraiZoneType()){
+    if(JACKSPOT_SINGLE_LINE_MODE) return {games:0, type:""};
     if(result === "SUPER_DEVIL_ZONE" || result === "BIG") return {games:SUPER_DEVIL_ZONE_GAMES, type:"super"};
     if((result === "DEVIL_ZONE" || result === "MID") && activeType !== "super") return {games:BIG_STOCK_ZONE_GAMES, type:"devil"};
     return {games:0, type:""};
   }
 
   function isContinuationBattleActive(){
+    if(JACKSPOT_SINGLE_LINE_MODE) return false;
     return !!(session.active && session.phase === "battle" && session.battleRemain > 0);
   }
 
@@ -9691,6 +9703,7 @@ body{
   }
 
   function ensureDevilZoneFireLayer(index){
+    if(JACKSPOT_SINGLE_LINE_MODE) return null;
     const reel = reels[index];
     if(!reel) return null;
     let layer = reel.querySelector(".devilZoneFireLayer");
@@ -9710,6 +9723,7 @@ body{
   }
 
   function showDevilZoneFireVideos(){
+    if(JACKSPOT_SINGLE_LINE_MODE) return;
     reels.forEach((_, index)=>{
       const found = ensureDevilZoneFireLayer(index);
       if(!found) return;
@@ -10348,7 +10362,10 @@ body{
   function targetRtp(){ return targetRtpFor(settings.setting); }
   function targetRtpText(settingNo = settings.setting){
     const value = (targetRtpFor(settingNo) || 0) * 100;
-    if(JACKSPOT_SINGLE_LINE_MODE) return `${value.toFixed(0)}%`;
+    if(JACKSPOT_SINGLE_LINE_MODE){
+      const digits = Math.abs(value - Math.round(value)) < 0.000001 ? 0 : 1;
+      return `${value.toFixed(digits)}%`;
+    }
     return A_TYPE_MODE ? `${value.toFixed(1)}%` : `${Math.round(value)}%`;
   }
 
@@ -10390,6 +10407,11 @@ body{
   }
 
   function forceResultName(result){
+    if(JACKSPOT_SINGLE_LINE_MODE){
+      if(result === "BIG") return "777（ルーレット）";
+      if(result === "MISS") return "ハズレ";
+      return "";
+    }
     if(result === "REACH_ME") return "リーチ目";
     return RESULT[result]?.name || "";
   }
@@ -10409,6 +10431,7 @@ body{
   }
 
   function isATypeBonusActive(){
+    if(JACKSPOT_SINGLE_LINE_MODE) return false;
     return !!(A_TYPE_MODE && session.active && session.phase === "a_type_bonus");
   }
 
@@ -10469,6 +10492,15 @@ body{
       if(roll <= 0) return index;
     }
     return weights.length - 1;
+  }
+
+  function pickJackspotPayout(settingNo = settings.setting){
+    const forcePayoutSelect = $("forceJackspotPayout");
+    const forcedPayout = SLOT_DEBUG_ENABLED && forcePayoutSelect ? Number(forcePayoutSelect.value) || 0 : 0;
+    const forcedPayoutIndex = JACKSPOT_ROULETTE_PAYOUTS.indexOf(forcedPayout);
+    const payoutIndex = forcedPayoutIndex >= 0 ? forcedPayoutIndex : pickJackspotPayoutIndex(settingNo);
+    if(forcePayoutSelect) forcePayoutSelect.value = "";
+    return JACKSPOT_ROULETTE_PAYOUTS[payoutIndex];
   }
 
   function resetJackspotRouletteDisplay(){
@@ -10555,12 +10587,7 @@ body{
   }
 
   async function runJackspotPayoutRoulette(){
-    const forcePayoutSelect = $("forceJackspotPayout");
-    const forcedPayout = SLOT_DEBUG_ENABLED && forcePayoutSelect ? Number(forcePayoutSelect.value) || 0 : 0;
-    const forcedPayoutIndex = JACKSPOT_ROULETTE_PAYOUTS.indexOf(forcedPayout);
-    const payoutIndex = forcedPayoutIndex >= 0 ? forcedPayoutIndex : pickJackspotPayoutIndex(settings.setting);
-    if(forcePayoutSelect) forcePayoutSelect.value = "";
-    const payout = JACKSPOT_ROULETTE_PAYOUTS[payoutIndex];
+    const payout = pickJackspotPayout(settings.setting);
     const panel = $("jackspotPayoutRoulette");
     const outerDisc = $("jackspotPayoutDiscOuter");
     const middleDisc = $("jackspotPayoutDiscMiddle");
@@ -10843,7 +10870,10 @@ body{
 
   function jackspotHitProbability(settingNo = settings.setting, applyTestMultiplier = true){
     const multiplier = applyTestMultiplier ? (Number(settings.oddsMultiplier) || 1) : 1;
-    return clamp(JACKSPOT_FIXED_HIT_PROBABILITY * multiplier, 0, 0.98);
+    const targetRtp = JACKSPOT_TARGET_RTP[settingNo] ?? JACKSPOT_TARGET_RTP[1];
+    const averagePayout = jackspotAveragePayout(settingNo);
+    const baseProbability = averagePayout > 0 ? (targetRtp * SPIN_COST) / averagePayout : 0;
+    return clamp(baseProbability * multiplier, 0, 0.98);
   }
 
   function drawJackspotResult(){
@@ -10979,6 +11009,7 @@ body{
   }
 
   function showDevilZoneConfirmScreen(mode="translucent", type=currentGoraiZoneType()){
+    if(JACKSPOT_SINGLE_LINE_MODE) return;
     if(!devilZoneConfirmLayer) return;
     const image = devilZoneConfirmLayer.querySelector("img");
     const src = devilZoneConfirmImageFor(type);
@@ -11043,6 +11074,7 @@ body{
   }
 
   function queueDevilRushEntryEffect(type){
+    if(JACKSPOT_SINGLE_LINE_MODE) return;
     if(DEVIL_RUSH_ENTRY_IMAGE_SRCS[type]) pendingDevilRushEntryEffect = type;
   }
 
@@ -12048,6 +12080,56 @@ body{
       isSpinning = false;
       spinCanStop = false;
       currentSpin = null;
+      if(JACKSPOT_SINGLE_LINE_MODE){
+        session = {
+          ...session,
+          active:false,
+          remain:0,
+          stockSets:0,
+          barBgmSets:0,
+          nextSetBarBgm:false,
+          currentSetBarBgm:false,
+          continuationRate:0,
+          bigZone:0,
+          bigZoneType:"",
+          phase:"idle",
+          bonusKind:"",
+          bonusTarget:0,
+          premiumBonus:false,
+          oneGameRenBonus:false,
+          premiumChainEligible:false,
+          bonusBgmSrc:"",
+          battleRemain:0,
+          battleWin:false,
+          battleSource:"",
+          resultPayout:null,
+          endSignal:null
+        };
+        normalState = {
+          ...normalState,
+          mode:"normal",
+          highRemain:0,
+          bonusPending:false,
+          bonusKind:"",
+          bonusSource:"",
+          premiumBonus:false,
+          oneGameRenBonus:false,
+          bonusWaitGames:0,
+          reachMePending:false,
+          reachMeBonusKind:"",
+          reachMeBonusSource:""
+        };
+        pendingATypeInternalBonus = null;
+        pendingAtStartTimer = null;
+        pendingBonusStartOptions = null;
+        devilZoneConfirmIntroPending = false;
+        pendingDevilRushEntryEffect = "";
+        barBgmActive = false;
+        barBgmMode = "";
+        battleBgmActive = false;
+        forceResult = normalizeForceResult(forceResult);
+        pendingForceResult = normalizeForceResult(pendingForceResult);
+      }
     }catch(e){}
   }
 
@@ -12341,7 +12423,7 @@ body{
 
   function normalizeMachineTitle(value){
     const title = String(value || "").trim();
-    if(!title || /^白い悪魔(?:\s*(轟雷|疾風))?$/.test(title) || /^jackspot$/i.test(title) || /^rising!?$/i.test(title)) return "RISING!";
+    if(!title || /^白い悪魔(?:\s*(轟雷|疾風))?$/.test(title) || /^jackspot$/i.test(title) || /^rising!?$/i.test(title)) return "JACsPOT";
     return title;
   }
 
@@ -12473,6 +12555,7 @@ body{
   }
 
   function startSession(options={}){
+    if(JACKSPOT_SINGLE_LINE_MODE) return false;
     if(isSpinning) return false;
     if(session.active) return false;
     if(sessionStartGuard) return false;
@@ -12790,6 +12873,7 @@ body{
   }
 
   function startContinuationBattlePart(predecidedOutcome=null){
+    if(JACKSPOT_SINGLE_LINE_MODE) return false;
     if(isATypeBonusActive()) return false;
     if(!session.active || session.phase === "battle" || session.remain > 0 || isGoraiZoneActive()) return false;
     session.phase = "battle";
@@ -13192,34 +13276,53 @@ body{
     }catch(e){}
   }
 
+  function applyJackspotSingleLineResult(result, resolved){
+    const payout = Math.max(0, Number(resolved.jackspotRoulettePayout) || 0);
+    const hit = result === "BIG" && payout > 0;
+    stats.normalSpins = (Number(stats.normalSpins) || 0) + 1;
+    jackspotLastGamePayout = hit ? payout : 0;
+    resetNormalModeAfterBonus();
+    jackspotChanceHold = false;
+    const lamp = $("stLamp");
+    if(lamp) lamp.classList.remove("on");
+
+    if(hit){
+      stats.bigCount = (Number(stats.bigCount) || 0) + 1;
+      stats.totalPaid = (Number(stats.totalPaid) || 0) + payout;
+      jackspotLastBonusPayout = payout;
+      recordSlumpPoint();
+      updateCompleteTrialState("JACsPOTルーレット払い出し");
+      if(!debugFastSpinActive && !debugOneClickSimActive){
+        playPayoutSound("BIG", payout);
+        showMessage("JACKPOT", `777 / ROULETTE +${payout.toLocaleString()}pt`);
+        if($("resultText")) $("resultText").textContent = `JACKPOT / +${payout.toLocaleString()}pt`;
+        log(`JACKPOT：ルーレット払い出し +${payout.toLocaleString()}pt`);
+        flashReelLight("rainbow", 2600);
+        showOverlay(`+${payout.toLocaleString()}pt`);
+        confetti(120);
+      }
+      return;
+    }
+
+    stats.midCount = (Number(stats.midCount) || 0) + 1;
+    if(!debugFastSpinActive && !debugOneClickSimActive){
+      showMessage("MISS", "ハズレ / 払い出し0pt");
+      if($("resultText")) $("resultText").textContent = "MISS / 払い出し0pt";
+      log("MISS：払い出しなし");
+    }
+  }
+
   function applyNormalResult(result, resolved, lineRow=1){
+    if(JACKSPOT_SINGLE_LINE_MODE){
+      applyJackspotSingleLineResult(result, resolved);
+      return;
+    }
     const info = RESULT[result] || RESULT.MISS;
     const modeAtStart = resolved.highAtStart ? "高確" : "通常";
     const lineText = result !== "MISS" ? `${lineName(lineRow)}ライン` : "";
     const normalReward = Number(resolved.reward) || 0;
     const normalRewardText = normalReward > 0 ? ` / +${normalReward}pt` : "";
     jackspotLastGamePayout = normalReward;
-
-    if(JACKSPOT_SINGLE_LINE_MODE && resolved.jackspotRoulettePayout > 0){
-      stats.normalSpins = (Number(stats.normalSpins) || 0) + 1;
-      stats.bigCount = (Number(stats.bigCount) || 0) + 1;
-      stats.totalPaid = (Number(stats.totalPaid) || 0) + normalReward;
-      jackspotLastBonusPayout = normalReward;
-      resetNormalModeAfterBonus();
-      jackspotChanceHold = false;
-      const lamp = $("stLamp");
-      if(lamp) lamp.classList.remove("on");
-      playPayoutSound("BIG", normalReward);
-      recordSlumpPoint();
-      updateCompleteTrialState("JACsPOTルーレット払い出し");
-      showMessage("JACKPOT", `777 / ROULETTE +${normalReward.toLocaleString()}pt`);
-      if($("resultText")) $("resultText").textContent = `JACKPOT / +${normalReward.toLocaleString()}pt`;
-      log(`JACKPOT：ルーレット払い出し +${normalReward.toLocaleString()}pt`);
-      flashReelLight("rainbow", 2600);
-      showOverlay(`+${normalReward.toLocaleString()}pt`);
-      confetti(120);
-      return;
-    }
 
     if(resolved.highAtStart){
       stats.highSpins = (Number(stats.highSpins) || 0) + 1;
@@ -13932,16 +14035,20 @@ body{
     if(!table) return;
 
     if(JACKSPOT_SINGLE_LINE_MODE){
-      let html = `<tr><td>設定</td><td>機械割</td><td>777確率</td><td>大当たり確率</td><td>平均払い出し</td></tr>`;
+      let html = `<tr><td>設定</td><td>特性</td><td>機械割</td><td>777確率</td><td>大当たり確率</td><td>平均払い出し</td><td>5,000pt以上</td></tr>`;
       for(const i of [1,2,3,4,5,6]){
         const probability = jackspotHitProbability(i, false);
         const averagePayout = jackspotAveragePayout(i);
+        const weights = jackspotPayoutWeights(i);
+        const highPayoutRate = (Number(weights[6]) || 0) + (Number(weights[7]) || 0);
         html += `<tr>
           <td>${i}</td>
-          <td>${(targetRtpFor(i) * 100).toFixed(0)}%</td>
+          <td>${i % 2 ? "重い・高額寄り" : "軽い・安定寄り"}</td>
+          <td>${targetRtpText(i)}</td>
           <td>${(probability * 100).toFixed(4)}%</td>
           <td>1/${(1 / probability).toFixed(2)}</td>
           <td>${averagePayout.toLocaleString(undefined,{maximumFractionDigits:3})}pt</td>
+          <td>${(highPayoutRate * 100).toFixed(1)}%</td>
         </tr>`;
       }
       table.innerHTML = html;
@@ -14137,46 +14244,64 @@ body{
   }
 
   function ensureMorningResetControl(){
-    if($("morningResetBtn") && $("tenKSimBtn")) return;
+    if($("morningResetBtn") && $("oneKSimBtn") && $("tenKSimBtn")) return;
     const anchor = $("debugFastStatus");
     if(!anchor || !anchor.parentNode) return;
     const row = document.createElement("div");
     row.className = "row";
     row.style.marginBottom = "8px";
     row.innerHTML = `<button class="subBtn" id="morningResetBtn" type="button">${JACKSPOT_SINGLE_LINE_MODE ? "プレイ状態リセット" : A_TYPE_MODE ? "Aタイプ通常リセット" : "朝一リセット"}</button>`;
+    const quickSimBtn = document.createElement("button");
+    quickSimBtn.className = "subBtn";
+    quickSimBtn.id = "oneKSimBtn";
+    quickSimBtn.type = "button";
+    quickSimBtn.textContent = "1000回転試算";
+    row.appendChild(quickSimBtn);
     const simBtn = document.createElement("button");
     simBtn.className = "subBtn";
     simBtn.id = "tenKSimBtn";
     simBtn.type = "button";
     simBtn.textContent = "1万回転試算";
     row.appendChild(simBtn);
+    const simStatus = document.createElement("div");
+    simStatus.className = "help";
+    simStatus.id = "debugSimStatus";
+    simStatus.style.margin = "-2px 0 8px";
+    simStatus.textContent = "試算結果：未実行";
     const help = document.createElement("div");
     help.className = "help";
     help.style.margin = "-2px 0 10px";
     help.textContent = JACKSPOT_SINGLE_LINE_MODE
-      ? "設定を保ったまま、回転中の状態とCOMPLETEを解除します。"
+      ? "設定を保ったまま実機と同じ抽選を高速実行し、投入・払い出し・実測機械割を差分集計します。"
       : A_TYPE_MODE
       ? "Aタイプリセット：設定はそのまま、COMPLETE解除、通常状態へ戻します。"
       : `朝一リセット：設定はそのまま、COMPLETE解除、初回BB/RBまで天井${MORNING_CEILING_GAMES}G。`;
-    anchor.insertAdjacentElement("afterend", help);
     anchor.insertAdjacentElement("afterend", row);
+    row.insertAdjacentElement("afterend", simStatus);
+    simStatus.insertAdjacentElement("afterend", help);
   }
 
-  function runTenKSimulation(){
+  function runDebugSimulation(targetSpins, label){
     if(debugOneClickSimActive) return;
     if(isSpinning){
-      showMessage("1万回転試算待機", "現在の回転停止後に実行してください。");
+      showMessage(`${label}待機`, "現在の回転停止後に実行してください。");
       return;
     }
 
     readSettings();
-    resetRuntimeForMorning("1万回転試算リセット");
+    resetRuntimeForMorning(`${label}リセット`);
+    const before = {
+      spins:Number(stats.totalSpins) || 0,
+      fee:Number(stats.totalFee) || 0,
+      paid:Number(stats.totalPaid) || 0,
+      hits:Number(stats.bigCount) || 0,
+      misses:Number(stats.midCount) || 0
+    };
     debugOneClickSimActive = true;
     debugFastSpinActive = true;
     debugFastSpinCount = 0;
     updateDebugFastUi();
 
-    const targetSpins = DEBUG_ONE_CLICK_SIM_SPINS;
     let spun = 0;
     let safety = 0;
     const safetyLimit = targetSpins * 12;
@@ -14190,8 +14315,8 @@ body{
         }
       }
     }catch(e){
-      showMessage("1万回転試算エラー", e && e.message ? e.message : String(e));
-      log(`[SIM10000] ERROR ${e && e.message ? e.message : e}`);
+      showMessage(`${label}エラー`, e && e.message ? e.message : String(e));
+      log(`[SIM${targetSpins}] ERROR ${e && e.message ? e.message : e}`);
     }finally{
       debugOneClickSimActive = false;
       debugFastSpinActive = false;
@@ -14200,17 +14325,33 @@ body{
       persistState();
     }
 
-    const profit = currentProfit();
-    const rtpText = stats.totalFee > 0 ? `${(currentRtp() * 100).toFixed(2)}%` : "-";
+    const measuredSpins = (Number(stats.totalSpins) || 0) - before.spins;
+    const fee = (Number(stats.totalFee) || 0) - before.fee;
+    const paid = (Number(stats.totalPaid) || 0) - before.paid;
+    const hits = (Number(stats.bigCount) || 0) - before.hits;
+    const misses = (Number(stats.midCount) || 0) - before.misses;
+    const profit = paid - fee;
+    const profitText = `${profit >= 0 ? "+" : ""}${profit.toLocaleString()}`;
+    const rtpText = fee > 0 ? `${((paid / fee) * 100).toFixed(2)}%` : "-";
+    const summary = `設定${settings.setting} / ${measuredSpins}G / 投入${fee.toLocaleString()}pt / 払出${paid.toLocaleString()}pt / 収支${profitText}pt / 実測${rtpText} / 777 ${hits}回 / MISS ${misses}回`;
+    if($("debugSimStatus")) $("debugSimStatus").textContent = summary;
     if(isCompleteTrialLocked()){
-      showMessage("1万回転試算 COMPLETE", `${debugFastSpinCount}Gで打ち止め / 損益${formatSigned(profit)}pt / 機械割${rtpText}`);
-      $("resultText").textContent = `COMPLETE / ${debugFastSpinCount}G / ${formatSigned(profit)}pt`;
-      log(`[SIM10000] COMPLETE / ${debugFastSpinCount}G / 損益${formatSigned(profit)}pt / 機械割${rtpText}`);
+      showMessage(`${label} COMPLETE`, summary);
+      $("resultText").textContent = `COMPLETE / ${measuredSpins}G / ${profitText}pt`;
+      log(`[SIM${targetSpins}] COMPLETE / ${summary}`);
     }else{
-      showMessage("1万回転試算完了", `${debugFastSpinCount}G / 損益${formatSigned(profit)}pt / 機械割${rtpText}`);
-      $("resultText").textContent = `試算完了 / ${debugFastSpinCount}G / ${formatSigned(profit)}pt`;
-      log(`[SIM10000] 完了 / ${debugFastSpinCount}G / 損益${formatSigned(profit)}pt / 機械割${rtpText}`);
+      showMessage(`${label}完了`, summary);
+      $("resultText").textContent = `試算完了 / ${measuredSpins}G / ${profitText}pt / ${rtpText}`;
+      log(`[SIM${targetSpins}] 完了 / ${summary}`);
     }
+  }
+
+  function runOneKSimulation(){
+    runDebugSimulation(DEBUG_QUICK_SIM_SPINS, "1000回転試算");
+  }
+
+  function runTenKSimulation(){
+    runDebugSimulation(DEBUG_ONE_CLICK_SIM_SPINS, "1万回転試算");
   }
 
   function cellHtml(symbol, label, cls){
@@ -15320,12 +15461,7 @@ body{
         return;
       }
       if(!rouletteHit){
-        resolved.reward = 0;
-        resolved.add = 0;
-        resolved.sets = 0;
-        resolved.zoneSets = 0;
-        resolved.zoneStGames = 0;
-        resolved.zoneGameAdd = 0;
+        prepareJackspotRouletteSettlement(resolved, 0);
         showJackspotRouletteMiss();
       }
     }
@@ -15471,6 +15607,15 @@ body{
   function direct(result){
     if(isSpinning) return;
     if(!canPlayCompleteTrial()) return;
+    if(JACKSPOT_SINGLE_LINE_MODE){
+      const requested = normalizeForceResult(result);
+      if(!requested) return;
+      forceResult = requested;
+      if($("forceResult")) $("forceResult").value = requested;
+      log(`デバッグ回転：${forceResultName(requested)}`);
+      spin();
+      return;
+    }
     if(A_TYPE_MODE) result = normalizeATypeResult(result);
     readSettings();
     const normalDirect = !session.active;
@@ -15512,7 +15657,8 @@ body{
     }else{
       applyResult(result, resolved, lineRow);
     }
-    $("resultText").textContent = `DEBUG：${spec.name} / ${result !== "MISS" ? lineName(lineRow)+"ライン" : ""}`;
+    const debugResultName = JACKSPOT_SINGLE_LINE_MODE ? (result === "BIG" ? "777（ルーレット）" : "ハズレ") : spec.name;
+    $("resultText").textContent = `DEBUG：${debugResultName} / ${result !== "MISS" ? lineName(lineRow)+"ライン" : ""}`;
     updateDisplay();
   }
 
@@ -15871,14 +16017,14 @@ body{
     const startBtn = $("debugFastStartBtn");
     const stopBtn = $("debugFastStopBtn");
     const status = $("debugFastStatus");
-    const simBtn = $("tenKSimBtn");
+    const simBtns = [$("oneKSimBtn"), $("tenKSimBtn")].filter(Boolean);
     if(!startBtn || !stopBtn || !status) return;
 
     startBtn.textContent = `高速回転 ${DEBUG_FAST_SPINS_PER_SECOND}G/s`;
 
     startBtn.disabled = debugFastSpinActive;
     stopBtn.disabled = !debugFastSpinActive;
-    if(simBtn) simBtn.disabled = debugFastSpinActive || debugOneClickSimActive || isSpinning;
+    simBtns.forEach(button=>button.disabled = debugFastSpinActive || debugOneClickSimActive || isSpinning);
     if(isCompleteTrialLocked()){
       startBtn.disabled = true;
     }
@@ -16006,6 +16152,13 @@ body{
     const result = normalActiveAtSpinStart ? drawNormalResult() : drawResult();
     const lineRow = resultLineRow(result);
     const resolved = normalActiveAtSpinStart ? resolveNormalOutcome(result, lineRow) : resolveOutcome(result);
+    if(JACKSPOT_SINGLE_LINE_MODE && normalActiveAtSpinStart){
+      const payout = result === "BIG" ? pickJackspotPayout(settings.setting) : 0;
+      prepareJackspotRouletteSettlement(resolved, payout);
+      applyNormalResult(result, resolved, 1);
+      pendingForceResult = "";
+      return true;
+    }
     const bigPremiumEffect = normalActiveAtSpinStart && decideBigPremiumEffect(result, resolved, premiumForced);
     if(A_TYPE_MODE && normalActiveAtSpinStart && resolved && (resolved.bonusHit || resolved.bonusReady) && resolved.bonusKind === "BIG"){
       resolved.premiumBonus = !!(resolved.premiumBonus || bigPremiumEffect);
@@ -16632,6 +16785,7 @@ body{
     onClick("saveBtn", save);
     ensureMorningResetControl();
     onClick("morningResetBtn", ()=>morningResetGame(true));
+    onClick("oneKSimBtn", runOneKSimulation);
     onClick("tenKSimBtn", runTenKSimulation);
     onClick("resetBtn", resetGame);
     if($("settingSelect")){

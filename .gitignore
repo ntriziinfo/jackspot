@@ -6,3 +6,4 @@ data/
 node_modules/
 outputs/
 .preview-*.log
+assets/cabinet/black_silver/*_raw.png
