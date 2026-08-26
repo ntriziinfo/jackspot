@@ -11,7 +11,8 @@
 <link rel="preload" as="image" href="assets/symbols/sym_suika.png">
 <link rel="preload" as="image" href="assets/symbols/sym_coin.webp">
 <link rel="preload" as="image" href="assets/symbols/sym_grape.png">
-<link rel="preload" as="image" href="assets/symbols/sym_seven_jackspot.png">
+<link rel="preload" as="image" href="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png">
+<link rel="preload" as="image" href="assets/backgrounds/jackspot_roulette_temple_chamber_v1.png">
 <link rel="preload" as="image" href="assets/symbols/sym_bar.png">
 <link rel="preload" as="image" href="assets/symbols/sym_replay.png">
 <link rel="preload" as="image" href="assets/cabinet/edit_parts/piero.png">
@@ -6552,6 +6553,9 @@ body{
 .jackspotPayoutDisc.is-active{
   filter:brightness(1.34) drop-shadow(0 0 7px rgba(255,240,132,.92));
 }
+.jackspotPayoutDisc.is-decelerating{
+  filter:brightness(1.48) saturate(1.18) drop-shadow(0 0 12px rgba(255,240,132,.98));
+}
 .jackspotPayoutDisc.is-selected{
   box-shadow:inset 0 0 0 3px #fff8bb,inset 0 0 18px rgba(255,232,102,.74),0 0 10px rgba(255,233,118,.90);
 }
@@ -7140,6 +7144,491 @@ html{
   content:none !important;
 }
 
+/* 777 mechanical reveal: the reel deck lifts and exposes the payout kruun. */
+.jackspotReelDeck{
+  position:absolute;
+  inset:0;
+  z-index:40;
+  transform:translate3d(0,0,0);
+  transform-origin:50% 0;
+  opacity:1;
+  filter:none;
+  transition:
+    transform .82s cubic-bezier(.66,.02,.28,1),
+    opacity .34s ease .08s,
+    filter .34s ease;
+  will-change:transform,opacity,filter;
+}
+.jackspotReelDeck::after{
+  content:"";
+  position:absolute;
+  left:7.5%;
+  right:7.5%;
+  bottom:-11px;
+  height:14px;
+  border:1px solid rgba(229,244,252,.78);
+  border-radius:0 0 9px 9px;
+  background:linear-gradient(180deg,#e9f2f7 0%,#6a7883 25%,#101820 60%,#aab8c3 100%);
+  box-shadow:0 5px 9px rgba(0,0,0,.82),0 0 8px rgba(118,210,255,.34);
+  pointer-events:none;
+}
+.reelArea.rouletteMechanismActive .jackspotReelDeck{
+  transform:translate3d(0,-112%,0);
+  opacity:1;
+  filter:none;
+  transition-duration:2.46s,.34s,.34s;
+}
+.reelArea.rouletteMechanismActive{
+  overflow:hidden !important;
+  isolation:isolate;
+  pointer-events:none;
+}
+.jackspotKruunBay{
+  position:absolute;
+  left:var(--layout-reels-x);
+  top:var(--layout-reels-y);
+  width:var(--layout-reels-w);
+  height:var(--layout-reels-h);
+  z-index:21;
+  box-sizing:border-box;
+  overflow:hidden;
+  border:5px solid #abb8c2;
+  border-radius:12px;
+  opacity:0;
+  transform:scale(.96);
+  background:
+    linear-gradient(90deg,rgba(224,240,249,.22),transparent 8% 92%,rgba(224,240,249,.22)),
+    repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 3px,transparent 3px 9px),
+    radial-gradient(ellipse at 50% 50%,#172d3b 0%,#071018 48%,#010305 82%);
+  box-shadow:
+    inset 0 0 0 3px #020508,
+    inset 0 0 36px rgba(76,190,255,.30),
+    0 0 0 2px #232f38,
+    0 8px 22px rgba(0,0,0,.88);
+  transition:opacity .30s ease .18s,transform .54s cubic-bezier(.2,.78,.2,1) .12s;
+  pointer-events:none;
+}
+.reelArea.rouletteMechanismActive .jackspotKruunBay{
+  top:4%;
+  height:92%;
+  opacity:1;
+  transform:scale(1);
+}
+.jackspotKruunBayHeader{
+  position:absolute;
+  left:12%;
+  right:12%;
+  top:3px;
+  z-index:3;
+  display:flex;
+  justify-content:center;
+  align-items:baseline;
+  gap:9px;
+  color:#ccefff;
+  font:900 8px/1 "Arial Narrow",Arial,sans-serif;
+  letter-spacing:.14em;
+  text-shadow:0 0 8px rgba(74,192,255,.9),0 2px 2px #000;
+}
+.jackspotKruunBayHeader strong{
+  color:#f2f8fc;
+  font-size:11px;
+  letter-spacing:.2em;
+}
+.jackspotKruunBayRail{
+  position:absolute;
+  top:9%;
+  bottom:8%;
+  width:15px;
+  border:1px solid #c9d6df;
+  background:linear-gradient(90deg,#111820,#e3edf3 30%,#586672 58%,#080d12);
+  box-shadow:inset 0 0 5px #000,0 0 8px rgba(91,199,255,.32);
+}
+.jackspotKruunBayRailLeft{left:4%}
+.jackspotKruunBayRailRight{right:4%;transform:scaleX(-1)}
+.jackspotKruunBayWell{
+  position:absolute;
+  left:50%;
+  top:52%;
+  width:52%;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border:5px solid #9daab5;
+  border-radius:50%;
+  background:radial-gradient(circle,#03070a 0 27%,#143043 29% 43%,#020508 46% 58%,#72818d 60% 62%,#05080b 65%);
+  box-shadow:inset 0 0 24px #000,0 0 20px rgba(71,190,255,.50);
+}
+.jackspotKruunBolt{
+  position:absolute;
+  width:10px;
+  height:10px;
+  border:1px solid #e7f0f5;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#6a7781 43%,#0b1014 72%);
+  box-shadow:0 1px 3px #000;
+}
+.jackspotKruunBolt1{left:2%;top:3%}
+.jackspotKruunBolt2{right:2%;top:3%}
+.jackspotKruunBolt3{left:2%;bottom:3%}
+.jackspotKruunBolt4{right:2%;bottom:3%}
+.jackspotRouletteBlackout{
+  z-index:22 !important;
+  border-color:rgba(190,226,245,.72) !important;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.08),transparent 9% 91%,rgba(255,255,255,.08)),
+    radial-gradient(circle at 50% 54%,rgba(58,164,224,.24),transparent 46%),
+    linear-gradient(180deg,rgba(2,4,6,.96),rgba(6,18,26,.92) 50%,rgba(1,2,3,.98)) !important;
+  box-shadow:inset 0 0 36px #000,0 0 20px rgba(112,205,255,.42) !important;
+}
+.jackspotRouletteBlackout::before{
+  content:"KRUUN CHAMBER" !important;
+  color:#e8f8ff !important;
+  font-family:"Arial Narrow",Arial,sans-serif !important;
+  font-size:13px !important;
+  letter-spacing:.28em !important;
+  text-shadow:0 2px 0 #05111a,0 0 12px rgba(99,200,255,.96) !important;
+}
+.jackspotRouletteBlackout.is-visible{
+  animation:none !important;
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel{
+  top:4% !important;
+  height:92% !important;
+  grid-template-columns:1fr 330px 1fr !important;
+  padding:18px 10px !important;
+  z-index:50 !important;
+  border:4px solid #c8d6df !important;
+  border-radius:14px !important;
+  background:
+    linear-gradient(90deg,rgba(220,238,247,.11),transparent 12% 88%,rgba(220,238,247,.11)),
+    radial-gradient(circle at 50% 50%,rgba(46,159,222,.22),transparent 58%),
+    linear-gradient(180deg,#101922,#020406 52%,#0a1117) !important;
+  transform:translateY(20px) scale(.82) !important;
+  transition:opacity .30s ease,transform .48s cubic-bezier(.16,.86,.18,1),filter .30s ease !important;
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel .jackspotRouletteStage{
+  transform:scale(2.65) !important;
+}
+.reelArea.rouletteMechanismActive .jackspotKruunBay{
+  left:4%;
+  top:2%;
+  width:92%;
+  height:96%;
+  border:0;
+  border-radius:7px;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(32,91,123,.20),transparent 42%),
+    linear-gradient(180deg,#071019 0%,#010305 52%,#050c12 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(164,215,240,.32),
+    inset 0 0 50px #000,
+    0 0 24px rgba(81,190,242,.30);
+}
+.reelArea.rouletteMechanismActive .jackspotKruunBayHeader,
+.reelArea.rouletteMechanismActive .jackspotKruunBayRail,
+.reelArea.rouletteMechanismActive .jackspotKruunBayWell,
+.reelArea.rouletteMechanismActive .jackspotKruunBolt{
+  display:none;
+}
+.reelArea.rouletteMechanismActive .jackspotRouletteBlackout{
+  left:4%;
+  top:2%;
+  width:92%;
+  height:96%;
+  border:0 !important;
+  border-radius:7px;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(32,91,123,.18),transparent 42%),
+    linear-gradient(180deg,rgba(7,16,25,.98),rgba(1,3,5,.99) 52%,rgba(5,12,18,.98)) !important;
+  box-shadow:inset 0 0 50px #000 !important;
+}
+.reelArea.rouletteMechanismActive .jackspotRouletteBlackout::before,
+.reelArea.rouletteMechanismActive .jackspotRouletteBlackout::after{
+  display:none !important;
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel{
+  left:4% !important;
+  top:2% !important;
+  width:92% !important;
+  height:96% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  border:0 !important;
+  border-radius:7px !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel .jackspotRouletteIntro,
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel .jackspotRouletteOutcome{
+  display:none !important;
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel .jackspotRouletteStage{
+  flex:0 0 154px;
+  margin:0 !important;
+}
+.jackspotPayoutDiscOuter{
+  border:0 !important;
+  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_stage1_outer_casino_labeled_centered_v4.png") center/100% 100% no-repeat !important;
+  box-shadow:none !important;
+}
+.jackspotPayoutDiscMiddle{
+  border:0 !important;
+  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_stage2_middle_casino_labeled_centered_v4.png") center/100% 100% no-repeat !important;
+  box-shadow:none !important;
+}
+.jackspotPayoutDiscInner{
+  border:0 !important;
+  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_final_inner_casino_labeled_centered_v4.png") center/100% 100% no-repeat !important;
+  box-shadow:none !important;
+}
+.jackspotPayoutDisc{
+  transform-origin:50% 50%;
+  backface-visibility:hidden;
+  image-rendering:auto;
+}
+.jackspotPayoutDisc > span{
+  display:none !important;
+}
+.jackspotPayoutDiscOuter span{
+  --angle:calc(var(--i) * 30deg + 15deg);
+}
+.jackspotPayoutDiscMiddle span{
+  --angle:calc(var(--i) * 45deg + 22.5deg);
+}
+.jackspotPayoutDiscInner span{
+  --angle:calc(var(--i) * 180deg + 90deg);
+}
+.jackspotPayoutDisc.is-selected{
+  filter:brightness(1.22) drop-shadow(0 0 10px rgba(76,220,255,.95));
+}
+.jackspotRouletteStage .jackspotPayoutDisc{
+  transition:
+    inset .86s cubic-bezier(.18,.82,.18,1),
+    opacity .34s ease,
+    filter .34s ease;
+}
+.jackspotRouletteStage.is-stage-outer .jackspotPayoutDiscOuter{
+  inset:2px;
+  opacity:1;
+}
+.jackspotRouletteStage.is-stage-outer .jackspotPayoutDiscMiddle{
+  inset:27px;
+  opacity:1;
+}
+.jackspotRouletteStage.is-stage-outer .jackspotPayoutDiscInner{
+  inset:48px;
+  opacity:1;
+}
+.jackspotRouletteStage.is-stage-middle .jackspotPayoutDiscOuter{
+  opacity:0;
+}
+.jackspotRouletteStage.is-stage-middle .jackspotPayoutDiscMiddle{
+  inset:2px;
+  opacity:1;
+}
+.jackspotRouletteStage.is-stage-middle .jackspotPayoutDiscInner{
+  inset:48px;
+  opacity:1;
+}
+.jackspotRouletteStage.is-stage-inner .jackspotPayoutDiscOuter,
+.jackspotRouletteStage.is-stage-inner .jackspotPayoutDiscMiddle{
+  opacity:0;
+}
+.jackspotRouletteStage.is-stage-inner .jackspotPayoutDiscInner{
+  inset:2px;
+  opacity:1;
+}
+.jackspotRouletteStage.is-promoting{
+  animation:jackspotStagePromotionGlow .86s ease both;
+}
+.jackspotRouletteStage.is-stage-instant .jackspotPayoutDisc{
+  transition:none !important;
+}
+@keyframes jackspotStagePromotionGlow{
+  0%{filter:brightness(1) drop-shadow(0 0 8px rgba(255,201,58,.48))}
+  45%{filter:brightness(1.38) drop-shadow(0 0 22px rgba(255,225,124,.96))}
+  100%{filter:brightness(1.08) drop-shadow(0 0 12px rgba(255,190,45,.68))}
+}
+.reelArea > .jackspotPayoutRoulette.is-showtime-panel.is-showtime-visible{
+  transform:translateY(0) scale(1) !important;
+}
+.reelArea.rouletteMechanismOpen .jackspotKruunBay{
+  box-shadow:
+    inset 0 0 54px #000,
+    inset 0 0 32px rgba(76,190,255,.18),
+    0 0 24px rgba(91,200,255,.34);
+}
+.reelArea.rouletteMechanismActive .jackspotKruunBay,
+.reelArea.rouletteMechanismActive .jackspotRouletteBlackout,
+.reelArea.rouletteMechanismOpen .jackspotKruunBay{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+}
+
+/* JACsPOT luxury casino cabinet skin. */
+html{
+  background-color:#080301 !important;
+  background-image:
+    radial-gradient(circle at 50% 4%,rgba(255,204,78,.22),transparent 23%),
+    radial-gradient(circle at 18% 32%,rgba(104,6,18,.28),transparent 32%),
+    radial-gradient(circle at 82% 32%,rgba(31,77,63,.18),transparent 30%),
+    repeating-radial-gradient(circle at 50% 10%,rgba(255,218,122,.07) 0 1px,transparent 2px 54px),
+    linear-gradient(135deg,#120305 0%,#030101 44%,#090503 72%,#010101 100%) !important;
+}
+.cabinetPartTop,
+.cabinetPartReelBack,
+.cabinetPartControls,
+.cabinetPartLower,
+.cabinetPartReelFront{
+  filter:
+    drop-shadow(0 2px 1px rgba(255,243,191,.20))
+    drop-shadow(0 0 8px rgba(232,174,61,.16));
+}
+.cabinetPartsScene::before{
+  content:"";
+  position:absolute;
+  inset:7px 15px 8px;
+  z-index:9;
+  border:1px solid rgba(255,216,124,.28);
+  border-radius:16px;
+  pointer-events:none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.10),
+    inset 0 0 28px rgba(255,183,55,.08),
+    0 0 18px rgba(255,183,55,.14);
+  animation:casinoCabinetAura 2.8s ease-in-out infinite alternate;
+}
+.cabinetPartsScene::after{
+  background:
+    linear-gradient(104deg,rgba(255,248,211,.26),transparent 8% 43%,rgba(255,212,115,.10) 49%,transparent 56% 93%,rgba(255,245,210,.20)),
+    linear-gradient(90deg,rgba(255,195,71,.13),transparent 4% 96%,rgba(255,195,71,.13)) !important;
+  mix-blend-mode:screen;
+  opacity:.62;
+}
+.cabinetCasinoMarquee{
+  position:absolute;
+  left:19.8%;
+  top:48px;
+  z-index:10;
+  width:60.4%;
+  height:126px;
+  display:grid;
+  grid-template-rows:1fr 23px;
+  place-items:center;
+  pointer-events:none;
+  filter:drop-shadow(0 5px 5px rgba(0,0,0,.82));
+}
+.cabinetCasinoMarquee strong{
+  align-self:end;
+  color:#fff7d4;
+  font:1000 62px/.82 Georgia,"Times New Roman",serif;
+  letter-spacing:.035em;
+  -webkit-text-stroke:1.5px rgba(91,39,0,.94);
+  background:none;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:#ffe58f;
+  text-shadow:
+    0 2px 0 #4c1c00,
+    0 4px 0 #160700,
+    0 0 9px rgba(255,230,145,.96),
+    0 0 20px rgba(255,177,37,.68);
+}
+.cabinetCasinoMarquee span{
+  align-self:start;
+  color:#ffe8a0;
+  font:1000 11px/1 "Arial Narrow",Arial,sans-serif;
+  letter-spacing:.42em;
+  text-shadow:0 2px 2px #000,0 0 8px rgba(255,195,63,.92);
+}
+.cabinetCasinoMarquee span::before,
+.cabinetCasinoMarquee span::after{
+  content:"◆";
+  margin:0 12px;
+  color:#d91b32;
+  text-shadow:0 0 8px rgba(255,47,67,.92);
+}
+.cabinetLowerBrand{
+  top:1194px;
+  height:150px;
+  grid-template-rows:1fr 25px;
+  filter:drop-shadow(0 8px 7px rgba(0,0,0,.82));
+}
+.cabinetLowerBrand strong{
+  color:#fff5c5;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:83px;
+  letter-spacing:.025em;
+  -webkit-text-stroke:1.5px rgba(68,24,0,.96);
+  background:none;
+  -webkit-background-clip:border-box;
+  background-clip:border-box;
+  -webkit-text-fill-color:#ffe58f;
+  text-shadow:0 2px 0 #5a2600,0 5px 0 #120700,0 0 17px rgba(255,200,66,.62);
+}
+.cabinetLowerBrand span{
+  color:#ffe6a0;
+  font-size:12px;
+  letter-spacing:.39em;
+  text-shadow:0 2px 2px #000,0 0 9px rgba(255,190,55,.88);
+}
+.machine.active .cabinetCasinoMarquee strong,
+.machine.win .cabinetCasinoMarquee strong{
+  animation:casinoMarqueePulse .72s ease-in-out infinite alternate;
+}
+.machine.win .cabinetPartsScene::before{
+  animation-duration:.36s;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.30),
+    inset 0 0 38px rgba(255,190,54,.18),
+    0 0 28px rgba(255,184,45,.38);
+}
+@keyframes casinoCabinetAura{
+  from{opacity:.62;filter:brightness(.92)}
+  to{opacity:1;filter:brightness(1.15)}
+}
+@keyframes casinoMarqueePulse{
+  from{filter:brightness(.94)}
+  to{filter:brightness(1.28) drop-shadow(0 0 9px rgba(255,204,73,.72))}
+}
+@media (prefers-reduced-motion:reduce){
+  .jackspotReelDeck,
+  .jackspotKruunBay,
+  .reelArea > .jackspotPayoutRoulette.is-showtime-panel,
+  .cabinetPartsScene::before,
+  .cabinetCasinoMarquee strong{
+    transition-duration:.01ms !important;
+    animation:none !important;
+  }
+  .jackspotRouletteStage{
+    animation:none !important;
+  }
+  .jackspotRouletteStage .jackspotPayoutDisc{
+    transition-duration:.01ms !important;
+  }
+}
+
+/* Temple chamber revealed only after the reel deck slides upward. */
+.reelArea.rouletteMechanismActive .jackspotKruunBay,
+.reelArea.rouletteMechanismOpen .jackspotKruunBay{
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.16)),
+    url("assets/backgrounds/jackspot_roulette_temple_chamber_v1.png") center/cover no-repeat !important;
+  border-color:transparent !important;
+  box-shadow:
+    inset 0 0 42px rgba(0,0,0,.46),
+    inset 0 0 0 2px rgba(255,209,103,.18) !important;
+}
+.reelArea.rouletteMechanismActive .jackspotRouletteBlackout{
+  background:transparent !important;
+  box-shadow:none !important;
+}
+
   body:not(.debugMode) .debugToggleBtn{display:none!important}
 </style>
 </head>
@@ -7163,18 +7652,22 @@ html{
     <section class="machine normal" id="machine">
       <div class="jackspotCabinetShell" aria-hidden="true">
         <div class="cabinetPartsScene" aria-hidden="true">
-          <img class="cabinetPart cabinetPartTop" src="assets/cabinet/black_silver/jackspot_black_silver_top.png" alt="">
-          <div class="cabinetTopSevenOverlay" aria-hidden="true">
-            <img src="assets/symbols/sym_seven_jackspot.png" alt="">
-            <img src="assets/symbols/sym_seven_jackspot.png" alt="">
-            <img src="assets/symbols/sym_seven_jackspot.png" alt="">
+          <img class="cabinetPart cabinetPartTop" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_top_v2.png" alt="">
+          <div class="cabinetCasinoMarquee" aria-hidden="true">
+            <strong>JACsPOT</strong>
+            <span>PAYOUT ROULETTE</span>
           </div>
-          <img class="cabinetPart cabinetPartReelBack" src="assets/cabinet/black_silver/jackspot_black_silver_reel_frame.png" alt="">
-          <img class="cabinetPart cabinetPartControls" src="assets/cabinet/black_silver/jackspot_black_silver_controls.png" alt="">
-          <img class="cabinetPart cabinetPartLower" src="assets/cabinet/black_silver/jackspot_black_silver_lower.png" alt="">
+          <div class="cabinetTopSevenOverlay" aria-hidden="true">
+            <img src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="">
+            <img src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="">
+            <img src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="">
+          </div>
+          <img class="cabinetPart cabinetPartReelBack" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_reel_frame_v2.png" alt="">
+          <img class="cabinetPart cabinetPartControls" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_controls_v2.png" alt="">
+          <img class="cabinetPart cabinetPartLower" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_lower_v2.png" alt="">
           <div class="cabinetLowerBrand" aria-hidden="true">
             <strong>JACsPOT</strong>
-            <span>BLACK SILVER EDITION</span>
+            <span>PAYOUT ROULETTE</span>
           </div>
         </div>
         <div class="jackspotPayoutRoulette" id="jackspotPayoutRoulette" aria-label="大当たり払い出しルーレット">
@@ -7189,9 +7682,9 @@ html{
               <span style="--i:4">200</span><span style="--i:5">500</span><span style="--i:6">750</span><span class="is-up" style="--i:7">UP</span>
               <span style="--i:8">200</span><span style="--i:9">500</span><span style="--i:10">750</span><span class="is-up" style="--i:11">UP</span>
             </div>
-            <div class="jackspotPayoutDisc jackspotPayoutDiscMiddle" id="jackspotPayoutDiscMiddle" aria-label="2ndステージ 8マス 1000pt 1500pt 2000pt UPを2組">
-              <span style="--i:0">1,000</span><span style="--i:1">1,500</span><span style="--i:2">2,000</span><span class="is-up" style="--i:3">UP</span>
-              <span style="--i:4">1,000</span><span style="--i:5">1,500</span><span style="--i:6">2,000</span><span class="is-up" style="--i:7">UP</span>
+            <div class="jackspotPayoutDisc jackspotPayoutDiscMiddle" id="jackspotPayoutDiscMiddle" aria-label="2ndステージ 8マス 1000pt・1500pt・2000pt・UP 各2マス">
+              <span style="--i:0">1,000</span><span style="--i:1">1,500</span><span class="is-up" style="--i:2">UP</span><span style="--i:3">1,000</span>
+              <span style="--i:4">1,500</span><span style="--i:5">2,000</span><span style="--i:6">2,000</span><span class="is-up" style="--i:7">UP</span>
             </div>
             <div class="jackspotPayoutDisc jackspotPayoutDiscInner" id="jackspotPayoutDiscInner" aria-label="FINALステージ 5000pt 10000pt">
               <span style="--i:0">5,000</span><span style="--i:1">10,000</span>
@@ -7389,6 +7882,17 @@ html{
 
       <div class="reelArea">
         <div class="jackspotRouletteBlackout" id="jackspotRouletteBlackout" aria-hidden="true"></div>
+        <div class="jackspotKruunBay" id="jackspotKruunBay" aria-hidden="true">
+          <div class="jackspotKruunBayHeader"><span>JACsPOT</span><strong>PAYOUT KRUUN</strong></div>
+          <div class="jackspotKruunBayRail jackspotKruunBayRailLeft"></div>
+          <div class="jackspotKruunBayRail jackspotKruunBayRailRight"></div>
+          <div class="jackspotKruunBayWell"></div>
+          <i class="jackspotKruunBolt jackspotKruunBolt1"></i>
+          <i class="jackspotKruunBolt jackspotKruunBolt2"></i>
+          <i class="jackspotKruunBolt jackspotKruunBolt3"></i>
+          <i class="jackspotKruunBolt jackspotKruunBolt4"></i>
+        </div>
+        <div class="jackspotReelDeck" id="jackspotReelDeck">
         <div class="jackspotOutcomeLegend" aria-label="成立役は777またはハズレ">
           <span class="jackspotOutcomeLegendLabel">成立役</span>
           <strong class="jackspotOutcomeLegendSeven">777</strong>
@@ -7422,30 +7926,31 @@ html{
         <div class="payline"></div>
         <div class="reels">
           <div class="reel" data-reel="0"><div class="window">
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
           </div></div>
           <div class="reel" data-reel="1"><div class="window">
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><div class="sym blankSym" aria-label="blank"></div></div>
+            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><div class="sym blankSym" aria-label="blank"></div></div>
           </div></div>
           <div class="reel" data-reel="2"><div class="window">
-            <div class="cell"><div class="sym blankSym" aria-label="blank"></div></div>
-            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
-            <div class="cell"><div class="sym blankSym" aria-label="blank"></div></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell center"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
+            <div class="cell"><img class="symImg sevenSymImg" src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="7 symbol" loading="eager" decoding="sync" draggable="false"></div>
           </div></div>
         </div>
         <div class="reelCenterBandLayer" aria-hidden="true"></div>
         <div class="cabinetFrontParts" aria-hidden="true">
-          <img class="cabinetPart cabinetPartReelFront" src="assets/cabinet/black_silver/jackspot_black_silver_reel_frame.png" alt="">
+          <img class="cabinetPart cabinetPartReelFront" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_reel_frame_v2.png" alt="">
         </div>
         <div class="jackspotPayoutMeters" aria-label="CREDIT表示">
           <div class="jackspotPayoutMeter jackspotPayoutMeterCreditOnly">
             <span>CREDIT</span>
             <b id="jackspotCreditMeter">0000000</b>
           </div>
+        </div>
         </div>
       </div>
 
@@ -7708,6 +8213,8 @@ html{
 <audio id="bigSound" preload="auto"></audio>
 <audio id="payoutSound" preload="auto"></audio>
 <audio id="barBgm" loop preload="auto"></audio>
+<audio id="jackspotRouletteBgm" loop preload="auto"></audio>
+<audio id="jackspotRouletteStopSound" preload="auto"></audio>
 <audio id="voiceSound" preload="auto"></audio>
 
 <script>
@@ -7722,7 +8229,10 @@ html{
   const STORAGE_RESUME_KEY = STORAGE_KEY + "_resume";
   const PREFERENCES_STORAGE_KEY = "jackspot_slot_preferences_v1_" + bootMachineId;
 
-  const DEFAULT_NORMAL_BGM_SRC = "";
+  const DEFAULT_NORMAL_BGM_SRC = "assets/media/jackspot/audiostock_801749_normal_bgm.wav?v=20260821";
+  const JACKSPOT_ROULETTE_STAGE1_BGM_SRC = "assets/media/jackspot/audiostock_952111_roulette_stage1_bgm.wav?v=20260821";
+  const JACKSPOT_ROULETTE_STAGE2_BGM_SRC = "assets/media/jackspot/audiostock_1189491_roulette_stage2_bgm.wav?v=20260821";
+  const JACKSPOT_ROULETTE_FINAL_BGM_SRC = "assets/media/jackspot/audiostock_41327_roulette_final_bgm.mp3?v=20260821";
   const HIGH_MODE_BGM_SRC = "";
 
   const AT_BGM_SRC = "";
@@ -7747,7 +8257,12 @@ html{
   const SPECIAL_SYMBOL_SOUND_SRC = "assets/media/jackspot/special_symbol.wav";
   const PREMIUM_PIERO_SYMBOL_SOUND_SRC = "assets/media/jackspot/premium_piero_symbol.wav";
   const SPIN_SOUND_SRC = "assets/media/jackspot/start.wav";
+  const JACKSPOT_BET_LEVER_START_SOUND_SRC = "assets/media/jackspot/audiostock_177702_bet_lever_start.wav?v=20260821";
   const STOP_SOUND_SRC = "assets/media/jackspot/stop.wav";
+  const JACKSPOT_REEL_STOP_SOUND_SRC = "assets/media/jackspot/audiostock_114299_reel_stop.wav?v=20260821";
+  const JACKSPOT_ROULETTE_STOP_SOUND_SRC = "assets/media/jackspot/audiostock_1201138_roulette_stop.wav?v=20260821";
+  const JACKSPOT_ROULETTE_STAGE2_STOP_SOUND_SRC = "assets/media/jackspot/audiostock_259080_roulette_stage2_stop.wav?v=20260821";
+  const JACKSPOT_10000PT_CONFIRM_SOUND_SRC = "assets/media/jackspot/audiostock_56896_10000pt_confirm.mp3?v=20260821";
   const BONUS_STOP_SOUND_SRCS = Object.freeze([
     "assets/media/jackspot/bonus_stop_1.wav",
     "assets/media/jackspot/bonus_stop_2.wav",
@@ -7892,7 +8407,7 @@ html{
   const SUICA_IMAGE_SRC = "assets/symbols/sym_suika.png";
   const CHERRY_IMAGE_SRC = "assets/symbols/sym_cherry.png";
   const BELL_IMAGE_SRC = "assets/symbols/sym_bell.png";
-  const SEVEN_IMAGE_SRC = "assets/symbols/sym_seven_jackspot.png";
+  const SEVEN_IMAGE_SRC = "assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png";
   const MISS_IMAGE_SRC = "assets/symbols/sym_coin.webp";
   const GRAPE_IMAGE_SRC = "assets/symbols/sym_grape.png";
   const BAR_IMAGE_SRC = "assets/symbols/sym_bar.png";
@@ -8009,6 +8524,9 @@ html{
   }
 
   const AUDIO_SOURCE_OUTPUT_SCALE = Object.freeze({
+    [JACKSPOT_ROULETTE_STAGE1_BGM_SRC]: dbToGain(-6),
+    [JACKSPOT_ROULETTE_STAGE2_BGM_SRC]: dbToGain(-4),
+    [JACKSPOT_ROULETTE_FINAL_BGM_SRC]: dbToGain(-3.5),
     [BIG_BONUS_BGM_SRCS[0]]: dbToGain(0),
     [BIG_BONUS_BGM_SRCS[1]]: dbToGain(-2),
     [BIG_50G_BONUS_BGM_SRC]: dbToGain(-3.5),
@@ -8022,7 +8540,12 @@ html{
     [SPECIAL_SYMBOL_SOUND_SRC]: dbToGain(-1.5),
     [PREMIUM_PIERO_SYMBOL_SOUND_SRC]: dbToGain(-2),
     [SPIN_SOUND_SRC]: dbToGain(-1),
+    [JACKSPOT_BET_LEVER_START_SOUND_SRC]: dbToGain(6.5),
     [STOP_SOUND_SRC]: dbToGain(-1),
+    [JACKSPOT_REEL_STOP_SOUND_SRC]: dbToGain(-1),
+    [JACKSPOT_ROULETTE_STOP_SOUND_SRC]: dbToGain(-3),
+    [JACKSPOT_ROULETTE_STAGE2_STOP_SOUND_SRC]: dbToGain(4.5),
+    [JACKSPOT_10000PT_CONFIRM_SOUND_SRC]: dbToGain(-2),
     [BONUS_STOP_SOUND_SRCS[0]]: dbToGain(2),
     [BONUS_STOP_SOUND_SRCS[1]]: dbToGain(2.5),
     [BONUS_STOP_SOUND_SRCS[2]]: dbToGain(2.5),
@@ -8180,6 +8703,9 @@ html{
   let jackspotRouletteBusy = false;
   let jackspotRouletteHomeParent = null;
   let jackspotRouletteHomeNextSibling = null;
+  let jackspotRouletteStopSoundResolve = null;
+  let jackspotRouletteStopSoundTimer = null;
+  const audioFadeTokens = new WeakMap();
   let jackspotChanceHold = false;
   let pendingATypeInternalBonus = null;
   let currentSpin = null;
@@ -8217,8 +8743,13 @@ html{
     5:Object.freeze([0.160,0.120,0.110,0.100,0.120,0.130,0.220,0.040]),
     6:Object.freeze([0.150,0.150,0.160,0.150,0.130,0.130,0.090,0.040])
   });
-  const JACKSPOT_ROULETTE_DISC_SPIN_MS = 1450;
+  const JACKSPOT_ROULETTE_CRUISE_MS = 10000;
+  const JACKSPOT_ROULETTE_DECEL_MS = 5000;
+  const JACKSPOT_BGM_SWITCH_FADE_MS = 500;
   const JACKSPOT_ROULETTE_UP_DELAY_MS = 260;
+  const JACKSPOT_ROULETTE_STAGE_ZOOM_MS = 900;
+  const JACKSPOT_ROULETTE_STOP_JITTER_MIN = 0.12;
+  const JACKSPOT_ROULETTE_STOP_JITTER_MAX = 0.32;
   const BONUS_ANNOUNCE_THIRD_STOP_RATE = 0.70;
   const BONUS_ANNOUNCE_EARLY_TIMINGS = Object.freeze(["lever", "stop1", "stop2"]);
   const PAYOUT_BASE = 100;
@@ -8433,6 +8964,8 @@ html{
   const bigSound = $("bigSound");
   const payoutSound = $("payoutSound");
   const barBgm = $("barBgm");
+  const jackspotRouletteBgm = $("jackspotRouletteBgm");
+  const jackspotRouletteStopSound = $("jackspotRouletteStopSound");
   const battleBgm = $("battleBgm");
   const voiceSound = $("voiceSound");
   const gekiatsuLayer = $("gekiatsuLayer");
@@ -9130,6 +9663,7 @@ html{
     if(koatariSound) koatariSound.volume = sfxOutputVolumeForSource(SFX_OUTPUT_SCALE, KOATARI_SOUND_SRC);
     if(bigSound) bigSound.volume = sfxOutputVolumeForSource(SFX_OUTPUT_SCALE, BIG_SOUND_SRC);
     if(payoutSound) payoutSound.volume = payoutOutputVolumeForSource(PAYOUT_SOUND_OUTPUT_SCALE, payoutSound.getAttribute("src") || PAYOUT_SOUND_SRC);
+    if(jackspotRouletteStopSound) jackspotRouletteStopSound.volume = sfxOutputVolumeForSource(SFX_OUTPUT_SCALE, jackspotRouletteStopSound.getAttribute("src") || JACKSPOT_ROULETTE_STOP_SOUND_SRC);
     if(voiceSound) voiceSound.volume = voiceOutputVolume();
     if(gekiatsuVideo) gekiatsuVideo.volume = currentGekiatsuVideoOutputVolume();
     updateAudioMuteButton();
@@ -9146,6 +9680,7 @@ html{
   function applyBgmOutputVolumes(){
     if(bgm) bgm.volume = bgmOutputVolumeForSource(BGM_OUTPUT_SCALE, bgm.getAttribute("src") || normalBgmSrc());
     if(barBgm) barBgm.volume = bgmOutputVolumeForSource(BAR_BGM_OUTPUT_SCALE, activeBarBgmSrc());
+    if(jackspotRouletteBgm) jackspotRouletteBgm.volume = bgmOutputVolumeForSource(BGM_OUTPUT_SCALE, jackspotRouletteBgm.getAttribute("src") || JACKSPOT_ROULETTE_STAGE1_BGM_SRC);
     if(battleBgm) battleBgm.volume = bgmOutputVolumeForSource(BATTLE_BGM_OUTPUT_SCALE, BATTLE_BGM_SRC);
   }
 
@@ -9153,6 +9688,7 @@ html{
     rogiBgmMuted = true;
     if(bgm) bgm.volume = 0;
     if(barBgm) barBgm.volume = 0;
+    if(jackspotRouletteBgm) jackspotRouletteBgm.volume = 0;
     if(battleBgm) battleBgm.volume = 0;
   }
 
@@ -10503,16 +11039,154 @@ html{
     return JACKSPOT_ROULETTE_PAYOUTS[payoutIndex];
   }
 
+  function fadeOutAudioAndPause(audio, durationMs=JACKSPOT_BGM_SWITCH_FADE_MS){
+    if(!audio) return Promise.resolve();
+    const duration = Math.max(0, Number(durationMs) || 0);
+    const startVolume = Math.max(0, Number(audio.volume) || 0);
+    const fadeToken = {};
+    audioFadeTokens.set(audio, fadeToken);
+    if(audio.paused || startVolume <= 0 || duration <= 0){
+      try{
+        audio.pause();
+        audio.volume = 0;
+      }catch(e){}
+      if(audioFadeTokens.get(audio) === fadeToken) audioFadeTokens.delete(audio);
+      return Promise.resolve();
+    }
+    return new Promise(resolve=>{
+      const startedAt = performance.now();
+      const step = ()=>{
+        if(audioFadeTokens.get(audio) !== fadeToken){
+          resolve();
+          return;
+        }
+        const progress = Math.min(1, (performance.now() - startedAt) / duration);
+        try{ audio.volume = Math.max(0, startVolume * (1 - progress)); }catch(e){}
+        if(progress >= 1){
+          try{ audio.pause(); }catch(e){}
+          audioFadeTokens.delete(audio);
+          resolve();
+          return;
+        }
+        setTimeout(step, 25);
+      };
+      step();
+    });
+  }
+
+  function cancelAudioFade(audio){
+    if(audio) audioFadeTokens.delete(audio);
+  }
+
+  function stopJackspotRouletteBgm(){
+    if(!jackspotRouletteBgm) return;
+    cancelAudioFade(jackspotRouletteBgm);
+    try{
+      jackspotRouletteBgm.pause();
+      jackspotRouletteBgm.currentTime = 0;
+    }catch(e){}
+  }
+
+  function playJackspotRouletteBgm(src, stageLabel){
+    if(!jackspotRouletteBgm || !src) return;
+    try{
+      pauseNormalBgm();
+      stopJackspotRouletteBgm();
+      if(jackspotRouletteBgm.getAttribute("src") !== src){
+        jackspotRouletteBgm.setAttribute("src", src);
+        try{ jackspotRouletteBgm.load(); }catch(e){}
+      }
+      jackspotRouletteBgm.loop = true;
+      jackspotRouletteBgm.volume = bgmOutputVolumeForSource(BGM_OUTPUT_SCALE, src);
+      jackspotRouletteBgm.play().catch(()=>{});
+      log(`${stageLabel}ステージBGM再生`);
+    }catch(e){}
+  }
+
+  function playJackspotRouletteStage1Bgm(){
+    playJackspotRouletteBgm(JACKSPOT_ROULETTE_STAGE1_BGM_SRC, "1st");
+  }
+
+  function playJackspotRouletteStage2Bgm(){
+    playJackspotRouletteBgm(JACKSPOT_ROULETTE_STAGE2_BGM_SRC, "2nd");
+  }
+
+  function playJackspotRouletteFinalBgm(){
+    playJackspotRouletteBgm(JACKSPOT_ROULETTE_FINAL_BGM_SRC, "FINAL");
+  }
+
+  function finishJackspotRouletteStopSoundWait(){
+    if(jackspotRouletteStopSoundTimer){
+      clearTimeout(jackspotRouletteStopSoundTimer);
+      jackspotRouletteStopSoundTimer = null;
+    }
+    if(jackspotRouletteStopSound){
+      jackspotRouletteStopSound.onended = null;
+      jackspotRouletteStopSound.onerror = null;
+    }
+    const resolve = jackspotRouletteStopSoundResolve;
+    jackspotRouletteStopSoundResolve = null;
+    if(resolve) resolve();
+  }
+
+  function stopJackspotRouletteStopSound(){
+    if(jackspotRouletteStopSound){
+      try{
+        jackspotRouletteStopSound.pause();
+        jackspotRouletteStopSound.currentTime = 0;
+      }catch(e){}
+    }
+    finishJackspotRouletteStopSoundWait();
+  }
+
+  function playJackspotRouletteStopSoundAndWait(src=JACKSPOT_ROULETTE_STOP_SOUND_SRC){
+    if(debugFastSpinActive || speedToBonusActive) return Promise.resolve();
+    if(!jackspotRouletteStopSound || !src) return Promise.resolve();
+    stopJackspotRouletteStopSound();
+    try{
+      if(jackspotRouletteStopSound.getAttribute("src") !== src){
+        jackspotRouletteStopSound.setAttribute("src", src);
+        try{ jackspotRouletteStopSound.load(); }catch(e){}
+      }
+      jackspotRouletteStopSound.volume = sfxOutputVolumeForSource(SFX_OUTPUT_SCALE, src);
+      return new Promise(resolve=>{
+        jackspotRouletteStopSoundResolve = resolve;
+        const finish = ()=>finishJackspotRouletteStopSoundWait();
+        jackspotRouletteStopSound.onended = finish;
+        jackspotRouletteStopSound.onerror = finish;
+        jackspotRouletteStopSoundTimer = setTimeout(finish, 8000);
+        const playPromise = jackspotRouletteStopSound.play();
+        if(playPromise && typeof playPromise.catch === "function") playPromise.catch(finish);
+      });
+    }catch(e){
+      finishJackspotRouletteStopSoundWait();
+      return Promise.resolve();
+    }
+  }
+
   function resetJackspotRouletteDisplay(){
     if(!JACKSPOT_SINGLE_LINE_MODE) return;
+    stopJackspotRouletteBgm();
+    stopJackspotRouletteStopSound();
     const panel = $("jackspotPayoutRoulette");
     const result = $("jackspotRouletteResult");
     const status = $("jackspotRouletteStatus");
+    const reelSurface = document.querySelector(".reelArea");
+    const blackout = $("jackspotRouletteBlackout");
     if(panel) panel.classList.remove("is-spinning", "is-hit");
+    if(reelSurface) reelSurface.classList.remove("rouletteMechanismActive", "rouletteMechanismOpen");
+    if(blackout){
+      blackout.classList.remove("is-visible");
+      blackout.setAttribute("aria-hidden", "true");
+    }
     ["jackspotPayoutDiscOuter","jackspotPayoutDiscMiddle","jackspotPayoutDiscInner"].forEach(id=>{
       const disc = $(id);
-      if(disc) disc.classList.remove("is-active", "is-selected");
+      if(disc){
+        disc.classList.remove("is-active", "is-selected", "is-decelerating");
+        disc.style.transition = "";
+      }
     });
+    setJackspotRouletteStageView(panel && panel.querySelector(".jackspotRouletteStage"), "outer", true);
     if(result) result.textContent = "READY";
     if(status) status.textContent = "中央777でルーレット始動";
   }
@@ -10531,6 +11205,24 @@ html{
     return new Promise(resolve=>setTimeout(resolve, ms));
   }
 
+  function setJackspotRouletteStageView(stage, mode, instant=false){
+    if(!stage) return;
+    if(instant) stage.classList.add("is-stage-instant");
+    stage.classList.remove("is-stage-outer", "is-stage-middle", "is-stage-inner");
+    stage.classList.add(`is-stage-${mode}`);
+    if(instant){
+      requestAnimationFrame(()=>requestAnimationFrame(()=>stage.classList.remove("is-stage-instant")));
+    }
+  }
+
+  async function promoteJackspotRouletteStage(stage, mode){
+    if(!stage) return;
+    stage.classList.add("is-promoting");
+    setJackspotRouletteStageView(stage, mode);
+    await waitJackspotRoulette(JACKSPOT_ROULETTE_STAGE_ZOOM_MS);
+    stage.classList.remove("is-promoting");
+  }
+
   async function openJackspotRouletteShowtime(panel){
     const blackout = $("jackspotRouletteBlackout");
     const reelSurface = document.querySelector(".reelArea");
@@ -10538,23 +11230,28 @@ html{
     jackspotRouletteHomeParent = panel.parentNode;
     jackspotRouletteHomeNextSibling = panel.nextSibling;
     reelSurface.appendChild(panel);
+    panel.classList.add("is-showtime-panel");
     blackout.classList.add("is-visible");
     blackout.setAttribute("aria-hidden", "false");
-    panel.classList.add("is-showtime-panel");
+    reelSurface.classList.add("rouletteMechanismActive");
+    await waitJackspotRoulette(2460);
+    reelSurface.classList.add("rouletteMechanismOpen");
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>panel.classList.add("is-showtime-visible"));
     });
-    await waitJackspotRoulette(520);
+    await Promise.all([
+      waitJackspotRoulette(JACKSPOT_BGM_SWITCH_FADE_MS),
+      fadeOutAudioAndPause(bgm, JACKSPOT_BGM_SWITCH_FADE_MS)
+    ]);
   }
 
   async function closeJackspotRouletteShowtime(panel){
     const blackout = $("jackspotRouletteBlackout");
+    const reelSurface = document.querySelector(".reelArea");
+    stopJackspotRouletteBgm();
     if(panel) panel.classList.remove("is-showtime-visible");
-    if(blackout){
-      blackout.classList.remove("is-visible");
-      blackout.setAttribute("aria-hidden", "true");
-    }
-    await waitJackspotRoulette(360);
+    if(reelSurface) reelSurface.classList.remove("rouletteMechanismOpen");
+    await waitJackspotRoulette(420);
     if(panel && jackspotRouletteHomeParent){
       if(jackspotRouletteHomeNextSibling && jackspotRouletteHomeNextSibling.parentNode === jackspotRouletteHomeParent){
         jackspotRouletteHomeParent.insertBefore(panel, jackspotRouletteHomeNextSibling);
@@ -10563,27 +11260,47 @@ html{
       }
       panel.classList.remove("is-showtime-panel");
     }
+    if(reelSurface) reelSurface.classList.remove("rouletteMechanismActive");
+    await waitJackspotRoulette(820);
+    if(blackout){
+      blackout.classList.remove("is-visible");
+      blackout.setAttribute("aria-hidden", "true");
+    }
     jackspotRouletteHomeParent = null;
     jackspotRouletteHomeNextSibling = null;
   }
 
-  function spinJackspotRouletteDisc(discKey, disc, resultIndex, segmentCount){
-    if(!disc) return Promise.resolve();
-    const normalized = ((jackspotRouletteRotations[discKey] % 360) + 360) % 360;
+  async function spinJackspotRouletteDisc(discKey, disc, resultIndex, segmentCount){
+    if(!disc) return;
     const segmentAngle = 360 / segmentCount;
-    const target = (360 - resultIndex * segmentAngle) % 360;
-    const delta = (target - normalized + 360) % 360;
-    jackspotRouletteRotations[discKey] += (4 + randomInt(0, 2)) * 360 + delta;
+    const jitterDirection = Math.random() < .5 ? -1 : 1;
+    const jitterRatio = JACKSPOT_ROULETTE_STOP_JITTER_MIN
+      + Math.random() * (JACKSPOT_ROULETTE_STOP_JITTER_MAX - JACKSPOT_ROULETTE_STOP_JITTER_MIN);
+    const stopJitter = jitterDirection * segmentAngle * jitterRatio;
     disc.classList.remove("is-selected");
     disc.classList.add("is-active");
-    disc.style.transition = `transform ${JACKSPOT_ROULETTE_DISC_SPIN_MS}ms cubic-bezier(.12,.74,.16,1)`;
+
+    // 高速巡航のあと、長い滑りを伴う強い減速で停止位置へ入る。
+    const cruiseRotation = jackspotRouletteRotations[discKey] + (32 + randomInt(0, 8)) * 360;
+    disc.style.transition = `transform ${JACKSPOT_ROULETTE_CRUISE_MS}ms linear`;
+    requestAnimationFrame(()=>{
+      disc.style.transform = `rotate(${cruiseRotation}deg)`;
+    });
+    await waitJackspotRoulette(JACKSPOT_ROULETTE_CRUISE_MS);
+
+    const normalized = ((cruiseRotation % 360) + 360) % 360;
+    const target = (360 - (resultIndex * segmentAngle + segmentAngle / 2 + stopJitter)) % 360;
+    const delta = (target - normalized + 360) % 360;
+    jackspotRouletteRotations[discKey] = cruiseRotation + (8 + randomInt(0, 4)) * 360 + delta;
+    disc.classList.add("is-decelerating");
+    disc.style.transition = `transform ${JACKSPOT_ROULETTE_DECEL_MS}ms cubic-bezier(.08,.72,.08,1)`;
     requestAnimationFrame(()=>{
       disc.style.transform = `rotate(${jackspotRouletteRotations[discKey]}deg)`;
     });
-    return waitJackspotRoulette(JACKSPOT_ROULETTE_DISC_SPIN_MS + 80).then(()=>{
-      disc.classList.remove("is-active");
-      disc.classList.add("is-selected");
-    });
+    await waitJackspotRoulette(JACKSPOT_ROULETTE_DECEL_MS + 80);
+    disc.classList.remove("is-active", "is-decelerating");
+    disc.classList.add("is-selected");
+    disc.style.transition = "";
   }
 
   async function runJackspotPayoutRoulette(){
@@ -10592,49 +11309,104 @@ html{
     const outerDisc = $("jackspotPayoutDiscOuter");
     const middleDisc = $("jackspotPayoutDiscMiddle");
     const innerDisc = $("jackspotPayoutDiscInner");
+    const stage = panel && panel.querySelector(".jackspotRouletteStage");
     const result = $("jackspotRouletteResult");
     const status = $("jackspotRouletteStatus");
     if(!panel || !outerDisc || !middleDisc || !innerDisc) return payout;
 
     jackspotRouletteBusy = true;
+    setJackspotRouletteStageView(stage, "outer", true);
     panel.classList.remove("is-hit");
     panel.classList.add("is-spinning");
     if(result) result.textContent = "JACKPOT";
-    if(status) status.textContent = "777成立 / ルーレット展開";
+    if(status) status.textContent = "777成立 / リール盤面上昇";
     await openJackspotRouletteShowtime(panel);
+    playJackspotRouletteStage1Bgm();
     if(result) result.textContent = "1ST";
-    if(status) status.textContent = "1stステージ / 200・500・750・UP";
+    if(status) status.textContent = "クルーン露出 / 1stステージ 15秒抽選中";
 
     const outerResultIndex = payout === 200 ? 0 : payout === 500 ? 1 : payout === 750 ? 2 : 3;
     const outerStopIndex = outerResultIndex + randomInt(0, 2) * 4;
+    let settlementStopSoundPlayed = false;
+    const stage1BgmFadeTimer = setTimeout(
+      ()=>fadeOutAudioAndPause(jackspotRouletteBgm, JACKSPOT_BGM_SWITCH_FADE_MS),
+      Math.max(0, JACKSPOT_ROULETTE_CRUISE_MS + JACKSPOT_ROULETTE_DECEL_MS + 80 - JACKSPOT_BGM_SWITCH_FADE_MS)
+    );
     await spinJackspotRouletteDisc("outer", outerDisc, outerStopIndex, 12);
+    clearTimeout(stage1BgmFadeTimer);
+    stopJackspotRouletteBgm();
 
     if(outerResultIndex === 3){
       if(result) result.textContent = "UP";
       if(status) status.textContent = "UP → 2ndステージへ昇格";
       await waitJackspotRoulette(JACKSPOT_ROULETTE_UP_DELAY_MS);
+      if(status) status.textContent = "2nd盤面を拡大中";
+      await promoteJackspotRouletteStage(stage, "middle");
+      playJackspotRouletteStage2Bgm();
       if(result) result.textContent = "2ND";
-      if(status) status.textContent = "2ndステージ / 1,000・1,500・2,000・UP";
+      if(status) status.textContent = "2ndステージ / 15秒抽選中";
       const middleResultIndex = payout === 1000 ? 0 : payout === 1500 ? 1 : payout === 2000 ? 2 : 3;
-      const middleStopIndex = middleResultIndex + randomInt(0, 1) * 4;
+      const middleStopPositions = middleResultIndex === 0
+        ? [0, 3]
+        : middleResultIndex === 1
+          ? [1, 4]
+          : middleResultIndex === 2
+            ? [5, 6]
+            : [2, 7];
+      const middleStopIndex = middleStopPositions[randomInt(0, middleStopPositions.length - 1)];
+      const stage2BgmFadeTimer = setTimeout(
+        ()=>fadeOutAudioAndPause(jackspotRouletteBgm, JACKSPOT_BGM_SWITCH_FADE_MS),
+        Math.max(0, JACKSPOT_ROULETTE_CRUISE_MS + JACKSPOT_ROULETTE_DECEL_MS + 80 - JACKSPOT_BGM_SWITCH_FADE_MS)
+      );
       await spinJackspotRouletteDisc("middle", middleDisc, middleStopIndex, 8);
+      clearTimeout(stage2BgmFadeTimer);
+      stopJackspotRouletteBgm();
 
       if(middleResultIndex === 3){
         if(result) result.textContent = "UP";
+        if(status) status.textContent = "2ndステージ停止 / UP確定音再生中";
+        await playJackspotRouletteStopSoundAndWait(JACKSPOT_ROULETTE_STAGE2_STOP_SOUND_SRC);
         if(status) status.textContent = "UP → FINALステージへ昇格";
         await waitJackspotRoulette(JACKSPOT_ROULETTE_UP_DELAY_MS);
+        if(status) status.textContent = "FINAL盤面を拡大中";
+        await promoteJackspotRouletteStage(stage, "inner");
+        playJackspotRouletteFinalBgm();
         if(result) result.textContent = "FINAL";
-        if(status) status.textContent = "FINALステージ / 5,000・10,000";
+        if(status) status.textContent = "FINALステージ / 15秒抽選中";
+        const finalBgmFadeTimer = setTimeout(
+          ()=>fadeOutAudioAndPause(jackspotRouletteBgm, JACKSPOT_BGM_SWITCH_FADE_MS),
+          Math.max(0, JACKSPOT_ROULETTE_CRUISE_MS + JACKSPOT_ROULETTE_DECEL_MS + 80 - JACKSPOT_BGM_SWITCH_FADE_MS)
+        );
         await spinJackspotRouletteDisc("inner", innerDisc, payout === 5000 ? 0 : 1, 2);
+        clearTimeout(finalBgmFadeTimer);
+        stopJackspotRouletteBgm();
+      }else{
+        panel.classList.remove("is-spinning");
+        panel.classList.add("is-hit");
+        if(result) result.textContent = `+${payout.toLocaleString()}pt`;
+        if(status) status.textContent = "2ndステージ停止 / 確定音再生中";
+        await playJackspotRouletteStopSoundAndWait(JACKSPOT_ROULETTE_STAGE2_STOP_SOUND_SRC);
+        settlementStopSoundPlayed = true;
       }
     }
 
     panel.classList.remove("is-spinning");
     panel.classList.add("is-hit");
     if(result) result.textContent = `+${payout.toLocaleString()}pt`;
+    if(!settlementStopSoundPlayed){
+      const stopSoundSrc = payout === 10000
+        ? JACKSPOT_10000PT_CONFIRM_SOUND_SRC
+        : JACKSPOT_ROULETTE_STOP_SOUND_SRC;
+      if(status) status.textContent = payout === 10000
+        ? "10,000pt確定 / プレミアム確定音再生中"
+        : "ルーレット停止 / 確定音再生中";
+      await playJackspotRouletteStopSoundAndWait(stopSoundSrc);
+    }
     if(status) status.textContent = "払い出し決定 / CREDITへ加算";
     await waitJackspotRoulette(1200);
     await closeJackspotRouletteShowtime(panel);
+    playNormalBgm();
+    setJackspotRouletteStageView(stage, "outer", true);
     jackspotRouletteBusy = false;
     return payout;
   }
@@ -13078,6 +13850,7 @@ html{
     // ブラウザの自動再生制限により、初回クリック/操作後に再生される
     if(!bgm || barBgmActive || battleBgmActive) return;
     try{
+      cancelAudioFade(bgm);
       const src = ensureNormalBgmSource();
       if(!src) return;
       bgm.loop = true;
@@ -13090,6 +13863,7 @@ html{
 
   function pauseNormalBgm(){
     if(!bgm) return;
+    cancelAudioFade(bgm);
     try{
       bgm.pause();
     }catch(e){}
@@ -14127,6 +14901,8 @@ html{
     if(!confirm("統計と現在の状態を初期化しますか？")) return;
     stopAutoPlay("初期化のためオート停止");
     pauseNormalBgm();
+    stopJackspotRouletteBgm();
+    stopJackspotRouletteStopSound();
     stopBattleBgm(false);
     stopBarBgm();
     clearBonusConfirmSoundLock();
@@ -14182,6 +14958,8 @@ html{
     stopSpeedToBonus(`${reason}のためSPEED停止`);
     stopAutoPlay(`${reason}のためAUTO停止`);
     pauseNormalBgm();
+    stopJackspotRouletteBgm();
+    stopJackspotRouletteStopSound();
     stopBattleBgm(false);
     stopBarBgm();
     clearBonusConfirmSoundLock();
@@ -14414,9 +15192,9 @@ html{
   }
 
   const REEL_STRIPS = [
-    Array(21).fill("7"),
-    Array(21).fill("7"),
-    Array.from({length:22}, (_, index)=>index % 2 === 0 ? "7" : BLANK_SYMBOL)
+    ["7", "7", "7", ...Array(18).fill(BLANK_SYMBOL)],
+    ["7", ...Array(20).fill(BLANK_SYMBOL)],
+    ["7", "7", "7", ...Array(18).fill(BLANK_SYMBOL)]
   ];
 
   function isJackspotVisualHit(result, resolved=null){
@@ -14432,12 +15210,10 @@ html{
   }
 
   function buildJackspotSingleLineGrid(hit=false){
-    const rightMiddle = hit ? "7" : BLANK_SYMBOL;
-    const rightOuter = hit ? BLANK_SYMBOL : "7";
     return [
-      ["7", "7", rightOuter],
-      ["7", "7", rightMiddle],
-      ["7", "7", rightOuter]
+      ["7", BLANK_SYMBOL, "7"],
+      ["7", hit ? "7" : BLANK_SYMBOL, "7"],
+      ["7", BLANK_SYMBOL, "7"]
     ];
   }
 
@@ -16493,15 +17269,19 @@ html{
     }catch(e){}
   }
 
-  function playSpinSound(){ playOneShotSound(SPIN_SOUND_SRC); }
+  function playSpinSound(){
+    playOneShotSound(JACKSPOT_SINGLE_LINE_MODE ? JACKSPOT_BET_LEVER_START_SOUND_SRC : SPIN_SOUND_SRC);
+  }
   function isBonusStopSoundSpin(spin=currentSpin){
     return !!(spin && spin.result === "BAR3");
   }
   function playStopSound(i, stopOrder=null){
     const order = Math.max(1, Math.min(3, Math.round(Number(stopOrder) || 0)));
-    const src = isBonusStopSoundSpin(currentSpin) && BONUS_STOP_SOUND_SRCS[order - 1]
-      ? BONUS_STOP_SOUND_SRCS[order - 1]
-      : STOP_SOUND_SRC;
+    const src = JACKSPOT_SINGLE_LINE_MODE
+      ? JACKSPOT_REEL_STOP_SOUND_SRC
+      : isBonusStopSoundSpin(currentSpin) && BONUS_STOP_SOUND_SRCS[order - 1]
+        ? BONUS_STOP_SOUND_SRCS[order - 1]
+        : STOP_SOUND_SRC;
     playOneShotSound(src);
   }
   function playWinSound(big){
