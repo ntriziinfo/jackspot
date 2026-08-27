@@ -408,6 +408,8 @@ h1{
 }
 .layoutEditorActions{
   display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
   gap:6px;
 }
 .layoutEditorAction{
@@ -424,27 +426,71 @@ h1{
   display:grid;
   gap:10px;
 }
+.layoutPartPicker{
+  display:grid;
+  grid-template-columns:96px minmax(0,1fr);
+  gap:8px;
+  align-items:center;
+}
+.layoutPartPicker label{
+  color:#fff2b8;
+  font-size:12px;
+  font-weight:1000;
+}
+.layoutPartPicker select{
+  min-width:0;
+  height:34px;
+  padding:0 9px;
+  border:1px solid rgba(77,231,255,.36);
+  border-radius:10px;
+  color:#fff;
+  font-size:12px;
+  font-weight:900;
+  background:#091326;
+}
+.layoutEditHelp{
+  margin-top:7px;
+  color:rgba(255,255,255,.68);
+  font-size:11px;
+  line-height:1.45;
+}
 .layoutEditGroup{
   padding:10px;
   border-radius:14px;
   background:rgba(255,255,255,.045);
   border:1px solid rgba(255,255,255,.10);
 }
-.layoutEditGroupTitle{
+.layoutEditGroupHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
   margin-bottom:8px;
+}
+.layoutEditGroupTitle{
   color:#8fefff;
   font-size:12px;
   font-weight:1000;
   letter-spacing:.08em;
 }
+.layoutPartResetBtn{
+  height:28px;
+  padding:0 9px;
+  border-radius:9px;
+  color:#ffeaa8;
+  font-size:11px;
+  font-weight:1000;
+  background:rgba(38,25,19,.92);
+  border:1px solid rgba(255,211,106,.30);
+}
 .layoutEditRows{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1fr;
   gap:8px 10px;
 }
 .layoutEditRow{
   display:grid;
-  grid-template-columns:22px minmax(0, 1fr) 44px;
+  grid-template-columns:56px minmax(0, 1fr) 156px;
   gap:6px;
   align-items:center;
 }
@@ -462,24 +508,80 @@ h1{
   color:#fff;
   font-size:11px;
   font-weight:1000;
-  text-align:right;
+  text-align:center;
   font-variant-numeric:tabular-nums;
 }
-body.layoutEditOpen .reels,
-body.layoutEditOpen .jackspotGogoChance,
-body.layoutEditOpen .jackspotPayoutMeter,
-body.layoutEditOpen .jackspotBonusDataMeters{
-  outline:2px dashed rgba(77,231,255,.88);
+.layoutEditFine{
+  display:grid;
+  grid-template-columns:46px minmax(56px,1fr) 46px;
+  gap:4px;
+  align-items:center;
+}
+.layoutEditNudgeBtn{
+  min-width:0;
+  height:28px;
+  padding:0;
+  border-radius:8px;
+  color:#fff5c8;
+  font-size:10px;
+  font-weight:1000;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,rgba(41,59,106,.98),rgba(6,12,32,.98));
+  border:1px solid rgba(77,231,255,.34);
+}
+.layoutEditNudgeBtn:hover,
+.layoutEditNudgeBtn:focus-visible{
+  border-color:rgba(255,211,106,.84);
+  box-shadow:0 0 10px rgba(255,211,106,.22);
+}
+.layoutPartEditable{
+  translate:var(--layout-part-move-x,0px) var(--layout-part-move-y,0px);
+  scale:var(--layout-part-scale-x,1) var(--layout-part-scale-y,1);
+  transform-origin:center center;
+}
+body.layoutEditOpen .layoutPartEditable.layoutPartSelected{
+  outline:2px dashed rgba(255,211,106,.90) !important;
   outline-offset:3px;
 }
-body.layoutEditOpen .jackspotGogoChance{
-  outline-color:rgba(255,211,106,.92);
+#jackspotPayoutRoulette.is-showtime-panel.layoutPartEditable{
+  translate:0 0 !important;
+  scale:1 !important;
 }
-body.layoutEditOpen .jackspotPayoutMeter{
-  outline-color:rgba(255,54,93,.92);
+.layoutSelectionOverlay{
+  position:fixed;
+  z-index:149;
+  display:none;
+  box-sizing:border-box;
+  border:3px dashed #ffd36a;
+  border-radius:8px;
+  background:rgba(77,231,255,.07);
+  box-shadow:0 0 0 1px rgba(0,0,0,.76),0 0 16px rgba(77,231,255,.55);
+  cursor:grab;
+  touch-action:none;
+  user-select:none;
 }
-body.layoutEditOpen .jackspotBonusDataMeters{
-  outline-color:rgba(170,111,255,.94);
+body.layoutEditOpen .layoutSelectionOverlay.is-visible{
+  display:block;
+}
+.layoutSelectionOverlay.is-layout-dragging{
+  cursor:grabbing;
+}
+.layoutSelectionOverlayLabel{
+  position:absolute;
+  left:0;
+  bottom:calc(100% + 5px);
+  max-width:240px;
+  padding:4px 7px;
+  border-radius:7px;
+  color:#160900;
+  background:#ffd36a;
+  font-size:11px;
+  font-weight:1000;
+  line-height:1.2;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  pointer-events:none;
 }
 @media(max-width:640px){
   .pageZoomControls{
@@ -491,6 +593,14 @@ body.layoutEditOpen .jackspotBonusDataMeters{
   }
   .pagePanRange{
     width:116px;
+  }
+  .layoutEditorPanel{
+    left:8px;
+    right:8px;
+    width:auto;
+  }
+  .layoutEditRows{
+    grid-template-columns:1fr;
   }
 }
 .audioPanel,
@@ -5895,10 +6005,10 @@ body{
   --layout-chance-y:76%;
   --layout-chance-w:11.9%;
   --layout-chance-h:22.4%;
-  --layout-credit-x:28%;
-  --layout-credit-y:80.4%;
-  --layout-credit-w:12.2%;
-  --layout-credit-h:22.1%;
+  --layout-credit-x:31.5%;
+  --layout-credit-y:76.7%;
+  --layout-credit-w:38%;
+  --layout-credit-h:27%;
   --layout-count-x:41.6%;
   --layout-count-y:83.2%;
   --layout-count-w:12.2%;
@@ -6196,25 +6306,6 @@ body{
     linear-gradient(180deg,#64040a,#240003);
   border:2px solid rgba(255,199,48,.46);
   box-shadow:inset 0 0 18px rgba(255,68,20,.24),0 0 10px rgba(0,0,0,.72);
-}
-.reelCenterBandLayer::after{
-  content:"1";
-  position:absolute;
-  left:10.5%;
-  top:50%;
-  width:58px;
-  height:58px;
-  z-index:3;
-  display:grid;
-  place-items:center;
-  transform:translateY(-50%);
-  border-radius:50%;
-  color:#fff7bf;
-  font:900 42px/1 Georgia,"Times New Roman",serif;
-  text-shadow:0 2px 0 #6c2100,0 0 8px rgba(255,218,80,.94);
-  background:radial-gradient(circle at 34% 28%,#ffeb83 0 8%,#d89917 30%,#7a2705 68%,#240002 100%);
-  border:4px solid #ffd65c;
-  box-shadow:inset 0 0 0 3px #7a2604,0 0 12px rgba(255,205,52,.82);
 }
 .reelCenterBandLayer img{
   position:relative;
@@ -6572,50 +6663,6 @@ body{
   background:radial-gradient(circle at 35% 30%,#fff4a0,#dc8d0c 42%,#5e1200 76%);
   box-shadow:0 0 8px rgba(255,232,110,.86);
 }
-.jackspotOutcomeLegend{
-  position:absolute;
-  left:21.4%;
-  top:2.2%;
-  z-index:22;
-  width:58.2%;
-  height:13.2%;
-  display:grid;
-  grid-template-columns:.72fr 1fr .24fr .9fr;
-  align-items:center;
-  padding:5px 18px;
-  box-sizing:border-box;
-  border:3px solid #e7bd43;
-  border-radius:999px;
-  color:#fff8d2;
-  background:
-    radial-gradient(ellipse at 50% 20%,rgba(255,86,34,.32),transparent 62%),
-    linear-gradient(180deg,#540008,#170003 56%,#390006);
-  box-shadow:inset 0 0 0 2px rgba(81,17,0,.96),inset 0 0 18px rgba(255,151,34,.24),0 3px 8px rgba(0,0,0,.62);
-  pointer-events:none;
-  text-align:center;
-  text-shadow:0 2px 0 #4a0000,0 0 8px rgba(255,211,84,.56);
-}
-.jackspotOutcomeLegendLabel{
-  color:#ffdc5d;
-  font-size:13px;
-  font-weight:1000;
-  letter-spacing:.12em;
-}
-.jackspotOutcomeLegendSeven{
-  color:#fff0a0;
-  font:1000 28px/1 Georgia,"Times New Roman",serif;
-}
-.jackspotOutcomeLegendSlash{
-  color:#dba737;
-  font-size:20px;
-  font-weight:1000;
-}
-.jackspotOutcomeLegendMiss{
-  color:#fff;
-  font-size:18px;
-  font-weight:1000;
-  letter-spacing:.08em;
-}
 #roleCounterToggleBtn,
 #roleCounterPanel,
 #oddsPanelBody h2:nth-of-type(2),
@@ -6661,10 +6708,10 @@ body{
   to{transform:scale(1.12);filter:brightness(1.35)}
 }
 .jackspotPayoutMeters{
-  left:31.5% !important;
-  top:76.7% !important;
-  width:38% !important;
-  height:27% !important;
+  left:var(--layout-credit-x) !important;
+  top:var(--layout-credit-y) !important;
+  width:var(--layout-credit-w) !important;
+  height:var(--layout-credit-h) !important;
 }
 .jackspotPayoutMeterCreditOnly{
   position:absolute !important;
@@ -7079,22 +7126,6 @@ body{
   color:#eaf8ff;
   text-shadow:0 3px 0 #0a1823,0 0 14px rgba(99,200,255,.96),0 0 36px rgba(225,247,255,.54);
 }
-.jackspotOutcomeLegend{
-  border-color:#cbd8e2;
-  color:#f5fbff;
-  background:
-    radial-gradient(ellipse at 50% 20%,rgba(108,203,255,.18),transparent 62%),
-    linear-gradient(180deg,#202a33,#030609 56%,#111820);
-  box-shadow:inset 0 0 0 2px rgba(0,0,0,.96),inset 0 0 18px rgba(93,194,255,.18),0 3px 8px rgba(0,0,0,.66);
-  text-shadow:0 2px 0 #000,0 0 8px rgba(125,211,255,.50);
-}
-.jackspotOutcomeLegendLabel,
-.jackspotOutcomeLegendSeven{
-  color:#dff5ff;
-}
-.jackspotOutcomeLegendSlash{
-  color:#7c8995;
-}
 .payline{
   border-top-color:rgba(190,232,255,.96) !important;
   box-shadow:0 0 6px rgba(91,197,255,.92),0 0 14px rgba(184,231,255,.46) !important;
@@ -7103,13 +7134,6 @@ body{
   background:radial-gradient(ellipse at 50% 50%,rgba(21,30,39,.98),rgba(4,8,12,.99) 70%);
   border-color:rgba(199,229,245,.54);
   box-shadow:inset 0 0 18px rgba(100,199,255,.18),0 0 10px rgba(0,0,0,.76);
-}
-.reelCenterBandLayer::after{
-  color:#f3fbff;
-  text-shadow:0 2px 0 #08131b,0 0 9px rgba(123,212,255,.88);
-  background:radial-gradient(circle at 34% 28%,#fff 0 8%,#c7d1d9 30%,#53616d 68%,#090e13 100%);
-  border-color:#dbe8f0;
-  box-shadow:inset 0 0 0 3px #303b45,0 0 12px rgba(117,207,255,.72);
 }
 .reelArea .wd-reel-data-panel::after{
   content:"JACsPOT DATA" !important;
@@ -7518,13 +7542,13 @@ html{
   width:60.4%;
   height:126px;
   display:grid;
-  grid-template-rows:1fr 23px;
+  grid-template-rows:1fr;
   place-items:center;
   pointer-events:none;
   filter:drop-shadow(0 5px 5px rgba(0,0,0,.82));
 }
 .cabinetCasinoMarquee strong{
-  align-self:end;
+  align-self:center;
   color:#fff7d4;
   font:1000 62px/.82 Georgia,"Times New Roman",serif;
   letter-spacing:.035em;
@@ -7538,20 +7562,6 @@ html{
     0 4px 0 #160700,
     0 0 9px rgba(255,230,145,.96),
     0 0 20px rgba(255,177,37,.68);
-}
-.cabinetCasinoMarquee span{
-  align-self:start;
-  color:#ffe8a0;
-  font:1000 11px/1 "Arial Narrow",Arial,sans-serif;
-  letter-spacing:.42em;
-  text-shadow:0 2px 2px #000,0 0 8px rgba(255,195,63,.92);
-}
-.cabinetCasinoMarquee span::before,
-.cabinetCasinoMarquee span::after{
-  content:"◆";
-  margin:0 12px;
-  color:#d91b32;
-  text-shadow:0 0 8px rgba(255,47,67,.92);
 }
 .cabinetLowerBrand{
   top:1194px;
@@ -7596,10 +7606,8 @@ html{
   from{filter:brightness(.94)}
   to{filter:brightness(1.28) drop-shadow(0 0 9px rgba(255,204,73,.72))}
 }
+/* Core roulette transitions stay enabled because their durations are synchronized with the JS stage sequence. */
 @media (prefers-reduced-motion:reduce){
-  .jackspotReelDeck,
-  .jackspotKruunBay,
-  .reelArea > .jackspotPayoutRoulette.is-showtime-panel,
   .cabinetPartsScene::before,
   .cabinetCasinoMarquee strong{
     transition-duration:.01ms !important;
@@ -7607,9 +7615,6 @@ html{
   }
   .jackspotRouletteStage{
     animation:none !important;
-  }
-  .jackspotRouletteStage .jackspotPayoutDisc{
-    transition-duration:.01ms !important;
   }
 }
 
@@ -7655,16 +7660,15 @@ html{
           <img class="cabinetPart cabinetPartTop" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_top_v2.png" alt="">
           <div class="cabinetCasinoMarquee" aria-hidden="true">
             <strong>JACsPOT</strong>
-            <span>PAYOUT ROULETTE</span>
           </div>
           <div class="cabinetTopSevenOverlay" aria-hidden="true">
             <img src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="">
             <img src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="">
             <img src="assets/symbols/sym_seven_jackspot_rainbow_wide_v3.png" alt="">
           </div>
-          <img class="cabinetPart cabinetPartReelBack" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_reel_frame_v2.png" alt="">
+          <img class="cabinetPart cabinetPartReelBack" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_reel_frame_transparent_v3.png" alt="">
           <img class="cabinetPart cabinetPartControls" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_controls_v2.png" alt="">
-          <img class="cabinetPart cabinetPartLower" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_lower_v2.png" alt="">
+          <img class="cabinetPart cabinetPartLower" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_lower_transparent_v3.png" alt="">
           <div class="cabinetLowerBrand" aria-hidden="true">
             <strong>JACsPOT</strong>
             <span>PAYOUT ROULETTE</span>
@@ -7715,38 +7719,39 @@ html{
           <button class="pageZoomBtn zoomReset" id="pageZoomResetBtn" type="button" title="100%に戻す" aria-label="画面倍率を100%に戻す"><span id="pageZoomView">100%</span></button>
           <button class="pageZoomBtn" id="pageZoomInBtn" type="button" title="拡大" aria-label="画面を拡大">＋</button>
         </div>
-        <div class="pagePanControl" aria-label="Horizontal position">
-          <span class="pagePanLabel">X</span>
-          <input class="pagePanRange" id="pagePanRange" type="range" min="-260" max="260" step="1" value="0" aria-label="Horizontal position">
-          <button class="pagePanResetBtn" id="pagePanResetBtn" type="button" title="Reset X" aria-label="Reset horizontal position"><span id="pagePanView">0</span></button>
+        <div class="pagePanControl" aria-label="画面の横位置">
+          <span class="pagePanLabel">横</span>
+          <input class="pagePanRange" id="pagePanRange" type="range" min="-260" max="260" step="1" value="0" aria-label="画面の横位置">
+          <button class="pagePanResetBtn" id="pagePanResetBtn" type="button" title="横位置を初期値に戻す" aria-label="画面の横位置を初期値に戻す"><span id="pagePanView">0</span></button>
         </div>
-        <button class="layoutEditToggleBtn" id="layoutEditToggleBtn" type="button" aria-expanded="false" aria-controls="layoutEditorPanel" title="配置調整">配置</button>
-        <div class="layoutEditorPanel" id="layoutEditorPanel" aria-label="配置調整">
+        <button class="layoutEditToggleBtn" id="layoutEditToggleBtn" type="button" aria-expanded="false" aria-controls="layoutEditorPanel" title="パーツ配置調整">配置</button>
+        <div class="layoutEditorPanel" id="layoutEditorPanel" aria-label="パーツ配置調整">
           <div class="layoutEditorHead">
-            <div class="layoutEditorTitle">配置調整</div>
+            <div class="layoutEditorTitle">パーツ配置調整</div>
             <div class="layoutEditorActions">
-              <button class="layoutEditorAction" id="layoutEditSaveDefaultBtn" type="button">今を標準</button>
-              <button class="layoutEditorAction" id="layoutEditResetBtn" type="button">RESET</button>
-              <button class="layoutEditorAction" id="layoutEditCloseBtn" type="button">CLOSE</button>
+              <button class="layoutEditorAction" id="layoutEditSaveDefaultBtn" type="button">標準に保存</button>
+              <button class="layoutEditorAction" id="layoutEditResetBtn" type="button">全て戻す</button>
+              <button class="layoutEditorAction" id="layoutEditCloseBtn" type="button">閉じる</button>
             </div>
           </div>
           <div class="layoutEditorGroups">
             <div class="layoutEditGroup">
-              <div class="layoutEditGroupTitle">REEL</div>
-              <div class="layoutEditRows">
-                <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="45" step="0.1" data-layout-target="reels" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="reels-x"></b></label>
-                <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="55" step="0.1" data-layout-target="reels" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="reels-y"></b></label>
-                <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="30" max="90" step="0.1" data-layout-target="reels" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="reels-w"></b></label>
-                <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="25" max="75" step="0.1" data-layout-target="reels" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="reels-h"></b></label>
+              <div class="layoutPartPicker">
+                <label for="layoutPartSelect">編集パーツ</label>
+                <select id="layoutPartSelect" aria-label="編集するパーツ"></select>
               </div>
+              <div class="layoutEditHelp" id="layoutEditHelp">スライダーで大きく調整し、−0.1 / ＋0.1で微調整できます。</div>
             </div>
             <div class="layoutEditGroup">
-              <div class="layoutEditGroupTitle">7SEG CREDIT</div>
+              <div class="layoutEditGroupHead">
+                <div class="layoutEditGroupTitle" id="layoutSelectedPartName">リール3列</div>
+                <button class="layoutPartResetBtn" id="layoutPartResetBtn" type="button">選択だけ戻す</button>
+              </div>
               <div class="layoutEditRows">
-                <label class="layoutEditRow"><span>X</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="credit" data-layout-prop="x"><b class="layoutEditValue" data-layout-view="credit-x"></b></label>
-                <label class="layoutEditRow"><span>Y</span><input class="layoutEditInput" type="range" min="0" max="95" step="0.1" data-layout-target="credit" data-layout-prop="y"><b class="layoutEditValue" data-layout-view="credit-y"></b></label>
-                <label class="layoutEditRow"><span>W</span><input class="layoutEditInput" type="range" min="4" max="35" step="0.1" data-layout-target="credit" data-layout-prop="w"><b class="layoutEditValue" data-layout-view="credit-w"></b></label>
-                <label class="layoutEditRow"><span>H</span><input class="layoutEditInput" type="range" min="2" max="24" step="0.1" data-layout-target="credit" data-layout-prop="h"><b class="layoutEditValue" data-layout-view="credit-h"></b></label>
+                <div class="layoutEditRow"><span>横位置</span><input class="layoutEditInput" type="range" step="0.1" data-layout-prop="x" aria-label="選択パーツの横位置"><div class="layoutEditFine" aria-label="横位置の微調整"><button class="layoutEditNudgeBtn" type="button" data-layout-prop="x" data-layout-delta="-0.1" aria-label="横位置を0.1%左へ">−0.1</button><b class="layoutEditValue" data-layout-value="x"></b><button class="layoutEditNudgeBtn" type="button" data-layout-prop="x" data-layout-delta="0.1" aria-label="横位置を0.1%右へ">＋0.1</button></div></div>
+                <div class="layoutEditRow"><span>縦位置</span><input class="layoutEditInput" type="range" step="0.1" data-layout-prop="y" aria-label="選択パーツの縦位置"><div class="layoutEditFine" aria-label="縦位置の微調整"><button class="layoutEditNudgeBtn" type="button" data-layout-prop="y" data-layout-delta="-0.1" aria-label="縦位置を0.1%上へ">−0.1</button><b class="layoutEditValue" data-layout-value="y"></b><button class="layoutEditNudgeBtn" type="button" data-layout-prop="y" data-layout-delta="0.1" aria-label="縦位置を0.1%下へ">＋0.1</button></div></div>
+                <div class="layoutEditRow"><span>横幅</span><input class="layoutEditInput" type="range" step="0.1" data-layout-prop="w" aria-label="選択パーツの横幅"><div class="layoutEditFine" aria-label="横幅の微調整"><button class="layoutEditNudgeBtn" type="button" data-layout-prop="w" data-layout-delta="-0.1" aria-label="横幅を0.1%狭く">−0.1</button><b class="layoutEditValue" data-layout-value="w"></b><button class="layoutEditNudgeBtn" type="button" data-layout-prop="w" data-layout-delta="0.1" aria-label="横幅を0.1%広く">＋0.1</button></div></div>
+                <div class="layoutEditRow"><span>高さ</span><input class="layoutEditInput" type="range" step="0.1" data-layout-prop="h" aria-label="選択パーツの高さ"><div class="layoutEditFine" aria-label="高さの微調整"><button class="layoutEditNudgeBtn" type="button" data-layout-prop="h" data-layout-delta="-0.1" aria-label="高さを0.1%低く">−0.1</button><b class="layoutEditValue" data-layout-value="h"></b><button class="layoutEditNudgeBtn" type="button" data-layout-prop="h" data-layout-delta="0.1" aria-label="高さを0.1%高く">＋0.1</button></div></div>
               </div>
             </div>
           </div>
@@ -7893,12 +7898,6 @@ html{
           <i class="jackspotKruunBolt jackspotKruunBolt4"></i>
         </div>
         <div class="jackspotReelDeck" id="jackspotReelDeck">
-        <div class="jackspotOutcomeLegend" aria-label="成立役は777またはハズレ">
-          <span class="jackspotOutcomeLegendLabel">成立役</span>
-          <strong class="jackspotOutcomeLegendSeven">777</strong>
-          <span class="jackspotOutcomeLegendSlash">/</span>
-          <strong class="jackspotOutcomeLegendMiss">MISS</strong>
-        </div>
         <div class="wd-public-panels wd-st-status-panel wd-reel-data-panel" id="bonus-info">
           <div class="wd-st-emblem" id="wdStEmblem">JACsPOT<br>1 LINE</div>
           <div class="wd-st-readout">
@@ -7943,9 +7942,9 @@ html{
         </div>
         <div class="reelCenterBandLayer" aria-hidden="true"></div>
         <div class="cabinetFrontParts" aria-hidden="true">
-          <img class="cabinetPart cabinetPartReelFront" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_reel_frame_v2.png" alt="">
+          <img class="cabinetPart cabinetPartReelFront" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_reel_frame_transparent_v3.png" alt="">
         </div>
-        <div class="jackspotPayoutMeters" aria-label="CREDIT表示">
+        <div class="jackspotPayoutMeters" aria-label="CREDIT表示" title="配置モード中はドラッグして移動">
           <div class="jackspotPayoutMeter jackspotPayoutMeterCreditOnly">
             <span>CREDIT</span>
             <b id="jackspotCreditMeter">0000000</b>
@@ -9022,7 +9021,13 @@ html{
   const layoutEditSaveDefaultBtn = $("layoutEditSaveDefaultBtn");
   const layoutEditResetBtn = $("layoutEditResetBtn");
   const layoutEditCloseBtn = $("layoutEditCloseBtn");
+  const layoutPartSelect = $("layoutPartSelect");
+  const layoutPartResetBtn = $("layoutPartResetBtn");
+  const layoutSelectedPartName = $("layoutSelectedPartName");
+  const layoutEditHelp = $("layoutEditHelp");
   const layoutEditInputs = [...document.querySelectorAll(".layoutEditInput")];
+  const layoutEditNudgeButtons = [...document.querySelectorAll(".layoutEditNudgeBtn")];
+  const layoutEditValueViews = [...document.querySelectorAll(".layoutEditValue[data-layout-value]")];
   const effectSkipBtn = $("effectSkipBtn");
 
   if(audioDock && audioDock.parentElement !== document.body){
@@ -9073,6 +9078,27 @@ html{
     }
   }
 
+  function safeStorageSetMany(entries){
+    try{
+      if(!window.localStorage) return false;
+      const previous = entries.map(([key])=>[key, localStorage.getItem(key)]);
+      try{
+        entries.forEach(([key,value])=>localStorage.setItem(key, value));
+        return true;
+      }catch(e){
+        previous.reverse().forEach(([key,value])=>{
+          try{
+            if(value == null) localStorage.removeItem(key);
+            else localStorage.setItem(key, value);
+          }catch(restoreError){}
+        });
+        return false;
+      }
+    }catch(e){
+      return false;
+    }
+  }
+
   const ADMIN_SERVER_DEFAULT = location.protocol.startsWith("http") ? location.origin : "http://localhost:8787";
   const ADMIN_SERVER = (adminParams.get("server") || safeStorageGet("jackspot_admin_server") || ADMIN_SERVER_DEFAULT).replace(/\/$/, "");
   let machineId = adminParams.get("machine") || bootMachineId;
@@ -9093,8 +9119,13 @@ html{
   if(SLOT_DEBUG_ENABLED) document.body.classList.add("debugMode");
   const PAGE_ZOOM_STORAGE_KEY = "jackspot_unified_page_zoom_v3";
   const PAGE_PAN_STORAGE_KEY = "jackspot_unified_page_pan_x_v3";
-  const LAYOUT_EDIT_STORAGE_KEY = "jackspot_layout_editor_v3";
-  const LAYOUT_DEFAULT_STORAGE_KEY = "jackspot_layout_default_v3";
+  const LAYOUT_EDIT_STORAGE_KEY = "jackspot_layout_editor_v4";
+  const LAYOUT_DEFAULT_STORAGE_KEY = "jackspot_layout_default_v4";
+  const LEGACY_LAYOUT_EDIT_STORAGE_KEY = "jackspot_layout_editor_v3";
+  const LEGACY_LAYOUT_DEFAULT_STORAGE_KEY = "jackspot_layout_default_v3";
+  const PART_LAYOUT_EDIT_STORAGE_KEY = "jackspot_part_layout_editor_v1";
+  const PART_LAYOUT_DEFAULT_STORAGE_KEY = "jackspot_part_layout_default_v1";
+  const PART_LAYOUT_SELECTION_STORAGE_KEY = "jackspot_part_layout_selection_v1";
   const LAYOUT_EDITOR_ENABLED = true;
   const PAGE_STAGE_WIDTH = 1360;
   const PAGE_ZOOM_MIN = 0.75;
@@ -9113,19 +9144,65 @@ html{
   const BG_IMAGE_HEIGHT = 3344;
   const BG_ORANGE_LOGO_ANCHOR_X = 964;
   const BG_LOGO_LOWER_ANCHOR_Y = 742;
+  const LEGACY_CREDIT_LAYOUT_DEFAULT = Object.freeze({x:28.0, y:80.4, w:12.2, h:22.1});
   const LAYOUT_DEFAULTS = Object.freeze({
     reels:{x:20.6, y:20.4, w:57.4, h:56.4},
     chance:{x:14.6, y:76.0, w:11.9, h:22.4},
-    credit:{x:28.0, y:80.4, w:12.2, h:22.1},
+    credit:{x:31.5, y:76.7, w:38.0, h:27.0},
     count:{x:41.6, y:83.2, w:12.2, h:11.2},
     payout:{x:57.0, y:83.2, w:12.2, h:11.2},
     bonusdata:{x:19.0, y:6.5, w:62.9, h:13.3}
   });
+  const TRANSFORM_LAYOUT_BOUNDS = Object.freeze({
+    x:Object.freeze([-100,100]),
+    y:Object.freeze([-100,100]),
+    w:Object.freeze([30,250]),
+    h:Object.freeze([30,250])
+  });
+  const LAYOUT_PART_DEFINITIONS = Object.freeze([
+    {key:"cabinetTopImage", group:"筐体画像", label:"筐体上部画像", selectors:[".cabinetPartTop"], reference:".cabinetPartsScene"},
+    {key:"cabinetReelBack", group:"筐体画像", label:"リール背面画像", selectors:[".cabinetPartReelBack"], reference:".cabinetPartsScene"},
+    {key:"cabinetControlsImage", group:"筐体画像", label:"操作部画像", selectors:[".cabinetPartControls"], reference:".cabinetPartsScene"},
+    {key:"cabinetLowerImage", group:"筐体画像", label:"筐体下部画像", selectors:[".cabinetPartLower"], reference:".cabinetPartsScene"},
+    {key:"cabinetTopTitle", group:"文字", label:"上部 JACsPOT 文字", selectors:[".cabinetCasinoMarquee strong"], reference:".cabinetPartsScene"},
+    {key:"cabinetLowerTitle", group:"文字", label:"下部 JACsPOT 文字", selectors:[".cabinetLowerBrand strong"], reference:".cabinetPartsScene"},
+    {key:"cabinetLowerSubtitle", group:"文字", label:"下部 PAYOUT ROULETTE 文字", selectors:[".cabinetLowerBrand span"], reference:".cabinetPartsScene"},
+    {key:"roulettePanel", group:"ルーレット", label:"通常時ルーレット全体", selectors:["#jackspotPayoutRoulette"], reference:".jackspotCabinetShell", editorHidden:true},
+    {key:"rouletteKicker", group:"ルーレット文字", label:"ルーレット JACsPOT 文字", selectors:[".jackspotRouletteKicker"], reference:"#jackspotPayoutRoulette"},
+    {key:"rouletteTitle", group:"ルーレット文字", label:"PAYOUT ROULETTE 文字", selectors:[".jackspotRouletteTitle"], reference:"#jackspotPayoutRoulette"},
+    {key:"rouletteCost", group:"ルーレット文字", label:"1 PLAY 料金文字", selectors:[".jackspotRouletteCost"], reference:"#jackspotPayoutRoulette"},
+    {key:"rouletteStage", group:"ルーレット", label:"ルーレット盤面", selectors:[".jackspotRouletteStage"], reference:"#jackspotPayoutRoulette"},
+    {key:"rouletteResult", group:"ルーレット文字", label:"ルーレット結果文字", selectors:[".jackspotRouletteResult"], reference:"#jackspotPayoutRoulette"},
+    {key:"rouletteStatus", group:"ルーレット文字", label:"ルーレット状態文字", selectors:[".jackspotRouletteStatus"], reference:"#jackspotPayoutRoulette"},
+    {key:"reels", group:"リール面", label:"リール3列", selectors:[".reels"], mode:"box", stateTarget:"reels", bounds:{x:[0,45],y:[0,55],w:[30,90],h:[25,75]}},
+    {key:"reelFront", group:"リール面", label:"リール前面枠", selectors:[".cabinetFrontParts"], reference:"#jackspotReelDeck"},
+    {key:"payline", group:"リール面", label:"中央ペイライン", selectors:[".payline"], reference:"#jackspotReelDeck"},
+    {key:"reelCenterBand", group:"リール面", label:"リール中央装飾", selectors:[".reelCenterBandLayer"], reference:"#jackspotReelDeck"},
+    {key:"credit", group:"CREDIT", label:"CREDIT 全体", selectors:[".jackspotPayoutMeters"], mode:"box", stateTarget:"credit", bounds:{x:[0,95],y:[0,95],w:[4,60],h:[2,40]}},
+    {key:"creditLabel", group:"CREDIT", label:"CREDIT ラベル文字", selectors:[".jackspotPayoutMeterCreditOnly span"], reference:".jackspotPayoutMeters"},
+    {key:"creditValue", group:"CREDIT", label:"CREDIT 数字", selectors:["#jackspotCreditMeter"], reference:".jackspotPayoutMeters"},
+    {key:"startLever", group:"操作部", label:"BETレバー（見た目＋操作位置）", selectors:["#cabinetStartLever",".betArea"], reference:".playControls"},
+    {key:"stopLeft", group:"操作部", label:"左停止ボタン（見た目＋操作位置）", selectors:[".cabinetStopButton0","#stop0"], reference:".playControls"},
+    {key:"stopCenter", group:"操作部", label:"中停止ボタン（見た目＋操作位置）", selectors:[".cabinetStopButton1","#stop1"], reference:".playControls"},
+    {key:"stopRight", group:"操作部", label:"右停止ボタン（見た目＋操作位置）", selectors:[".cabinetStopButton2","#stop2"], reference:".playControls"},
+    {key:"autoButton", group:"操作部", label:"AUTOボタン", selectors:[".autoArea"], reference:".playControls"}
+  ]);
+  const PART_LAYOUT_FACTORY_DEFAULTS = Object.freeze(Object.fromEntries(
+    LAYOUT_PART_DEFINITIONS
+      .filter(definition=>definition.mode !== "box")
+      .map(definition=>[definition.key,Object.freeze({x:0,y:0,w:100,h:100})])
+  ));
   let pageZoom = 1;
   let pagePanX = PAGE_PAN_DEFAULT;
   let layoutEditOpen = false;
   let layoutDefaultState = JSON.parse(JSON.stringify(LAYOUT_DEFAULTS));
   let layoutEditState = JSON.parse(JSON.stringify(layoutDefaultState));
+  let loadedLayoutDefaultRaw = null;
+  let partLayoutDefaultState = JSON.parse(JSON.stringify(PART_LAYOUT_FACTORY_DEFAULTS));
+  let partLayoutState = JSON.parse(JSON.stringify(partLayoutDefaultState));
+  let selectedLayoutPartKey = "reels";
+  let layoutPartDrag = null;
+  let layoutSelectionOverlay = null;
   let backgroundSyncRaf = 0;
   let pageScrollBoundsRaf = 0;
 
@@ -9307,6 +9384,7 @@ html{
     if(pageZoomView) pageZoomView.textContent = `${Math.round(pageZoom * 100)}%`;
     if(pageZoomOutBtn) pageZoomOutBtn.disabled = pageZoom <= PAGE_ZOOM_MIN + 0.001;
     if(pageZoomInBtn) pageZoomInBtn.disabled = pageZoom >= PAGE_ZOOM_MAX - 0.001;
+    requestAnimationFrame(syncLayoutSelectionOverlay);
     if(saveValue) safeStorageSet(PAGE_ZOOM_STORAGE_KEY, String(pageZoom));
   }
 
@@ -9316,6 +9394,7 @@ html{
     if(pagePanView) pagePanView.textContent = formatPagePanValue(pagePanX);
     applyCabinetXOffset();
     requestPageScrollBoundsUpdate();
+    requestAnimationFrame(syncLayoutSelectionOverlay);
     if(saveValue) safeStorageSet(PAGE_PAN_STORAGE_KEY, String(pagePanX));
   }
 
@@ -9340,21 +9419,61 @@ html{
     return JSON.parse(JSON.stringify(LAYOUT_DEFAULTS));
   }
 
-  function layoutInputFor(target, prop){
-    return layoutEditInputs.find(input => input.dataset.layoutTarget === target && input.dataset.layoutProp === prop);
+  function clonePartLayoutDefaults(){
+    return JSON.parse(JSON.stringify(partLayoutDefaultState || PART_LAYOUT_FACTORY_DEFAULTS));
+  }
+
+  function cloneFactoryPartLayoutDefaults(){
+    return JSON.parse(JSON.stringify(PART_LAYOUT_FACTORY_DEFAULTS));
+  }
+
+  function layoutPartDefinition(key=selectedLayoutPartKey){
+    return LAYOUT_PART_DEFINITIONS.find(definition=>definition.key === key) || null;
+  }
+
+  function layoutPartElements(definition){
+    if(!definition) return [];
+    return [...new Set(definition.selectors.flatMap(selector=>Array.from(document.querySelectorAll(selector))))];
+  }
+
+  function layoutPartAvailable(definition){
+    return layoutPartElements(definition).length > 0;
+  }
+
+  function layoutPartEditorAvailable(definition){
+    return !!definition && !definition.editorHidden && layoutPartAvailable(definition);
+  }
+
+  function layoutPartReferenceElement(definition, elements=layoutPartElements(definition)){
+    if(!definition) return null;
+    if(definition.mode === "box") return elements[0] ? elements[0].offsetParent : null;
+    return document.querySelector(definition.reference) || (elements[0] ? elements[0].offsetParent : null);
+  }
+
+  function layoutPartBounds(definition, prop){
+    const bounds = definition && definition.bounds && definition.bounds[prop]
+      ? definition.bounds[prop]
+      : TRANSFORM_LAYOUT_BOUNDS[prop];
+    return bounds || [-999,999];
   }
 
   function layoutValueLimit(target, prop, value){
-    const input = layoutInputFor(target, prop);
-    if(!input) return Number(value);
-    const min = Number(input.min);
-    const max = Number(input.max);
+    const definition = LAYOUT_PART_DEFINITIONS.find(item=>item.mode === "box" && item.stateTarget === target);
+    const bounds = definition ? layoutPartBounds(definition, prop) : (prop === "w" || prop === "h" ? [0.1,999] : [-999,999]);
     const numeric = Number(value);
+    const fallback = LAYOUT_DEFAULTS[target] && Number(LAYOUT_DEFAULTS[target][prop]);
     return clamp(
-      Number.isFinite(numeric) ? numeric : LAYOUT_DEFAULTS[target][prop],
-      Number.isFinite(min) ? min : -999,
-      Number.isFinite(max) ? max : 999
+      Number.isFinite(numeric) ? numeric : (Number.isFinite(fallback) ? fallback : 0),
+      bounds[0],
+      bounds[1]
     );
+  }
+
+  function partLayoutValueLimit(definition, prop, value){
+    const bounds = layoutPartBounds(definition, prop);
+    const numeric = Number(value);
+    const fallback = prop === "w" || prop === "h" ? 100 : 0;
+    return clamp(Number.isFinite(numeric) ? numeric : fallback, bounds[0], bounds[1]);
   }
 
   function migrateLegacySevenSegState(raw){
@@ -9380,6 +9499,12 @@ html{
     return next;
   }
 
+  function layoutBoxMatches(candidate, expected){
+    return !!candidate && Object.keys(expected).every(prop =>
+      Math.abs(Number(candidate[prop]) - Number(expected[prop])) < 0.001
+    );
+  }
+
   function normalizeLayoutState(raw){
     const next = cloneLayoutDefaults();
     raw = migrateLegacySevenSegState(raw);
@@ -9393,39 +9518,159 @@ html{
     return next;
   }
 
+  function normalizePartLayoutState(raw, baseState=partLayoutDefaultState){
+    const next = JSON.parse(JSON.stringify(baseState || PART_LAYOUT_FACTORY_DEFAULTS));
+    const source = raw && typeof raw === "object" ? raw : {};
+    LAYOUT_PART_DEFINITIONS.forEach(definition=>{
+      if(definition.mode === "box") return;
+      if(!next[definition.key]) next[definition.key] = {x:0,y:0,w:100,h:100};
+      const saved = source[definition.key];
+      ["x","y","w","h"].forEach(prop=>{
+        const value = saved && typeof saved === "object" ? saved[prop] : next[definition.key][prop];
+        next[definition.key][prop] = Math.round(partLayoutValueLimit(definition, prop, value) * 10) / 10;
+      });
+    });
+    return next;
+  }
+
   function setLayoutCssVariable(target, prop, value){
     document.documentElement.style.setProperty(`--layout-${target}-${prop}`, `${Math.round(value * 10) / 10}%`);
   }
 
-  function syncLayoutEditInputs(){
-    layoutEditInputs.forEach(input=>{
-      const target = input.dataset.layoutTarget;
-      const prop = input.dataset.layoutProp;
-      if(!layoutEditState[target] || !Object.prototype.hasOwnProperty.call(layoutEditState[target], prop)) return;
-      const value = Math.round(layoutEditState[target][prop] * 10) / 10;
-      input.value = String(value);
-      const view = document.querySelector(`[data-layout-view="${target}-${prop}"]`);
-      if(view) view.textContent = `${value.toFixed(1)}%`;
+  function selectedLayoutPartState(definition=layoutPartDefinition()){
+    if(!definition) return null;
+    return definition.mode === "box"
+      ? layoutEditState[definition.stateTarget]
+      : partLayoutState[definition.key];
+  }
+
+  function selectedLayoutPartDefaultState(definition=layoutPartDefinition()){
+    if(!definition) return null;
+    return definition.mode === "box"
+      ? layoutDefaultState[definition.stateTarget]
+      : partLayoutDefaultState[definition.key];
+  }
+
+  function applyPartLayoutTransforms(){
+    LAYOUT_PART_DEFINITIONS.forEach(definition=>{
+      if(definition.mode === "box") return;
+      const state = partLayoutState[definition.key];
+      const elements = layoutPartElements(definition);
+      const reference = layoutPartReferenceElement(definition, elements);
+      if(!state || !reference) return;
+      const referenceWidth = Number(reference.offsetWidth) || 0;
+      const referenceHeight = Number(reference.offsetHeight) || 0;
+      const moveX = referenceWidth * state.x / 100;
+      const moveY = referenceHeight * state.y / 100;
+      elements.forEach(element=>{
+        element.style.setProperty("--layout-part-move-x", `${Math.round(moveX * 100) / 100}px`);
+        element.style.setProperty("--layout-part-move-y", `${Math.round(moveY * 100) / 100}px`);
+        element.style.setProperty("--layout-part-scale-x", String(Math.round(state.w * 100) / 10000));
+        element.style.setProperty("--layout-part-scale-y", String(Math.round(state.h * 100) / 10000));
+      });
     });
+  }
+
+  function layoutPartUnionRect(definition=layoutPartDefinition()){
+    const rects = layoutPartElements(definition)
+      .map(element=>element.getBoundingClientRect())
+      .filter(rect=>rect.width > 0 && rect.height > 0);
+    if(!rects.length) return null;
+    const left = Math.min(...rects.map(rect=>rect.left));
+    const top = Math.min(...rects.map(rect=>rect.top));
+    const right = Math.max(...rects.map(rect=>rect.right));
+    const bottom = Math.max(...rects.map(rect=>rect.bottom));
+    return {left,top,width:right-left,height:bottom-top};
+  }
+
+  function syncLayoutSelectionOverlay(){
+    if(!layoutSelectionOverlay) return;
+    const definition = layoutPartDefinition();
+    const rect = layoutEditOpen ? layoutPartUnionRect(definition) : null;
+    layoutSelectionOverlay.classList.toggle("is-visible", !!rect);
+    if(!rect) return;
+    layoutSelectionOverlay.style.left = `${Math.round(rect.left * 10) / 10}px`;
+    layoutSelectionOverlay.style.top = `${Math.round(rect.top * 10) / 10}px`;
+    layoutSelectionOverlay.style.width = `${Math.round(rect.width * 10) / 10}px`;
+    layoutSelectionOverlay.style.height = `${Math.round(rect.height * 10) / 10}px`;
+    const label = layoutSelectionOverlay.querySelector(".layoutSelectionOverlayLabel");
+    if(label && definition) label.textContent = definition.label;
+  }
+
+  function syncLayoutEditInputs(){
+    const definition = layoutPartDefinition();
+    const state = selectedLayoutPartState(definition);
+    if(!definition || !state) return;
+    if(layoutSelectedPartName) layoutSelectedPartName.textContent = definition.label;
+    if(layoutEditHelp){
+      layoutEditHelp.textContent = "スライダーで大きく調整し、−0.1 / ＋0.1で微調整できます。黄色の枠はドラッグ移動できます。";
+    }
+    layoutEditInputs.forEach(input=>{
+      const prop = input.dataset.layoutProp;
+      if(!Object.prototype.hasOwnProperty.call(state, prop)) return;
+      const bounds = layoutPartBounds(definition, prop);
+      const value = Math.round(state[prop] * 10) / 10;
+      input.min = String(bounds[0]);
+      input.max = String(bounds[1]);
+      input.value = String(value);
+      input.setAttribute("aria-label", `${definition.label}の${prop === "x" ? "横位置" : prop === "y" ? "縦位置" : prop === "w" ? "横幅" : "高さ"}`);
+    });
+    layoutEditValueViews.forEach(view=>{
+      const prop = view.dataset.layoutValue;
+      const value = Math.round(Number(state[prop]) * 10) / 10;
+      const signed = definition.mode !== "box" && (prop === "x" || prop === "y") && value > 0 ? "+" : "";
+      view.textContent = `${signed}${value.toFixed(1)}%`;
+    });
+    syncLayoutSelectionOverlay();
   }
 
   function applyLayoutEdit(saveValue=false){
     layoutEditState = normalizeLayoutState(layoutEditState);
+    partLayoutState = normalizePartLayoutState(partLayoutState);
     Object.keys(layoutEditState).forEach(target=>{
       Object.keys(layoutEditState[target]).forEach(prop=>{
         setLayoutCssVariable(target, prop, layoutEditState[target][prop]);
       });
     });
+    applyPartLayoutTransforms();
     syncLayoutEditInputs();
-    if(saveValue) safeStorageSet(LAYOUT_EDIT_STORAGE_KEY, JSON.stringify(layoutEditState));
+    requestPageScrollBoundsUpdate();
+    if(!saveValue) return true;
+    return safeStorageSetMany([
+      [LAYOUT_EDIT_STORAGE_KEY, JSON.stringify(layoutEditState)],
+      [PART_LAYOUT_EDIT_STORAGE_KEY, JSON.stringify(partLayoutState)]
+    ]);
   }
 
   function loadLayoutEdit(){
     try{
       const saved = safeStorageGet(LAYOUT_EDIT_STORAGE_KEY);
-      layoutEditState = saved ? normalizeLayoutState(JSON.parse(saved)) : cloneLayoutDefaults();
+      if(saved){
+        layoutEditState = normalizeLayoutState(JSON.parse(saved));
+      }else{
+        const legacySaved = safeStorageGet(LEGACY_LAYOUT_EDIT_STORAGE_KEY);
+        const legacyRaw = legacySaved ? JSON.parse(legacySaved) : null;
+        const legacyDefaultCredit = loadedLayoutDefaultRaw && loadedLayoutDefaultRaw.credit;
+        const shouldMigrateLegacyCredit = layoutBoxMatches(legacyRaw && legacyRaw.credit, LEGACY_CREDIT_LAYOUT_DEFAULT)
+          && (!legacyDefaultCredit || layoutBoxMatches(legacyDefaultCredit, LEGACY_CREDIT_LAYOUT_DEFAULT));
+        if(shouldMigrateLegacyCredit){
+          legacyRaw.credit = {...LAYOUT_DEFAULTS.credit};
+          layoutDefaultState = {...layoutDefaultState, credit:{...LAYOUT_DEFAULTS.credit}};
+        }
+        layoutEditState = legacyRaw ? normalizeLayoutState(legacyRaw) : cloneLayoutDefaults();
+        safeStorageSetMany([
+          [LAYOUT_DEFAULT_STORAGE_KEY, JSON.stringify(layoutDefaultState)],
+          [LAYOUT_EDIT_STORAGE_KEY, JSON.stringify(layoutEditState)]
+        ]);
+      }
     }catch(e){
       layoutEditState = cloneLayoutDefaults();
+    }
+    try{
+      const saved = safeStorageGet(PART_LAYOUT_EDIT_STORAGE_KEY);
+      partLayoutState = saved ? normalizePartLayoutState(JSON.parse(saved)) : clonePartLayoutDefaults();
+    }catch(e){
+      partLayoutState = clonePartLayoutDefaults();
     }
     applyLayoutEdit(false);
   }
@@ -9433,33 +9678,206 @@ html{
   function loadLayoutDefaultState(){
     try{
       const saved = safeStorageGet(LAYOUT_DEFAULT_STORAGE_KEY);
-      layoutDefaultState = saved ? normalizeLayoutState(JSON.parse(saved)) : cloneFactoryLayoutDefaults();
+      const legacySaved = saved ? null : safeStorageGet(LEGACY_LAYOUT_DEFAULT_STORAGE_KEY);
+      loadedLayoutDefaultRaw = saved
+        ? JSON.parse(saved)
+        : (legacySaved ? JSON.parse(legacySaved) : null);
+      layoutDefaultState = loadedLayoutDefaultRaw
+        ? normalizeLayoutState(loadedLayoutDefaultRaw)
+        : cloneFactoryLayoutDefaults();
     }catch(e){
+      loadedLayoutDefaultRaw = null;
       layoutDefaultState = cloneFactoryLayoutDefaults();
+    }
+    try{
+      const saved = safeStorageGet(PART_LAYOUT_DEFAULT_STORAGE_KEY);
+      partLayoutDefaultState = saved
+        ? normalizePartLayoutState(JSON.parse(saved), cloneFactoryPartLayoutDefaults())
+        : cloneFactoryPartLayoutDefaults();
+    }catch(e){
+      partLayoutDefaultState = cloneFactoryPartLayoutDefaults();
     }
   }
 
   function saveLayoutAsDefault(){
     layoutEditState = normalizeLayoutState(layoutEditState);
-    layoutDefaultState = JSON.parse(JSON.stringify(layoutEditState));
-    safeStorageSet(LAYOUT_DEFAULT_STORAGE_KEY, JSON.stringify(layoutDefaultState));
-    applyLayoutEdit(true);
+    partLayoutState = normalizePartLayoutState(partLayoutState);
+    const nextLayoutDefaultState = JSON.parse(JSON.stringify(layoutEditState));
+    const nextPartLayoutDefaultState = JSON.parse(JSON.stringify(partLayoutState));
+    const saved = safeStorageSetMany([
+      [LAYOUT_DEFAULT_STORAGE_KEY, JSON.stringify(nextLayoutDefaultState)],
+      [PART_LAYOUT_DEFAULT_STORAGE_KEY, JSON.stringify(nextPartLayoutDefaultState)],
+      [LAYOUT_EDIT_STORAGE_KEY, JSON.stringify(layoutEditState)],
+      [PART_LAYOUT_EDIT_STORAGE_KEY, JSON.stringify(partLayoutState)]
+    ]);
+    if(saved){
+      layoutDefaultState = nextLayoutDefaultState;
+      partLayoutDefaultState = nextPartLayoutDefaultState;
+      loadedLayoutDefaultRaw = JSON.parse(JSON.stringify(nextLayoutDefaultState));
+    }
+    applyLayoutEdit(false);
     if(layoutEditSaveDefaultBtn){
-      layoutEditSaveDefaultBtn.textContent = "保存済";
+      layoutEditSaveDefaultBtn.textContent = saved ? "保存しました" : "保存できません";
       clearTimeout(layoutEditSaveDefaultBtn._layoutFeedbackTimer);
       layoutEditSaveDefaultBtn._layoutFeedbackTimer = setTimeout(()=>{
-        layoutEditSaveDefaultBtn.textContent = "今を標準";
+        layoutEditSaveDefaultBtn.textContent = "標準に保存";
       }, 1000);
     }
   }
 
   function resetLayoutEdit(){
     layoutEditState = cloneLayoutDefaults();
+    partLayoutState = clonePartLayoutDefaults();
     applyLayoutEdit(true);
+  }
+
+  function resetSelectedLayoutPart(){
+    const definition = layoutPartDefinition();
+    const standard = selectedLayoutPartDefaultState(definition);
+    if(!definition || !standard) return;
+    if(definition.mode === "box"){
+      layoutEditState[definition.stateTarget] = {...standard};
+    }else{
+      partLayoutState[definition.key] = {...standard};
+    }
+    applyLayoutEdit(true);
+  }
+
+  function selectLayoutPart(key, saveSelection=true){
+    finishLayoutPartDrag(true);
+    let definition = layoutPartDefinition(key);
+    if(!layoutPartEditorAvailable(definition)){
+      definition = LAYOUT_PART_DEFINITIONS.find(layoutPartEditorAvailable) || null;
+    }
+    if(!definition) return;
+    selectedLayoutPartKey = definition.key;
+    document.querySelectorAll(".layoutPartSelected").forEach(element=>element.classList.remove("layoutPartSelected"));
+    layoutPartElements(definition).forEach(element=>element.classList.add("layoutPartSelected"));
+    if(layoutPartSelect) layoutPartSelect.value = definition.key;
+    if(saveSelection) safeStorageSet(PART_LAYOUT_SELECTION_STORAGE_KEY, definition.key);
+    syncLayoutEditInputs();
+  }
+
+  function initializeLayoutPartEditor(){
+    LAYOUT_PART_DEFINITIONS.filter(definition=>!definition.editorHidden).forEach(definition=>{
+      layoutPartElements(definition).forEach(element=>{
+        element.classList.add("layoutPartEditable");
+        element.dataset.layoutPart = definition.key;
+      });
+    });
+    if(layoutPartSelect){
+      layoutPartSelect.replaceChildren();
+      const groups = new Map();
+      LAYOUT_PART_DEFINITIONS.filter(layoutPartEditorAvailable).forEach(definition=>{
+        if(!groups.has(definition.group)){
+          const optgroup = document.createElement("optgroup");
+          optgroup.label = definition.group;
+          groups.set(definition.group, optgroup);
+          layoutPartSelect.appendChild(optgroup);
+        }
+        const option = document.createElement("option");
+        option.value = definition.key;
+        option.textContent = definition.label;
+        groups.get(definition.group).appendChild(option);
+      });
+    }
+    layoutSelectionOverlay = document.createElement("div");
+    layoutSelectionOverlay.className = "layoutSelectionOverlay";
+    layoutSelectionOverlay.setAttribute("aria-label", "選択パーツのドラッグ移動枠");
+    const label = document.createElement("span");
+    label.className = "layoutSelectionOverlayLabel";
+    layoutSelectionOverlay.appendChild(label);
+    document.body.appendChild(layoutSelectionOverlay);
+    const savedSelection = safeStorageGet(PART_LAYOUT_SELECTION_STORAGE_KEY);
+    selectLayoutPart(savedSelection || "reels", false);
+  }
+
+  function finishLayoutPartDrag(saveValue=true, restoreStart=false){
+    if(!layoutPartDrag) return;
+    const finishedDrag = layoutPartDrag;
+    layoutPartDrag = null;
+    if(restoreStart){
+      const state = selectedLayoutPartState(finishedDrag.definition);
+      if(state){
+        state.x = finishedDrag.startX;
+        state.y = finishedDrag.startY;
+      }
+    }
+    if(layoutSelectionOverlay){
+      layoutSelectionOverlay.classList.remove("is-layout-dragging");
+      try{
+        if(layoutSelectionOverlay.hasPointerCapture(finishedDrag.pointerId)){
+          layoutSelectionOverlay.releasePointerCapture(finishedDrag.pointerId);
+        }
+      }catch(e){}
+    }
+    applyLayoutEdit(saveValue);
+  }
+
+  function beginLayoutPartDrag(event){
+    if(!layoutEditOpen || !layoutSelectionOverlay) return;
+    if(layoutPartDrag) return;
+    if(event.pointerType === "mouse" && event.button !== 0) return;
+    const definition = layoutPartDefinition();
+    const elements = layoutPartElements(definition);
+    const reference = layoutPartReferenceElement(definition, elements);
+    const state = selectedLayoutPartState(definition);
+    if(!definition || !reference || !state) return;
+    const rect = reference.getBoundingClientRect();
+    if(rect.width <= 0 || rect.height <= 0) return;
+    layoutPartDrag = {
+      pointerId:event.pointerId,
+      startClientX:event.clientX,
+      startClientY:event.clientY,
+      definition,
+      startX:state.x,
+      startY:state.y,
+      parentWidth:rect.width,
+      parentHeight:rect.height
+    };
+    layoutSelectionOverlay.classList.add("is-layout-dragging");
+    try{ layoutSelectionOverlay.setPointerCapture(event.pointerId); }catch(e){}
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function moveLayoutPartDrag(event){
+    if(!layoutPartDrag || event.pointerId !== layoutPartDrag.pointerId) return;
+    const {definition} = layoutPartDrag;
+    const state = selectedLayoutPartState(definition);
+    if(!state) return;
+    const deltaX = (event.clientX - layoutPartDrag.startClientX) / layoutPartDrag.parentWidth * 100;
+    const deltaY = (event.clientY - layoutPartDrag.startClientY) / layoutPartDrag.parentHeight * 100;
+    const limit = definition.mode === "box"
+      ? (prop,value)=>layoutValueLimit(definition.stateTarget, prop, value)
+      : (prop,value)=>partLayoutValueLimit(definition, prop, value);
+    state.x = Math.round(limit("x", layoutPartDrag.startX + deltaX) * 10) / 10;
+    state.y = Math.round(limit("y", layoutPartDrag.startY + deltaY) * 10) / 10;
+    applyLayoutEdit(false);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function endLayoutPartDrag(event){
+    if(!layoutPartDrag || event.pointerId !== layoutPartDrag.pointerId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    finishLayoutPartDrag(true);
+  }
+
+  function cancelLayoutPartDrag(event){
+    if(!layoutPartDrag || event.pointerId !== layoutPartDrag.pointerId) return;
+    event.preventDefault();
+    event.stopPropagation();
+    finishLayoutPartDrag(false, true);
   }
 
   function setLayoutEditorOpen(open){
     if(!LAYOUT_EDITOR_ENABLED) open = false;
+    if(open && (isSpinning || jackspotRouletteBusy)){
+      if($("resultText")) $("resultText").textContent = "ゲーム停止後にパーツ配置を編集できます";
+      return;
+    }
     layoutEditOpen = !!open;
     if(layoutEditorPanel) layoutEditorPanel.classList.toggle("open", layoutEditOpen);
     if(layoutEditToggleBtn){
@@ -9467,6 +9885,8 @@ html{
       layoutEditToggleBtn.setAttribute("aria-expanded", layoutEditOpen ? "true" : "false");
     }
     document.body.classList.toggle("layoutEditOpen", layoutEditOpen);
+    if(!layoutEditOpen) finishLayoutPartDrag(true);
+    syncLayoutEditInputs();
   }
 
   function changePageZoom(delta){
@@ -15774,6 +16194,10 @@ html{
   }
 
   async function spin(){
+    if(layoutEditOpen){
+      if($("resultText")) $("resultText").textContent = "パーツ配置を閉じてからゲームを開始してください";
+      return;
+    }
     if(debugFastSpinActive) return;
     if(speedToBonusActive && !speedModeSpinRequest) return;
     if(bonusEndBgmPlaying){
@@ -17522,27 +17946,70 @@ html{
         resetLayoutEdit();
       });
     }
+    if(layoutPartResetBtn){
+      layoutPartResetBtn.addEventListener("click", e=>{
+        e.stopPropagation();
+        resetSelectedLayoutPart();
+      });
+    }
+    if(layoutPartSelect){
+      layoutPartSelect.addEventListener("change", e=>{
+        e.stopPropagation();
+        selectLayoutPart(layoutPartSelect.value, true);
+      });
+    }
     if(layoutEditorPanel){
       layoutEditorPanel.addEventListener("click", e=>e.stopPropagation());
     }
     layoutEditInputs.forEach(input=>{
       input.addEventListener("input", e=>{
         e.stopPropagation();
-        const target = input.dataset.layoutTarget;
         const prop = input.dataset.layoutProp;
-        if(!layoutEditState[target]) return;
-        layoutEditState[target][prop] = Number(input.value) || 0;
+        const definition = layoutPartDefinition();
+        const state = selectedLayoutPartState(definition);
+        if(!definition || !state) return;
+        const value = definition.mode === "box"
+          ? layoutValueLimit(definition.stateTarget, prop, input.value)
+          : partLayoutValueLimit(definition, prop, input.value);
+        state[prop] = Math.round(value * 10) / 10;
         applyLayoutEdit(false);
       });
       input.addEventListener("change", e=>{
         e.stopPropagation();
-        const target = input.dataset.layoutTarget;
         const prop = input.dataset.layoutProp;
-        if(!layoutEditState[target]) return;
-        layoutEditState[target][prop] = Number(input.value) || 0;
+        const definition = layoutPartDefinition();
+        const state = selectedLayoutPartState(definition);
+        if(!definition || !state) return;
+        const value = definition.mode === "box"
+          ? layoutValueLimit(definition.stateTarget, prop, input.value)
+          : partLayoutValueLimit(definition, prop, input.value);
+        state[prop] = Math.round(value * 10) / 10;
         applyLayoutEdit(true);
       });
     });
+    layoutEditNudgeButtons.forEach(button=>{
+      button.addEventListener("click", e=>{
+        e.stopPropagation();
+        const prop = button.dataset.layoutProp;
+        const delta = Number(button.dataset.layoutDelta);
+        const definition = layoutPartDefinition();
+        const state = selectedLayoutPartState(definition);
+        if(!definition || !state || !Object.prototype.hasOwnProperty.call(state, prop) || !Number.isFinite(delta)) return;
+        const nextValue = (Math.round(Number(state[prop]) * 10) + Math.round(delta * 10)) / 10;
+        const value = definition.mode === "box"
+          ? layoutValueLimit(definition.stateTarget, prop, nextValue)
+          : partLayoutValueLimit(definition, prop, nextValue);
+        state[prop] = Math.round(value * 10) / 10;
+        applyLayoutEdit(true);
+      });
+    });
+    if(layoutSelectionOverlay){
+      layoutSelectionOverlay.addEventListener("pointerdown", beginLayoutPartDrag);
+      layoutSelectionOverlay.addEventListener("pointermove", moveLayoutPartDrag);
+      layoutSelectionOverlay.addEventListener("pointerup", endLayoutPartDrag);
+      layoutSelectionOverlay.addEventListener("pointercancel", cancelLayoutPartDrag);
+      layoutSelectionOverlay.addEventListener("lostpointercapture", cancelLayoutPartDrag);
+    }
     if(audioDock){
       audioDock.addEventListener("click", e=>e.stopPropagation());
     }
@@ -17551,6 +18018,8 @@ html{
       requestPageScrollBoundsUpdate();
       requestBackgroundLogoSync();
       syncInfoPanelPositionIfOpen();
+      applyPartLayoutTransforms();
+      syncLayoutSelectionOverlay();
     }, {passive:true});
     window.addEventListener("load", ()=>{
       requestPageScrollBoundsUpdate();
@@ -17558,6 +18027,7 @@ html{
     }, {once:true});
     window.addEventListener("scroll", ()=>{
       syncInfoPanelPositionIfOpen();
+      syncLayoutSelectionOverlay();
     }, {passive:true});
     document.addEventListener("click", closeUtilityPanels);
     document.addEventListener("click", ()=>setSpeedModeMenuOpen(false));
@@ -17743,7 +18213,8 @@ html{
     }
 
     document.addEventListener("keydown", e=>{
-      if(["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName)) return;
+      const activeElement = document.activeElement;
+      if(activeElement && (["INPUT","SELECT","TEXTAREA","BUTTON"].includes(activeElement.tagName) || activeElement.isContentEditable)) return;
       const handlers = {
         Space:()=>spin(),
         ArrowUp:()=>spin(),
@@ -17779,6 +18250,7 @@ html{
   initializePlaySessionBaseline();
   loadPageZoom();
   loadPagePan();
+  initializeLayoutPartEditor();
   loadLayoutDefaultState();
   loadLayoutEdit();
   applySettings();
