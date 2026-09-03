@@ -855,6 +855,7 @@ body.layoutEditOpen .layoutSelectionOverlay.is-visible{
     0 0 22px rgba(255,211,106,.58),
     inset 0 0 22px rgba(255,255,255,.22);
 }
+.jackpotBanner[hidden]{display:none}
 .jackpotBanner .jpLabel{
   font-size:13px;
   font-weight:1000;
@@ -870,6 +871,13 @@ body.layoutEditOpen .layoutSelectionOverlay.is-visible{
   text-shadow:
     0 0 8px rgba(255,255,255,.9),
     0 0 22px rgba(255,54,93,.55);
+}
+.jackpotBanner .jpStatus{
+  margin-top:6px;
+  color:#3a1300;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.05em;
 }
 .jackpotBanner.bump{
   animation:jpBump .55s ease;
@@ -6040,6 +6048,22 @@ body{
 .jackspotCabinetShell > .cabinetPartsScene{
   display:block !important;
 }
+.jackspotCabinetShell > .jackpotBanner{
+  display:block !important;
+  position:absolute;
+  left:25%;
+  top:374px;
+  width:50%;
+  min-height:76px;
+  margin:0;
+  padding:8px 14px;
+  z-index:16;
+  border-radius:16px;
+  pointer-events:none;
+}
+.jackspotCabinetShell > .jackpotBanner[hidden]{display:none !important}
+.jackspotCabinetShell > .jackpotBanner .jpAmount{font-size:36px}
+.jackspotCabinetShell > .jackpotBanner .jpStatus{font-size:10px}
 .cabinetPartsScene{
   position:absolute;
   inset:0;
@@ -7400,17 +7424,22 @@ html{
 }
 .jackspotPayoutDiscMiddle{
   border:0 !important;
-  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_stage2_middle_casino_labeled_centered_v4.png") center/100% 100% no-repeat !important;
+  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_stage2_middle_casino_labeled_extended_center_v5.png") center/100% 100% no-repeat !important;
   box-shadow:none !important;
 }
 .jackspotPayoutDiscInner{
   border:0 !important;
-  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_final_inner_casino_labeled_centered_v4.png") center/100% 100% no-repeat !important;
+  background:transparent url("assets/ui/roulette-generated/jackspot_roulette_final_inner_narrow_jp_casino_labeled_v6.png") center/100% 100% no-repeat !important;
+  /* Generated JP art is 1271x1238. Compensate its alpha bounds to a true circle. */
+  background-size:101.92% 100% !important;
+  transform-origin:50.04% 49.72% !important;
   box-shadow:none !important;
 }
 .jackspotPayoutDisc{
   transform-origin:50% 50%;
   backface-visibility:hidden;
+  will-change:transform;
+  border-radius:50%;
   image-rendering:auto;
 }
 .jackspotPayoutDisc > span{
@@ -7655,7 +7684,7 @@ html{
 
   <div class="main">
     <section class="machine normal" id="machine">
-      <div class="jackspotCabinetShell" aria-hidden="true">
+      <div class="jackspotCabinetShell">
         <div class="cabinetPartsScene" aria-hidden="true">
           <img class="cabinetPart cabinetPartTop" src="assets/cabinet/casino_palace_v2/jackspot_casino_palace_top_v2.png" alt="">
           <div class="cabinetCasinoMarquee" aria-hidden="true">
@@ -7674,6 +7703,11 @@ html{
             <span>PAYOUT ROULETTE</span>
           </div>
         </div>
+        <div class="jackpotBanner" id="jackpotBanner" hidden>
+          <div class="jpLabel">5 MACHINES SHARED JACKPOT</div>
+          <div class="jpAmount" id="jackpotPoolAmount">0pt</div>
+          <div class="jpStatus" id="jackpotPoolStatus">各BETの10%を店舗内5台で共有</div>
+        </div>
         <div class="jackspotPayoutRoulette" id="jackspotPayoutRoulette" aria-label="大当たり払い出しルーレット">
           <div class="jackspotRouletteIntro">
             <span class="jackspotRouletteKicker">JACsPOT</span>
@@ -7690,8 +7724,8 @@ html{
               <span style="--i:0">1,000</span><span style="--i:1">1,500</span><span class="is-up" style="--i:2">UP</span><span style="--i:3">1,000</span>
               <span style="--i:4">1,500</span><span style="--i:5">2,000</span><span style="--i:6">2,000</span><span class="is-up" style="--i:7">UP</span>
             </div>
-            <div class="jackspotPayoutDisc jackspotPayoutDiscInner" id="jackspotPayoutDiscInner" aria-label="FINALステージ 5000pt 10000pt">
-              <span style="--i:0">5,000</span><span style="--i:1">10,000</span>
+            <div class="jackspotPayoutDisc jackspotPayoutDiscInner" id="jackspotPayoutDiscInner" aria-label="FINALステージ 5000pt 10000pt 共有JP">
+              <span style="--i:0">10,000</span><span style="--i:1">JP</span><span style="--i:2">5,000</span>
             </div>
             <span class="jackspotRouletteHub" aria-hidden="true"></span>
           </div>
@@ -7862,7 +7896,6 @@ html{
 
         <div class="message" id="message">READY</div>
         <div class="subMessage" id="subMessage">100pt BET / 成立役は777・ハズレのみ / 777後に払い出しルーレット</div>
-
         <div class="sevenSegPanel">
           <div class="sevenSegLabel">PAYOUT</div>
           <div class="sevenSegValue" id="stRemainBigView">--</div>
@@ -8137,6 +8170,7 @@ html{
             <option value="2000">2nd 2,000pt</option>
             <option value="5000">FINAL 5,000pt</option>
             <option value="10000">FINAL 10,000pt</option>
+            <option value="JP">FINAL 共有JP</option>
           </select>
         </div>
         <div class="field" style="margin-top:12px">
@@ -8698,6 +8732,11 @@ html{
   let isSpinning = false;
   let jackspotLastGamePayout = 0;
   let jackspotLastBonusPayout = 0;
+  let jackspotSpinsSinceHit = 0;
+  let jackspotPoolReservedForCurrentSpin = false;
+  let jackspotCurrentSpinEventId = "";
+  let jackspotPoolRefreshTimer = null;
+  let jackspotPoolState = {online:false,currentPt:0,version:0,contributionPt:10};
   const jackspotRouletteRotations = {outer:0,middle:0,inner:0};
   let jackspotRouletteBusy = false;
   let jackspotRouletteHomeParent = null;
@@ -8731,6 +8770,21 @@ html{
     6:1.05
   });
   const JACKSPOT_ROULETTE_PAYOUTS = Object.freeze([200,500,750,1000,1500,2000,5000,10000]);
+  const JACKSPOT_SHARED_POOL_RATE = 0.10;
+  const JACKSPOT_JP_RESULT = "JP";
+  const JACKSPOT_JP_FINAL_STAGE_DENOM = 4096;
+  const JACKSPOT_JP_FINAL_STAGE_PROBABILITY = 1 / JACKSPOT_JP_FINAL_STAGE_DENOM;
+  const JACKSPOT_HIGH_VALUE_MAX_GAMES = 400;
+  const JACKSPOT_PAYOUT_PROGRESS_FACTORS = Object.freeze([
+    Object.freeze([1.00,0.45]),
+    Object.freeze([1.00,0.50]),
+    Object.freeze([1.00,0.60]),
+    Object.freeze([1.00,0.82]),
+    Object.freeze([1.00,0.92]),
+    Object.freeze([1.00,1.12]),
+    Object.freeze([1.00,2.20]),
+    Object.freeze([1.00,3.40])
+  ]);
   // Odd settings: heavier hits with a stronger 5,000/10,000pt tail.
   // Even settings: faster hits with more weight on the 200-2,000pt range.
   // Hit probability is derived from target RTP and each setting's average payout.
@@ -11430,17 +11484,38 @@ html{
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  function jackspotPayoutWeights(settingNo = settings.setting){
-    return JACKSPOT_PAYOUT_WEIGHTS_BY_SETTING[settingNo] || JACKSPOT_PAYOUT_WEIGHTS_BY_SETTING[1];
+  function jackspotHighValueProgress(spinsSinceHit = jackspotSpinsSinceHit){
+    return clamp((Math.max(0, Number(spinsSinceHit) || 0)) / JACKSPOT_HIGH_VALUE_MAX_GAMES, 0, 1);
   }
 
-  function jackspotAveragePayout(settingNo = settings.setting){
-    const weights = jackspotPayoutWeights(settingNo);
-    return JACKSPOT_ROULETTE_PAYOUTS.reduce((sum,payout,index)=>sum + payout * weights[index],0);
+  function jackspotPayoutWeights(settingNo = settings.setting, spinsSinceHit = jackspotSpinsSinceHit){
+    const base = JACKSPOT_PAYOUT_WEIGHTS_BY_SETTING[settingNo] || JACKSPOT_PAYOUT_WEIGHTS_BY_SETTING[1];
+    const progress = jackspotHighValueProgress(spinsSinceHit);
+    const adjusted = base.map((weight,index)=>{
+      const range = JACKSPOT_PAYOUT_PROGRESS_FACTORS[index];
+      const factor = range[0] + (range[1] - range[0]) * progress;
+      return Math.max(0, weight * factor);
+    });
+    const total = adjusted.reduce((sum,weight)=>sum + weight, 0) || 1;
+    return adjusted.map(weight=>weight / total);
   }
 
-  function pickJackspotPayoutIndex(settingNo = settings.setting){
-    const weights = jackspotPayoutWeights(settingNo);
+  function jackspotAveragePayout(
+    settingNo = settings.setting,
+    spinsSinceHit = jackspotSpinsSinceHit,
+    jpSlotActive = jackspotPoolState.online && sharedJackpotPoolEligible()
+  ){
+    const weights = jackspotPayoutWeights(settingNo, spinsSinceHit);
+    return JACKSPOT_ROULETTE_PAYOUTS.reduce((sum,payout,index)=>{
+      const fixedPayoutFactor = jpSlotActive && payout >= 5000
+        ? 1 - JACKSPOT_JP_FINAL_STAGE_PROBABILITY
+        : 1;
+      return sum + payout * weights[index] * fixedPayoutFactor;
+    },0);
+  }
+
+  function pickJackspotPayoutIndex(settingNo = settings.setting, spinsSinceHit = jackspotSpinsSinceHit){
+    const weights = jackspotPayoutWeights(settingNo, spinsSinceHit);
     const total = weights.reduce((sum,weight)=>sum+weight,0);
     let roll = Math.random() * total;
     for(let index=0; index<weights.length; index++){
@@ -11450,13 +11525,151 @@ html{
     return weights.length - 1;
   }
 
-  function pickJackspotPayout(settingNo = settings.setting){
+  function pickJackspotPayout(
+    settingNo = settings.setting,
+    spinsSinceHit = jackspotSpinsSinceHit,
+    jpSlotActive = jackspotPoolReservedForCurrentSpin
+  ){
     const forcePayoutSelect = $("forceJackspotPayout");
-    const forcedPayout = SLOT_DEBUG_ENABLED && forcePayoutSelect ? Number(forcePayoutSelect.value) || 0 : 0;
+    const forcedValue = SLOT_DEBUG_ENABLED && forcePayoutSelect ? String(forcePayoutSelect.value || "") : "";
+    const forcedPayout = Number(forcedValue) || 0;
     const forcedPayoutIndex = JACKSPOT_ROULETTE_PAYOUTS.indexOf(forcedPayout);
-    const payoutIndex = forcedPayoutIndex >= 0 ? forcedPayoutIndex : pickJackspotPayoutIndex(settingNo);
+    if(forcedValue === JACKSPOT_JP_RESULT){
+      if(forcePayoutSelect) forcePayoutSelect.value = "";
+      return JACKSPOT_JP_RESULT;
+    }
+    const payoutIndex = forcedPayoutIndex >= 0 ? forcedPayoutIndex : pickJackspotPayoutIndex(settingNo, spinsSinceHit);
     if(forcePayoutSelect) forcePayoutSelect.value = "";
-    return JACKSPOT_ROULETTE_PAYOUTS[payoutIndex];
+    const payout = JACKSPOT_ROULETTE_PAYOUTS[payoutIndex];
+    if(jpSlotActive && payout >= 5000 && Math.random() < JACKSPOT_JP_FINAL_STAGE_PROBABILITY){
+      return JACKSPOT_JP_RESULT;
+    }
+    return payout;
+  }
+
+  function sharedJackpotPoolEligible(){
+    return JACKSPOT_SINGLE_LINE_MODE
+      && !!machineId
+      && machineId !== "standalone"
+      && adminParams.get("sharedJackpot") !== "0"
+      && !!ADMIN_SERVER
+      && !!window.fetch;
+  }
+
+  function makeJackpotEventId(kind){
+    const randomPart = window.crypto && typeof window.crypto.randomUUID === "function"
+      ? window.crypto.randomUUID().replace(/-/g, "")
+      : `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
+    return `${kind}:${machineId}:${randomPart}`;
+  }
+
+  function applySharedJackpotPoolState(pool, bump=false){
+    if(!pool || typeof pool !== "object") return;
+    const previous = Number(jackspotPoolState.currentPt) || 0;
+    jackspotPoolState = {
+      online:true,
+      currentPt:Math.max(0, Number(pool.currentPt || 0)),
+      version:Math.max(0, Number(pool.version || 0)),
+      contributionPt:Math.max(0, Number(pool.contributionPt || (SPIN_COST * JACKSPOT_SHARED_POOL_RATE)))
+    };
+    updateSharedJackpotPoolBanner(bump || jackspotPoolState.currentPt !== previous);
+  }
+
+  function updateSharedJackpotPoolBanner(bump=false){
+    const banner = $("jackpotBanner");
+    if(!banner) return;
+    const eligible = sharedJackpotPoolEligible();
+    banner.hidden = !eligible;
+    if(!eligible) return;
+    const amount = $("jackpotPoolAmount");
+    const status = $("jackpotPoolStatus");
+    if(amount) amount.textContent = jackspotPoolState.online
+      ? `${Math.max(0, Number(jackspotPoolState.currentPt) || 0).toLocaleString()}pt`
+      : "CONNECTING";
+    if(status) status.textContent = jackspotPoolState.online
+      ? `各BETの10%（${jackspotPoolState.contributionPt}pt）を店舗内5台で共有 / 3rdステージJP成立で全額獲得`
+      : "共有プールへ接続中";
+    if(bump){
+      banner.classList.remove("bump");
+      void banner.offsetWidth;
+      banner.classList.add("bump");
+    }
+  }
+
+  async function requestSharedJackpot(path, options={}){
+    const response = await fetch(`${ADMIN_SERVER}/api/jackpot/${path}`, {
+      method:options.method || "GET",
+      headers:{"Content-Type":"application/json"},
+      body:options.body ? JSON.stringify(options.body) : undefined,
+      cache:"no-store"
+    });
+    const data = await response.json().catch(()=>({}));
+    if(!response.ok || !data.ok) throw new Error(data.error || `shared jackpot ${response.status}`);
+    return data.pool || {};
+  }
+
+  async function refreshSharedJackpotPool(){
+    if(!sharedJackpotPoolEligible()){
+      updateSharedJackpotPoolBanner(false);
+      return false;
+    }
+    try{
+      const pool = await requestSharedJackpot(`pool?machineId=${encodeURIComponent(machineId)}`);
+      applySharedJackpotPoolState(pool, false);
+      return true;
+    }catch(e){
+      jackspotPoolState.online = false;
+      updateSharedJackpotPoolBanner(false);
+      return false;
+    }
+  }
+
+  async function contributeSharedJackpotPool(){
+    jackspotPoolReservedForCurrentSpin = false;
+    jackspotCurrentSpinEventId = "";
+    if(!sharedJackpotPoolEligible()) return false;
+    const eventId = makeJackpotEventId("spin");
+    try{
+      const pool = await requestSharedJackpot("contribute", {
+        method:"POST",
+        body:{machineId, playSessionId:PLAY_SESSION_ID, idempotencyKey:eventId, spinCost:SPIN_COST}
+      });
+      jackspotCurrentSpinEventId = eventId;
+      jackspotPoolReservedForCurrentSpin = true;
+      applySharedJackpotPoolState(pool, true);
+      return true;
+    }catch(e){
+      jackspotPoolState.online = false;
+      updateSharedJackpotPoolBanner(false);
+      return false;
+    }
+  }
+
+  async function claimSharedJackpotPool(){
+    if(!jackspotPoolReservedForCurrentSpin || !jackspotCurrentSpinEventId) return 0;
+    try{
+      const pool = await requestSharedJackpot("claim", {
+        method:"POST",
+        body:{
+          machineId,
+          playSessionId:PLAY_SESSION_ID,
+          qualifyingResult:JACKSPOT_JP_RESULT,
+          idempotencyKey:`claim:${jackspotCurrentSpinEventId}`
+        }
+      });
+      applySharedJackpotPoolState(pool, true);
+      return Math.max(0, Number(pool.paidPt || 0));
+    }catch(e){
+      return 0;
+    }
+  }
+
+  function connectSharedJackpotPool(){
+    if(jackspotPoolRefreshTimer) clearInterval(jackspotPoolRefreshTimer);
+    updateSharedJackpotPoolBanner(false);
+    if(!sharedJackpotPoolEligible()) return;
+    refreshSharedJackpotPool();
+    jackspotPoolRefreshTimer = setInterval(refreshSharedJackpotPool, 5000);
   }
 
   function fadeOutAudioAndPause(audio, durationMs=JACKSPOT_BGM_SWITCH_FADE_MS){
@@ -11690,13 +11903,18 @@ html{
     jackspotRouletteHomeNextSibling = null;
   }
 
-  async function spinJackspotRouletteDisc(discKey, disc, resultIndex, segmentCount){
+  async function spinJackspotRouletteDisc(discKey, disc, resultIndex, segmentCount, stopSpec=null){
     if(!disc) return;
     const segmentAngle = 360 / segmentCount;
-    const jitterDirection = Math.random() < .5 ? -1 : 1;
-    const jitterRatio = JACKSPOT_ROULETTE_STOP_JITTER_MIN
-      + Math.random() * (JACKSPOT_ROULETTE_STOP_JITTER_MAX - JACKSPOT_ROULETTE_STOP_JITTER_MIN);
-    const stopJitter = jitterDirection * segmentAngle * jitterRatio;
+    const customStopCenter = stopSpec && Number.isFinite(Number(stopSpec.center))
+      ? Number(stopSpec.center)
+      : null;
+    const stopJitter = customStopCenter === null
+      ? (Math.random() < .5 ? -1 : 1) * segmentAngle * (
+        JACKSPOT_ROULETTE_STOP_JITTER_MIN
+        + Math.random() * (JACKSPOT_ROULETTE_STOP_JITTER_MAX - JACKSPOT_ROULETTE_STOP_JITTER_MIN)
+      )
+      : (Math.random() * 2 - 1) * Math.max(0, Number(stopSpec.jitter) || 0);
     disc.classList.remove("is-selected");
     disc.classList.add("is-active");
 
@@ -11709,7 +11927,10 @@ html{
     await waitJackspotRoulette(JACKSPOT_ROULETTE_CRUISE_MS);
 
     const normalized = ((cruiseRotation % 360) + 360) % 360;
-    const target = (360 - (resultIndex * segmentAngle + segmentAngle / 2 + stopJitter)) % 360;
+    const sourceStopAngle = customStopCenter === null
+      ? resultIndex * segmentAngle + segmentAngle / 2
+      : customStopCenter;
+    const target = (360 - (sourceStopAngle + stopJitter)) % 360;
     const delta = (target - normalized + 360) % 360;
     jackspotRouletteRotations[discKey] = cruiseRotation + (8 + randomInt(0, 4)) * 360 + delta;
     disc.classList.add("is-decelerating");
@@ -11724,7 +11945,9 @@ html{
   }
 
   async function runJackspotPayoutRoulette(){
-    const payout = pickJackspotPayout(settings.setting);
+    const roulettePayout = pickJackspotPayout(settings.setting, jackspotSpinsSinceHit);
+    const sharedJackpotWin = roulettePayout === JACKSPOT_JP_RESULT;
+    let payout = sharedJackpotWin ? 0 : roulettePayout;
     const panel = $("jackspotPayoutRoulette");
     const outerDisc = $("jackspotPayoutDiscOuter");
     const middleDisc = $("jackspotPayoutDiscMiddle");
@@ -11745,7 +11968,7 @@ html{
     if(result) result.textContent = "1ST";
     if(status) status.textContent = "クルーン露出 / 1stステージ 15秒抽選中";
 
-    const outerResultIndex = payout === 200 ? 0 : payout === 500 ? 1 : payout === 750 ? 2 : 3;
+    const outerResultIndex = roulettePayout === 200 ? 0 : roulettePayout === 500 ? 1 : roulettePayout === 750 ? 2 : 3;
     const outerStopIndex = outerResultIndex + randomInt(0, 2) * 4;
     let settlementStopSoundPlayed = false;
     const stage1BgmFadeTimer = setTimeout(
@@ -11765,7 +11988,7 @@ html{
       playJackspotRouletteStage2Bgm();
       if(result) result.textContent = "2ND";
       if(status) status.textContent = "2ndステージ / 15秒抽選中";
-      const middleResultIndex = payout === 1000 ? 0 : payout === 1500 ? 1 : payout === 2000 ? 2 : 3;
+      const middleResultIndex = roulettePayout === 1000 ? 0 : roulettePayout === 1500 ? 1 : roulettePayout === 2000 ? 2 : 3;
       const middleStopPositions = middleResultIndex === 0
         ? [0, 3]
         : middleResultIndex === 1
@@ -11797,7 +12020,13 @@ html{
           ()=>fadeOutAudioAndPause(jackspotRouletteBgm, JACKSPOT_BGM_SWITCH_FADE_MS),
           Math.max(0, JACKSPOT_ROULETTE_CRUISE_MS + JACKSPOT_ROULETTE_DECEL_MS + 80 - JACKSPOT_BGM_SWITCH_FADE_MS)
         );
-        await spinJackspotRouletteDisc("inner", innerDisc, payout === 5000 ? 0 : 1, 2);
+        const finalResultIndex = roulettePayout === 10000 ? 0 : sharedJackpotWin ? 1 : 2;
+        const finalStopSpec = roulettePayout === 10000
+          ? {center:85.5, jitter:34}
+          : sharedJackpotWin
+            ? {center:180, jitter:4}
+            : {center:274.5, jitter:34};
+        await spinJackspotRouletteDisc("inner", innerDisc, finalResultIndex, 3, finalStopSpec);
         clearTimeout(finalBgmFadeTimer);
         stopJackspotRouletteBgm();
       }else{
@@ -11810,15 +12039,25 @@ html{
       }
     }
 
+    let sharedJackpotPaid = 0;
+    if(sharedJackpotWin){
+      if(status) status.textContent = "JP成立 / 5台共有JACKPOTを確定中";
+      sharedJackpotPaid = await claimSharedJackpotPool();
+      payout = sharedJackpotPaid;
+    }
     panel.classList.remove("is-spinning");
     panel.classList.add("is-hit");
-    if(result) result.textContent = `+${payout.toLocaleString()}pt`;
+    if(result) result.textContent = sharedJackpotWin
+      ? `JP +${payout.toLocaleString()}pt`
+      : `+${payout.toLocaleString()}pt`;
     if(!settlementStopSoundPlayed){
-      const stopSoundSrc = payout === 10000
+      const stopSoundSrc = roulettePayout === 10000
         ? JACKSPOT_10000PT_CONFIRM_SOUND_SRC
         : JACKSPOT_ROULETTE_STOP_SOUND_SRC;
-      if(status) status.textContent = payout === 10000
-        ? "10,000pt確定 / プレミアム確定音再生中"
+      if(status) status.textContent = sharedJackpotWin
+        ? `共有JP ${sharedJackpotPaid.toLocaleString()}pt獲得 / 確定音再生中`
+        : roulettePayout === 10000
+          ? "10,000pt確定 / プレミアム確定音再生中"
         : "ルーレット停止 / 確定音再生中";
       await playJackspotRouletteStopSoundAndWait(stopSoundSrc);
     }
@@ -12060,11 +12299,17 @@ html{
     return clamp(GORAI_HIT_RATE[settingNo] ?? GORAI_HIT_RATE[1], 0, 0.98);
   }
 
-  function jackspotHitProbability(settingNo = settings.setting, applyTestMultiplier = true){
+  function jackspotHitProbability(
+    settingNo = settings.setting,
+    applyTestMultiplier = true,
+    spinsSinceHit = jackspotSpinsSinceHit,
+    sharedPoolReserved = jackspotPoolState.online && sharedJackpotPoolEligible()
+  ){
     const multiplier = applyTestMultiplier ? (Number(settings.oddsMultiplier) || 1) : 1;
     const targetRtp = JACKSPOT_TARGET_RTP[settingNo] ?? JACKSPOT_TARGET_RTP[1];
-    const averagePayout = jackspotAveragePayout(settingNo);
-    const baseProbability = averagePayout > 0 ? (targetRtp * SPIN_COST) / averagePayout : 0;
+    const regularTargetRtp = Math.max(0, targetRtp - (sharedPoolReserved ? JACKSPOT_SHARED_POOL_RATE : 0));
+    const averagePayout = jackspotAveragePayout(settingNo, spinsSinceHit, sharedPoolReserved);
+    const baseProbability = averagePayout > 0 ? (regularTargetRtp * SPIN_COST) / averagePayout : 0;
     return clamp(baseProbability * multiplier, 0, 0.98);
   }
 
@@ -12072,7 +12317,12 @@ html{
     pendingATypeInternalBonus = null;
     if(pendingForceResult === "BIG") return "BIG";
     if(pendingForceResult === "MISS") return "MISS";
-    return Math.random() < jackspotHitProbability(settings.setting) ? "BIG" : "MISS";
+    return Math.random() < jackspotHitProbability(
+      settings.setting,
+      true,
+      jackspotSpinsSinceHit,
+      jackspotPoolReservedForCurrentSpin
+    ) ? "BIG" : "MISS";
   }
 
   function isHighMode(){
@@ -13255,6 +13505,7 @@ html{
       }
       jackspotLastGamePayout = Number(runtime.jackspotLastGamePayout) || 0;
       jackspotLastBonusPayout = Number(runtime.jackspotLastBonusPayout) || 0;
+      jackspotSpinsSinceHit = Math.max(0, Number(runtime.jackspotSpinsSinceHit) || 0);
       jackspotChanceHold = !!runtime.jackspotChanceHold;
       forceResult = String(runtime.forceResult || "");
       forcePremiumEffect = !!runtime.forcePremiumEffect;
@@ -13338,6 +13589,7 @@ html{
       session:{...session},
       jackspotLastGamePayout,
       jackspotLastBonusPayout,
+      jackspotSpinsSinceHit,
       jackspotChanceHold,
       forceResult,
       forcePremiumEffect,
@@ -13445,6 +13697,13 @@ html{
       stats:{...stats, profit},
       normalState:{...normalState},
       session:{...session},
+      jackpotPool:{
+        online:!!jackspotPoolState.online,
+        currentPt:Math.max(0, Number(jackspotPoolState.currentPt) || 0),
+        version:Math.max(0, Number(jackspotPoolState.version) || 0),
+        contributionPt:Math.max(0, Number(jackspotPoolState.contributionPt) || 0),
+        spinsSinceHit:Math.max(0, Number(jackspotSpinsSinceHit) || 0)
+      },
       completeTrialState:{...completeTrialState},
       state:{
         isSpinning,
@@ -14481,6 +14740,7 @@ html{
     if(lamp) lamp.classList.remove("on");
 
     if(hit){
+      jackspotSpinsSinceHit = 0;
       stats.bigCount = (Number(stats.bigCount) || 0) + 1;
       stats.totalPaid = (Number(stats.totalPaid) || 0) + payout;
       jackspotLastBonusPayout = payout;
@@ -14498,6 +14758,7 @@ html{
       return;
     }
 
+    jackspotSpinsSinceHit = Math.max(0, Number(jackspotSpinsSinceHit) || 0) + 1;
     stats.midCount = (Number(stats.midCount) || 0) + 1;
     if(!debugFastSpinActive && !debugOneClickSimActive){
       showMessage("MISS", "ハズレ / 払い出し0pt");
@@ -14905,6 +15166,7 @@ html{
     const active = session.active;
     const profit = stats.totalPaid - stats.totalFee;
 
+    updateSharedJackpotPoolBanner(false);
     updateGoraiZoneGlow();
     updateDevilStatusLamp();
     updateReelFrameMode();
@@ -14940,7 +15202,7 @@ html{
     if($("stInfoViewLegacy")) $("stInfoViewLegacy").textContent = stInfoText;
     if($("adminStInfoView")) $("adminStInfoView").textContent = stInfoText;
     const payoutScaleText = JACKSPOT_SINGLE_LINE_MODE
-      ? `設定別ルーレット振り分け / 平均${jackspotAveragePayout(settings.setting).toLocaleString(undefined,{maximumFractionDigits:3})}pt / 成立役 777・ハズレのみ`
+      ? `高額期待度 ${jackspotSpinsSinceHit}G / 400Gで最大 / 平均${jackspotAveragePayout(settings.setting).toLocaleString(undefined,{maximumFractionDigits:3})}pt / JPは3rdステージ1/${JACKSPOT_JP_FINAL_STAGE_DENOM}`
       : A_TYPE_MODE
       ? `Aタイプ:BB純増${A_TYPE_PAYOUTS.BIG}pt/RB純増${A_TYPE_PAYOUTS.MID}pt/ブドウ${A_TYPE_PAYOUTS.GRAPE}pt/ベル${A_TYPE_PAYOUTS.BELL}pt/ゾウリプレイ${A_TYPE_PAYOUTS.REPLAY}pt/宗介特殊役${A_TYPE_PAYOUTS.SMALL}pt/チェリー中段1pt・上下段2pt`
       : `通常:ベル${NORMAL_ROLE_PAYOUTS.BELL}pt/スイカ${NORMAL_ROLE_PAYOUTS.SUICA}pt/チェリー${NORMAL_ROLE_PAYOUTS.CHERRY_ANY}pt/リプレイ${NORMAL_ROLE_PAYOUTS.REPLAY}pt/REG${NORMAL_ROLE_PAYOUTS.MID}pt / 通常小役${Math.round(NORMAL_ROLE_RATE * 100)}% / 高確小役${Math.round(HIGH_ROLE_RATE * 100)}% / ATベル${ROLE_PAYOUTS.BELL}pt/斜めベル${ROLE_PAYOUTS.BELL3}pt / 平均継続${formatRate(averageContinuationRate(settings.setting))}`;
@@ -15229,20 +15491,25 @@ html{
     if(!table) return;
 
     if(JACKSPOT_SINGLE_LINE_MODE){
-      let html = `<tr><td>設定</td><td>特性</td><td>機械割</td><td>777確率</td><td>大当たり確率</td><td>平均払い出し</td><td>5,000pt以上</td></tr>`;
+      const sharedPoolActive = jackspotPoolState.online && sharedJackpotPoolEligible();
+      let html = `<tr><td>設定</td><td>特性</td><td>機械割</td><td>777確率 0G</td><td>777確率 400G+</td><td>平均払出 0G→400G+</td><td>5,000pt以上 0G→400G+</td></tr>`;
       for(const i of [1,2,3,4,5,6]){
-        const probability = jackspotHitProbability(i, false);
-        const averagePayout = jackspotAveragePayout(i);
-        const weights = jackspotPayoutWeights(i);
-        const highPayoutRate = (Number(weights[6]) || 0) + (Number(weights[7]) || 0);
+        const probability0 = jackspotHitProbability(i, false, 0, sharedPoolActive);
+        const probabilityMax = jackspotHitProbability(i, false, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive);
+        const averagePayout0 = jackspotAveragePayout(i, 0, sharedPoolActive);
+        const averagePayoutMax = jackspotAveragePayout(i, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive);
+        const weights0 = jackspotPayoutWeights(i, 0);
+        const weightsMax = jackspotPayoutWeights(i, JACKSPOT_HIGH_VALUE_MAX_GAMES);
+        const highPayoutRate0 = (Number(weights0[6]) || 0) + (Number(weights0[7]) || 0);
+        const highPayoutRateMax = (Number(weightsMax[6]) || 0) + (Number(weightsMax[7]) || 0);
         html += `<tr>
           <td>${i}</td>
           <td>${i % 2 ? "重い・高額寄り" : "軽い・安定寄り"}</td>
           <td>${targetRtpText(i)}</td>
-          <td>${(probability * 100).toFixed(4)}%</td>
-          <td>1/${(1 / probability).toFixed(2)}</td>
-          <td>${averagePayout.toLocaleString(undefined,{maximumFractionDigits:3})}pt</td>
-          <td>${(highPayoutRate * 100).toFixed(1)}%</td>
+          <td>1/${(1 / probability0).toFixed(2)}</td>
+          <td>1/${(1 / probabilityMax).toFixed(2)}</td>
+          <td>${averagePayout0.toLocaleString(undefined,{maximumFractionDigits:0})}→${averagePayoutMax.toLocaleString(undefined,{maximumFractionDigits:0})}pt</td>
+          <td>${(highPayoutRate0 * 100).toFixed(1)}→${(highPayoutRateMax * 100).toFixed(1)}%</td>
         </tr>`;
       }
       table.innerHTML = html;
@@ -15355,6 +15622,9 @@ html{
     session = {active:false,remain:0,fee:0,cost:0,paid:0,hits:0,added:0,addedGames:0,setNo:0,stockSets:0,barBgmSets:0,nextSetBarBgm:false,currentSetBarBgm:false,continuationRate:0,bigZone:0,bigZoneType:"",phase:"idle",bonusKind:"",bonusTarget:0,bonusStartGames:0,premiumBonus:false,oneGameRenBonus:false,premiumChainEligible:false,bonusBgmSrc:"",battleRemain:0,battleWin:false,battleSource:"",resultPayout:null,endSignal:null};
     jackspotLastGamePayout = 0;
     jackspotLastBonusPayout = 0;
+    jackspotSpinsSinceHit = 0;
+    jackspotPoolReservedForCurrentSpin = false;
+    jackspotCurrentSpinEventId = "";
     jackspotChanceHold = false;
     completeTrialState = {locked:false,lockedSetting:0,rescueActive:false,completeProfit:0};
     setSpeedFrameOffHold(false);
@@ -15412,6 +15682,9 @@ html{
     session = {active:false,remain:0,fee:0,cost:0,paid:0,hits:0,added:0,addedGames:0,setNo:0,stockSets:0,barBgmSets:0,nextSetBarBgm:false,currentSetBarBgm:false,continuationRate:0,bigZone:0,bigZoneType:"",phase:"idle",bonusKind:"",bonusTarget:0,bonusStartGames:0,premiumBonus:false,oneGameRenBonus:false,premiumChainEligible:false,bonusBgmSrc:"",battleRemain:0,battleWin:false,battleSource:"",resultPayout:null,endSignal:null};
     jackspotLastGamePayout = 0;
     jackspotLastBonusPayout = 0;
+    jackspotSpinsSinceHit = 0;
+    jackspotPoolReservedForCurrentSpin = false;
+    jackspotCurrentSpinEventId = "";
     jackspotChanceHold = false;
     completeTrialState = {locked:false,lockedSetting:0,rescueActive:false,completeProfit:0};
     setSpeedFrameOffHold(false);
@@ -16327,6 +16600,12 @@ html{
     }
     countTotalSpinIfNeeded(aTypeBonusActiveAtSpinStart);
     chargeSpinCost();
+    if(JACKSPOT_SINGLE_LINE_MODE && normalActiveAtSpinStart){
+      await contributeSharedJackpotPool();
+    }else{
+      jackspotPoolReservedForCurrentSpin = false;
+      jackspotCurrentSpinEventId = "";
+    }
     $("stLamp").classList.remove("on");
     const reachMeAnnouncementLit = activateReachMeBonusAnnouncementIfNeeded(normalActiveAtSpinStart);
     if(reachMeAnnouncementLit) triggerBonusConfirmBetSoundIfNeeded();
@@ -17344,6 +17623,8 @@ html{
     }
     countTotalSpinIfNeeded(aTypeBonusActiveAtSpinStart);
     chargeSpinCost();
+    jackspotPoolReservedForCurrentSpin = false;
+    jackspotCurrentSpinEventId = "";
     jackspotLastGamePayout = 0;
     if(!normalState.bonusPending && !session.active) jackspotChanceHold = false;
     const reachMeAnnouncementLit = activateReachMeBonusAnnouncementIfNeeded(normalActiveAtSpinStart);
@@ -18242,6 +18523,7 @@ html{
       if(autoTimer) clearTimeout(autoTimer);
       if(autoWatchdogTimer) clearInterval(autoWatchdogTimer);
       if(debugFastTimer) clearInterval(debugFastTimer);
+      if(jackspotPoolRefreshTimer) clearInterval(jackspotPoolRefreshTimer);
       persistAndPushExitState();
     });
   }
@@ -18256,6 +18538,7 @@ html{
   applySettings();
   setup();
   connectAdminCommands();
+  connectSharedJackpotPool();
   reels.forEach((_,i)=>setRandomReel(i));
   showMessage("READY",`1回転${SPIN_COST}pt / 777・ハズレのみ / 設定${settings.setting}`);
   if($("forceResult")) $("forceResult").value = forceResult;
