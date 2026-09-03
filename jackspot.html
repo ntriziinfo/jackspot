@@ -8776,19 +8776,19 @@ html{
   const JACKSPOT_JP_FINAL_STAGE_PROBABILITY = 1 / JACKSPOT_JP_FINAL_STAGE_DENOM;
   const JACKSPOT_HIGH_VALUE_MAX_GAMES = 400;
   const JACKSPOT_PAYOUT_PROGRESS_FACTORS = Object.freeze([
-    Object.freeze([1.00,0.45]),
-    Object.freeze([1.00,0.50]),
     Object.freeze([1.00,0.60]),
-    Object.freeze([1.00,0.82]),
-    Object.freeze([1.00,0.92]),
-    Object.freeze([1.00,1.12]),
-    Object.freeze([1.00,2.20]),
-    Object.freeze([1.00,3.40])
+    Object.freeze([1.00,0.65]),
+    Object.freeze([1.00,0.75]),
+    Object.freeze([1.00,0.90]),
+    Object.freeze([1.00,0.98]),
+    Object.freeze([1.00,1.08]),
+    Object.freeze([1.00,1.55]),
+    Object.freeze([1.00,1.90])
   ]);
   // All settings use the same payout distribution. Setting differences come only
   // from the hit probability required to reach each target RTP.
   const JACKSPOT_PAYOUT_WEIGHTS = Object.freeze([
-    0.153,0.153,0.129,0.133,0.118,0.117,0.147,0.050
+    0.153,0.153,0.129,0.170,0.155,0.165,0.060,0.015
   ]);
   const JACKSPOT_ROULETTE_CRUISE_MS = 10000;
   const JACKSPOT_ROULETTE_DECEL_MS = 5000;
