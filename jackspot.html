@@ -8110,7 +8110,7 @@ html{
           <button class="dangerBtn" id="resetBtn">初期化</button>
         </div>
         <div class="help" style="margin-top:10px">
-          1プレイごとに100ptを消費します。成立役は777またはハズレのみ。払い出し振り分けは全設定共通で、設定差は777当選確率に反映します。
+          1プレイごとに100ptを消費します。成立役は777またはハズレのみ。奇数設定は当選が重く高額払い出し寄り、偶数設定は当選が軽い設計です。
         </div>
       </div>
 
@@ -8950,15 +8950,8 @@ html{
   const SPEED_MODE_MAX_SPINS_PER_SECOND = 10;
   const SPEED_MODE_MULTIPLIER = 3;
   const COMPLETE_TRIAL_ENABLED = true;
-  const COMPLETE_LOCK_ENABLED = true;
-  const COMPLETE_LIMIT_PT_BY_SETTING = Object.freeze({
-    1:10000,
-    2:15000,
-    3:20000,
-    4:25000,
-    5:30000,
-    6:100000
-  });
+  const COMPLETE_LOCK_ENABLED = false;
+  const COMPLETE_LIMIT_PT = 2000;
   const SLUMP_MAX_HISTORY_POINTS = 20000;
   const SLUMP_MAX_DRAW_POINTS = 1400;
   let autoPlay = false;
@@ -8971,8 +8964,7 @@ html{
     locked:false,
     lockedSetting:0,
     rescueActive:false,
-    completeProfit:0,
-    exemptPayoutPt:0
+    completeProfit:0
   };
   let speedModeMenuOpen = false;
   let speedModeSpinRequest = false;
@@ -11957,9 +11949,7 @@ html{
     const stage = panel && panel.querySelector(".jackspotRouletteStage");
     const result = $("jackspotRouletteResult");
     const status = $("jackspotRouletteStatus");
-    if(!panel || !outerDisc || !middleDisc || !innerDisc){
-      return {payout:capPayoutAtCompleteLimit(payout, sharedJackpotWin), sharedJackpotWin};
-    }
+    if(!panel || !outerDisc || !middleDisc || !innerDisc) return payout;
 
     jackspotRouletteBusy = true;
     setJackspotRouletteStageView(stage, "outer", true);
@@ -12049,8 +12039,6 @@ html{
       sharedJackpotPaid = await claimSharedJackpotPool();
       payout = sharedJackpotPaid;
     }
-    const nominalPayout = payout;
-    payout = capPayoutAtCompleteLimit(payout, sharedJackpotWin);
     panel.classList.remove("is-spinning");
     panel.classList.add("is-hit");
     if(result) result.textContent = sharedJackpotWin
@@ -12067,21 +12055,18 @@ html{
         : "ルーレット停止 / 確定音再生中";
       await playJackspotRouletteStopSoundAndWait(stopSoundSrc);
     }
-    if(status) status.textContent = payout < nominalPayout
-      ? `COMPLETE上限調整 / CREDITへ${payout.toLocaleString()}pt加算`
-      : "払い出し決定 / CREDITへ加算";
+    if(status) status.textContent = "払い出し決定 / CREDITへ加算";
     await waitJackspotRoulette(1200);
     await closeJackspotRouletteShowtime(panel);
     playNormalBgm();
     setJackspotRouletteStageView(stage, "outer", true);
     jackspotRouletteBusy = false;
-    return {payout, sharedJackpotWin};
+    return payout;
   }
 
-  function prepareJackspotRouletteSettlement(resolved, payout, options={}){
+  function prepareJackspotRouletteSettlement(resolved, payout){
     resolved.reward = payout;
     resolved.jackspotRoulettePayout = payout;
-    resolved.sharedJackpotPayout = !!options.sharedJackpotWin;
     resolved.add = 0;
     resolved.sets = 0;
     resolved.bigZone = 0;
@@ -12754,24 +12739,7 @@ html{
   }
 
   function completeTrialProfit(){
-    return currentProfit() - Math.max(0, Number(completeTrialState.exemptPayoutPt) || 0);
-  }
-
-  function completeLimitForSetting(settingNo = settings.setting){
-    const normalized = clamp(Math.round(Number(settingNo) || 1), 1, 6);
-    return Number(COMPLETE_LIMIT_PT_BY_SETTING[normalized]) || COMPLETE_LIMIT_PT_BY_SETTING[1];
-  }
-
-  function currentCompleteLimit(){
-    const settingNo = completeTrialState.lockedSetting || settings.setting;
-    return completeLimitForSetting(settingNo);
-  }
-
-  function capPayoutAtCompleteLimit(payout, sharedJackpotPayout=false){
-    const requested = Math.max(0, Number(payout) || 0);
-    if(!JACKSPOT_SINGLE_LINE_MODE || !isCompleteLockEnabled() || sharedJackpotPayout) return requested;
-    const remaining = Math.max(0, currentCompleteLimit() - completeTrialProfit());
-    return Math.min(requested, remaining);
+    return currentProfit();
   }
 
   function isCompleteLockEnabled(){
@@ -12797,8 +12765,7 @@ html{
       locked:false,
       lockedSetting:0,
       rescueActive:false,
-      completeProfit:0,
-      exemptPayoutPt:0
+      completeProfit:0
     };
     showMessage("COMPLETE解除", "設定変更により打ち止めを解除しました。");
     log("[COMPLETE] 設定変更により打ち止め解除");
@@ -12808,9 +12775,8 @@ html{
   function updateCompleteTrialState(reason=""){
     if(!COMPLETE_TRIAL_ENABLED) return false;
     const profit = completeTrialProfit();
-    const completeLimit = currentCompleteLimit();
 
-    if(isCompleteLockEnabled() && !completeTrialState.locked && profit >= completeLimit){
+    if(isCompleteLockEnabled() && !completeTrialState.locked && profit >= COMPLETE_LIMIT_PT){
       completeTrialState.locked = true;
       completeTrialState.lockedSetting = Number(settings.setting) || 1;
       completeTrialState.completeProfit = profit;
@@ -12818,8 +12784,8 @@ html{
       stopSpeedToBonus("COMPLETE到達のためSPEED停止");
       stopDebugFastSpin("COMPLETE到達");
       showOverlay("COMPLETE");
-      showMessage("COMPLETE", `+${completeLimit.toLocaleString()}pt到達 / 設定変更またはリセットまで遊戯不可`);
-      log(`[COMPLETE] +${completeLimit.toLocaleString()}pt到達：${formatSigned(profit)}pt / 設定${completeTrialState.lockedSetting}`);
+      showMessage("COMPLETE", `+${COMPLETE_LIMIT_PT}pt到達 / 設定変更まで遊戯不可`);
+      log(`[COMPLETE] +${COMPLETE_LIMIT_PT}pt到達：${formatSigned(profit)}pt / 設定${completeTrialState.lockedSetting}`);
       persistState();
       updateDisplay();
     }
@@ -12832,7 +12798,7 @@ html{
     stopAutoPlay("COMPLETE中のためAUTO停止");
     stopSpeedToBonus("COMPLETE中のためSPEED停止");
     stopDebugFastSpin("COMPLETE中");
-    showMessage("COMPLETE", `+${currentCompleteLimit().toLocaleString()}pt到達 / 設定変更またはリセットまで遊戯不可`);
+    showMessage("COMPLETE", `+${COMPLETE_LIMIT_PT}pt到達 / 設定変更まで遊戯不可`);
     showOverlay("COMPLETE");
     return false;
   }
@@ -13488,14 +13454,12 @@ html{
           locked:!!data.completeTrialState.locked,
           lockedSetting:clamp(Number(data.completeTrialState.lockedSetting) || 0, 0, 6),
           rescueActive:false,
-          completeProfit:Number(data.completeTrialState.completeProfit) || 0,
-          exemptPayoutPt:Math.max(0, Number(data.completeTrialState.exemptPayoutPt) || 0)
+          completeProfit:Number(data.completeTrialState.completeProfit) || 0
         };
         if(!COMPLETE_LOCK_ENABLED){
           completeTrialState.locked = false;
           completeTrialState.lockedSetting = 0;
           completeTrialState.completeProfit = 0;
-          completeTrialState.exemptPayoutPt = 0;
         }
       }
       const runtime = data?.runtimeState || {};
@@ -14772,9 +14736,6 @@ html{
     if(hit){
       jackspotSpinsSinceHit = 0;
       stats.bigCount = (Number(stats.bigCount) || 0) + 1;
-      if(resolved.sharedJackpotPayout){
-        completeTrialState.exemptPayoutPt = Math.max(0, Number(completeTrialState.exemptPayoutPt) || 0) + payout;
-      }
       stats.totalPaid = (Number(stats.totalPaid) || 0) + payout;
       jackspotLastBonusPayout = payout;
       recordSlumpPoint();
@@ -15235,7 +15196,7 @@ html{
     if($("stInfoViewLegacy")) $("stInfoViewLegacy").textContent = stInfoText;
     if($("adminStInfoView")) $("adminStInfoView").textContent = stInfoText;
     const payoutScaleText = JACKSPOT_SINGLE_LINE_MODE
-      ? `高額期待度 ${jackspotSpinsSinceHit}G / 400Gで最大 / 平均${jackspotAveragePayout(settings.setting).toLocaleString(undefined,{maximumFractionDigits:3})}pt / 打止め+${completeLimitForSetting().toLocaleString()}pt（JP除外） / JPは3rdステージ1/${JACKSPOT_JP_FINAL_STAGE_DENOM}`
+      ? `高額期待度 ${jackspotSpinsSinceHit}G / 400Gで最大 / 平均${jackspotAveragePayout(settings.setting).toLocaleString(undefined,{maximumFractionDigits:3})}pt / JPは3rdステージ1/${JACKSPOT_JP_FINAL_STAGE_DENOM}`
       : A_TYPE_MODE
       ? `Aタイプ:BB純増${A_TYPE_PAYOUTS.BIG}pt/RB純増${A_TYPE_PAYOUTS.MID}pt/ブドウ${A_TYPE_PAYOUTS.GRAPE}pt/ベル${A_TYPE_PAYOUTS.BELL}pt/ゾウリプレイ${A_TYPE_PAYOUTS.REPLAY}pt/宗介特殊役${A_TYPE_PAYOUTS.SMALL}pt/チェリー中段1pt・上下段2pt`
       : `通常:ベル${NORMAL_ROLE_PAYOUTS.BELL}pt/スイカ${NORMAL_ROLE_PAYOUTS.SUICA}pt/チェリー${NORMAL_ROLE_PAYOUTS.CHERRY_ANY}pt/リプレイ${NORMAL_ROLE_PAYOUTS.REPLAY}pt/REG${NORMAL_ROLE_PAYOUTS.MID}pt / 通常小役${Math.round(NORMAL_ROLE_RATE * 100)}% / 高確小役${Math.round(HIGH_ROLE_RATE * 100)}% / ATベル${ROLE_PAYOUTS.BELL}pt/斜めベル${ROLE_PAYOUTS.BELL3}pt / 平均継続${formatRate(averageContinuationRate(settings.setting))}`;
@@ -15525,7 +15486,7 @@ html{
 
     if(JACKSPOT_SINGLE_LINE_MODE){
       const sharedPoolActive = jackspotPoolState.online && sharedJackpotPoolEligible();
-      let html = `<tr><td>設定</td><td>特性</td><td>機械割</td><td>打止め</td><td>777確率 0G</td><td>777確率 400G+</td><td>平均払出 0G→400G+</td><td>5,000pt以上 0G→400G+</td></tr>`;
+      let html = `<tr><td>設定</td><td>特性</td><td>機械割</td><td>777確率 0G</td><td>777確率 400G+</td><td>平均払出 0G→400G+</td><td>5,000pt以上 0G→400G+</td></tr>`;
       for(const i of [1,2,3,4,5,6]){
         const probability0 = jackspotHitProbability(i, false, 0, sharedPoolActive);
         const probabilityMax = jackspotHitProbability(i, false, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive);
@@ -15537,9 +15498,8 @@ html{
         const highPayoutRateMax = (Number(weightsMax[6]) || 0) + (Number(weightsMax[7]) || 0);
         html += `<tr>
           <td>${i}</td>
-          <td>共通振り分け</td>
+          <td>${i % 2 ? "重い・高額寄り" : "軽い・安定寄り"}</td>
           <td>${targetRtpText(i)}</td>
-          <td>+${completeLimitForSetting(i).toLocaleString()}pt</td>
           <td>1/${(1 / probability0).toFixed(2)}</td>
           <td>1/${(1 / probabilityMax).toFixed(2)}</td>
           <td>${averagePayout0.toLocaleString(undefined,{maximumFractionDigits:0})}→${averagePayoutMax.toLocaleString(undefined,{maximumFractionDigits:0})}pt</td>
@@ -15660,7 +15620,7 @@ html{
     jackspotPoolReservedForCurrentSpin = false;
     jackspotCurrentSpinEventId = "";
     jackspotChanceHold = false;
-    completeTrialState = {locked:false,lockedSetting:0,rescueActive:false,completeProfit:0,exemptPayoutPt:0};
+    completeTrialState = {locked:false,lockedSetting:0,rescueActive:false,completeProfit:0};
     setSpeedFrameOffHold(false);
     forceResult = "";
     forcePremiumEffect = false;
@@ -15720,7 +15680,7 @@ html{
     jackspotPoolReservedForCurrentSpin = false;
     jackspotCurrentSpinEventId = "";
     jackspotChanceHold = false;
-    completeTrialState = {locked:false,lockedSetting:0,rescueActive:false,completeProfit:0,exemptPayoutPt:0};
+    completeTrialState = {locked:false,lockedSetting:0,rescueActive:false,completeProfit:0};
     setSpeedFrameOffHold(false);
     forceResult = "";
     forcePremiumEffect = false;
@@ -16964,15 +16924,11 @@ html{
         spinCanStop = false;
         $("spinBtn").disabled = true;
         stopBtns.forEach(button=>button.disabled = true);
-        runJackspotPayoutRoulette().then(settlement=>{
+        runJackspotPayoutRoulette().then(payout=>{
           if(!currentSpin) return;
-          const payout = settlement && typeof settlement === "object"
-            ? Math.max(0, Number(settlement.payout) || 0)
-            : Math.max(0, Number(settlement) || 0);
-          const sharedJackpotWin = !!(settlement && typeof settlement === "object" && settlement.sharedJackpotWin);
           currentSpin.jackspotRoulettePending = false;
           currentSpin.jackspotRouletteResolved = true;
-          prepareJackspotRouletteSettlement(resolved, payout, {sharedJackpotWin});
+          prepareJackspotRouletteSettlement(resolved, payout);
           finishSpin(result, resolved, 1);
         });
         return;
@@ -17391,7 +17347,7 @@ html{
   }
 
   function speedToBonusUnavailableReason(){
-    if(isCompleteTrialLocked()) return "COMPLETE到達のため設定変更またはリセットまで遊戯不可";
+    if(isCompleteTrialLocked()) return "COMPLETE到達のため設定変更まで遊戯不可";
     if(session.active) return "ボーナス中はSPEEDを使用できません";
     if(normalState.bonusPending) return "ボーナス確定中のためSPEED停止";
     if(bonusConfirmSoundPlaying) return "ボーナス確定音再生中のためSPEED停止";
@@ -17672,8 +17628,7 @@ html{
     const lineRow = resultLineRow(result);
     const resolved = normalActiveAtSpinStart ? resolveNormalOutcome(result, lineRow) : resolveOutcome(result);
     if(JACKSPOT_SINGLE_LINE_MODE && normalActiveAtSpinStart){
-      const nominalPayout = result === "BIG" ? pickJackspotPayout(settings.setting) : 0;
-      const payout = capPayoutAtCompleteLimit(nominalPayout, false);
+      const payout = result === "BIG" ? pickJackspotPayout(settings.setting) : 0;
       prepareJackspotRouletteSettlement(resolved, payout);
       applyNormalResult(result, resolved, 1);
       pendingForceResult = "";
@@ -18583,7 +18538,6 @@ html{
   if($("forceResult")) $("forceResult").value = forceResult;
   if($("premiumForceStatus")) $("premiumForceStatus").value = forcePremiumEffect ? "ON" : "OFF";
   updateDisplay();
-  updateCompleteTrialState("起動復元");
   updateAutoUi();
   updateDebugFastUi();
   requestBackgroundLogoSync();
