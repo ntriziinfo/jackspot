@@ -8110,7 +8110,7 @@ html{
           <button class="dangerBtn" id="resetBtn">初期化</button>
         </div>
         <div class="help" style="margin-top:10px">
-          1プレイごとに100ptを消費します。成立役は777またはハズレのみ。奇数設定は当選が重く高額払い出し寄り、偶数設定は当選が軽い設計です。
+          1プレイごとに100ptを消費します。成立役は777またはハズレのみ。1000Gを基準に、設定ごとに当選頻度・ステージ突破率・差枚帯制御が異なります。
         </div>
       </div>
 
@@ -8733,6 +8733,7 @@ html{
   let jackspotLastGamePayout = 0;
   let jackspotLastBonusPayout = 0;
   let jackspotSpinsSinceHit = 0;
+  let jackspotControlExemptPayoutPt = 0;
   let jackspotPoolReservedForCurrentSpin = false;
   let jackspotCurrentSpinEventId = "";
   let jackspotPoolRefreshTimer = null;
@@ -8785,11 +8786,14 @@ html{
     Object.freeze([1.00,1.55]),
     Object.freeze([1.00,1.90])
   ]);
-  // All settings use the same payout distribution. Setting differences come only
-  // from the hit probability required to reach each target RTP.
-  const JACKSPOT_PAYOUT_WEIGHTS = Object.freeze([
-    0.153,0.153,0.129,0.170,0.155,0.165,0.060,0.015
-  ]);
+  const JACKSPOT_CONTROL_PROFILES = Object.freeze({
+    1:Object.freeze({cap:10000, label:"上限抑制", weights:Object.freeze([.18,.17,.14,.17,.14,.13,.055,.015]), bias:1.007}),
+    2:Object.freeze({cap:15000, label:"小当り多め・漸減", weights:Object.freeze([.26,.22,.15,.16,.10,.07,.03,.01]), bias:1.028, positiveFade:.12}),
+    3:Object.freeze({cap:15000, label:"負け抑制・微マイナス", weights:Object.freeze([.16,.18,.15,.22,.14,.10,.04,.01]), bias:1.007, anchor:-1500, feedback:.30, span:12000}),
+    4:Object.freeze({cap:20000, label:"プラス寄り", weights:Object.freeze([.15,.16,.14,.20,.15,.13,.055,.015]), bias:.9977, anchor:2500, feedback:.08, span:16000}),
+    5:Object.freeze({cap:30000, label:"重い・高額寄り", weights:Object.freeze([.07,.08,.07,.18,.18,.20,.16,.06]), bias:1.0098}),
+    6:Object.freeze({cap:100000, label:"軽い・低高額率", weights:Object.freeze([.28,.23,.16,.16,.09,.055,.02,.005]), bias:1.000})
+  });
   const JACKSPOT_ROULETTE_CRUISE_MS = 10000;
   const JACKSPOT_ROULETTE_DECEL_MS = 5000;
   const JACKSPOT_BGM_SWITCH_FADE_MS = 500;
@@ -11478,17 +11482,52 @@ html{
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  function jackspotControlProfile(settingNo = settings.setting){
+    const normalized = clamp(Math.round(Number(settingNo) || 1), 1, 6);
+    return JACKSPOT_CONTROL_PROFILES[normalized] || JACKSPOT_CONTROL_PROFILES[1];
+  }
+
+  function jackspotControlProfit(){
+    return currentProfit() - Math.max(0, Number(jackspotControlExemptPayoutPt) || 0);
+  }
+
+  function jackspotControlTargetRtp(settingNo = settings.setting, profit = jackspotControlProfit()){
+    const profile = jackspotControlProfile(settingNo);
+    const target = JACKSPOT_TARGET_RTP[settingNo] ?? JACKSPOT_TARGET_RTP[1];
+    let factor = Number(profile.bias) || 1;
+    if(profile.positiveFade){
+      factor *= 1 - profile.positiveFade * clamp(profit / profile.cap, 0, 1);
+    }
+    if(profile.feedback){
+      factor *= 1 + profile.feedback * clamp((profile.anchor - profit) / profile.span, -1, 1);
+    }
+    return Math.max(0, target * factor);
+  }
+
   function jackspotHighValueProgress(spinsSinceHit = jackspotSpinsSinceHit){
     return clamp((Math.max(0, Number(spinsSinceHit) || 0)) / JACKSPOT_HIGH_VALUE_MAX_GAMES, 0, 1);
   }
 
-  function jackspotPayoutWeights(settingNo = settings.setting, spinsSinceHit = jackspotSpinsSinceHit){
-    const base = JACKSPOT_PAYOUT_WEIGHTS;
+  function jackspotPayoutWeights(
+    settingNo = settings.setting,
+    spinsSinceHit = jackspotSpinsSinceHit,
+    profit = jackspotControlProfit()
+  ){
+    const profile = jackspotControlProfile(settingNo);
+    const base = profile.weights;
     const progress = jackspotHighValueProgress(spinsSinceHit);
+    const positiveRatio = clamp(profit / profile.cap, 0, 1);
+    const headroom = profile.cap - profit;
     const adjusted = base.map((weight,index)=>{
       const range = JACKSPOT_PAYOUT_PROGRESS_FACTORS[index];
       const factor = range[0] + (range[1] - range[0]) * progress;
-      return Math.max(0, weight * factor);
+      let nextWeight = weight * factor;
+      if(Number(settingNo) === 2){
+        const drift = [0.85,0.65,0.40,-0.10,-0.30,-0.48,-0.72,-0.86][index];
+        nextWeight *= Math.max(0.02, 1 + drift * positiveRatio);
+      }
+      if(JACKSPOT_ROULETTE_PAYOUTS[index] > headroom) nextWeight = 0;
+      return Math.max(0, nextWeight);
     });
     const total = adjusted.reduce((sum,weight)=>sum + weight, 0) || 1;
     return adjusted.map(weight=>weight / total);
@@ -11497,9 +11536,10 @@ html{
   function jackspotAveragePayout(
     settingNo = settings.setting,
     spinsSinceHit = jackspotSpinsSinceHit,
-    jpSlotActive = jackspotPoolState.online && sharedJackpotPoolEligible()
+    jpSlotActive = jackspotPoolState.online && sharedJackpotPoolEligible(),
+    profit = jackspotControlProfit()
   ){
-    const weights = jackspotPayoutWeights(settingNo, spinsSinceHit);
+    const weights = jackspotPayoutWeights(settingNo, spinsSinceHit, profit);
     return JACKSPOT_ROULETTE_PAYOUTS.reduce((sum,payout,index)=>{
       const fixedPayoutFactor = jpSlotActive && payout >= 5000
         ? 1 - JACKSPOT_JP_FINAL_STAGE_PROBABILITY
@@ -11508,9 +11548,14 @@ html{
     },0);
   }
 
-  function pickJackspotPayoutIndex(settingNo = settings.setting, spinsSinceHit = jackspotSpinsSinceHit){
-    const weights = jackspotPayoutWeights(settingNo, spinsSinceHit);
+  function pickJackspotPayoutIndex(
+    settingNo = settings.setting,
+    spinsSinceHit = jackspotSpinsSinceHit,
+    profit = jackspotControlProfit()
+  ){
+    const weights = jackspotPayoutWeights(settingNo, spinsSinceHit, profit);
     const total = weights.reduce((sum,weight)=>sum+weight,0);
+    if(total <= 0) return -1;
     let roll = Math.random() * total;
     for(let index=0; index<weights.length; index++){
       roll -= weights[index];
@@ -11532,8 +11577,12 @@ html{
       if(forcePayoutSelect) forcePayoutSelect.value = "";
       return JACKSPOT_JP_RESULT;
     }
-    const payoutIndex = forcedPayoutIndex >= 0 ? forcedPayoutIndex : pickJackspotPayoutIndex(settingNo, spinsSinceHit);
+    const profile = jackspotControlProfile(settingNo);
+    const headroom = profile.cap - jackspotControlProfit();
+    const forcedAllowed = forcedPayoutIndex >= 0 && forcedPayout <= headroom;
+    const payoutIndex = forcedAllowed ? forcedPayoutIndex : pickJackspotPayoutIndex(settingNo, spinsSinceHit);
     if(forcePayoutSelect) forcePayoutSelect.value = "";
+    if(payoutIndex < 0) return 0;
     const payout = JACKSPOT_ROULETTE_PAYOUTS[payoutIndex];
     if(jpSlotActive && payout >= 5000 && Math.random() < JACKSPOT_JP_FINAL_STAGE_PROBABILITY){
       return JACKSPOT_JP_RESULT;
@@ -11949,7 +11998,7 @@ html{
     const stage = panel && panel.querySelector(".jackspotRouletteStage");
     const result = $("jackspotRouletteResult");
     const status = $("jackspotRouletteStatus");
-    if(!panel || !outerDisc || !middleDisc || !innerDisc) return payout;
+    if(!panel || !outerDisc || !middleDisc || !innerDisc) return {payout, sharedJackpotWin};
 
     jackspotRouletteBusy = true;
     setJackspotRouletteStageView(stage, "outer", true);
@@ -12061,12 +12110,13 @@ html{
     playNormalBgm();
     setJackspotRouletteStageView(stage, "outer", true);
     jackspotRouletteBusy = false;
-    return payout;
+    return {payout, sharedJackpotWin};
   }
 
-  function prepareJackspotRouletteSettlement(resolved, payout){
+  function prepareJackspotRouletteSettlement(resolved, payout, options={}){
     resolved.reward = payout;
     resolved.jackspotRoulettePayout = payout;
+    resolved.sharedJackpotPayout = !!options.sharedJackpotWin;
     resolved.add = 0;
     resolved.sets = 0;
     resolved.bigZone = 0;
@@ -12297,12 +12347,13 @@ html{
     settingNo = settings.setting,
     applyTestMultiplier = true,
     spinsSinceHit = jackspotSpinsSinceHit,
-    sharedPoolReserved = jackspotPoolState.online && sharedJackpotPoolEligible()
+    sharedPoolReserved = jackspotPoolState.online && sharedJackpotPoolEligible(),
+    profit = jackspotControlProfit()
   ){
     const multiplier = applyTestMultiplier ? (Number(settings.oddsMultiplier) || 1) : 1;
-    const targetRtp = JACKSPOT_TARGET_RTP[settingNo] ?? JACKSPOT_TARGET_RTP[1];
+    const targetRtp = jackspotControlTargetRtp(settingNo, profit);
     const regularTargetRtp = Math.max(0, targetRtp - (sharedPoolReserved ? JACKSPOT_SHARED_POOL_RATE : 0));
-    const averagePayout = jackspotAveragePayout(settingNo, spinsSinceHit, sharedPoolReserved);
+    const averagePayout = jackspotAveragePayout(settingNo, spinsSinceHit, sharedPoolReserved, profit);
     const baseProbability = averagePayout > 0 ? (regularTargetRtp * SPIN_COST) / averagePayout : 0;
     return clamp(baseProbability * multiplier, 0, 0.98);
   }
@@ -13500,6 +13551,7 @@ html{
       jackspotLastGamePayout = Number(runtime.jackspotLastGamePayout) || 0;
       jackspotLastBonusPayout = Number(runtime.jackspotLastBonusPayout) || 0;
       jackspotSpinsSinceHit = Math.max(0, Number(runtime.jackspotSpinsSinceHit) || 0);
+      jackspotControlExemptPayoutPt = Math.max(0, Number(runtime.jackspotControlExemptPayoutPt) || 0);
       jackspotChanceHold = !!runtime.jackspotChanceHold;
       forceResult = String(runtime.forceResult || "");
       forcePremiumEffect = !!runtime.forcePremiumEffect;
@@ -13584,6 +13636,7 @@ html{
       jackspotLastGamePayout,
       jackspotLastBonusPayout,
       jackspotSpinsSinceHit,
+      jackspotControlExemptPayoutPt,
       jackspotChanceHold,
       forceResult,
       forcePremiumEffect,
@@ -13697,6 +13750,12 @@ html{
         version:Math.max(0, Number(jackspotPoolState.version) || 0),
         contributionPt:Math.max(0, Number(jackspotPoolState.contributionPt) || 0),
         spinsSinceHit:Math.max(0, Number(jackspotSpinsSinceHit) || 0)
+      },
+      payoutControl:{
+        ceilingPt:jackspotControlProfile().cap,
+        controlledProfitPt:jackspotControlProfit(),
+        exemptSharedJackpotPt:Math.max(0, Number(jackspotControlExemptPayoutPt) || 0),
+        profile:jackspotControlProfile().label
       },
       completeTrialState:{...completeTrialState},
       state:{
@@ -14736,6 +14795,9 @@ html{
     if(hit){
       jackspotSpinsSinceHit = 0;
       stats.bigCount = (Number(stats.bigCount) || 0) + 1;
+      if(resolved.sharedJackpotPayout){
+        jackspotControlExemptPayoutPt += payout;
+      }
       stats.totalPaid = (Number(stats.totalPaid) || 0) + payout;
       jackspotLastBonusPayout = payout;
       recordSlumpPoint();
@@ -15196,7 +15258,7 @@ html{
     if($("stInfoViewLegacy")) $("stInfoViewLegacy").textContent = stInfoText;
     if($("adminStInfoView")) $("adminStInfoView").textContent = stInfoText;
     const payoutScaleText = JACKSPOT_SINGLE_LINE_MODE
-      ? `高額期待度 ${jackspotSpinsSinceHit}G / 400Gで最大 / 平均${jackspotAveragePayout(settings.setting).toLocaleString(undefined,{maximumFractionDigits:3})}pt / JPは3rdステージ1/${JACKSPOT_JP_FINAL_STAGE_DENOM}`
+      ? `高額期待度 ${jackspotSpinsSinceHit}G / 400Gで最大 / 平均${jackspotAveragePayout(settings.setting).toLocaleString(undefined,{maximumFractionDigits:3})}pt / 制御差枚${formatSigned(jackspotControlProfit())}pt・上限+${jackspotControlProfile().cap.toLocaleString()}pt（JP除外） / JPは3rdステージ1/${JACKSPOT_JP_FINAL_STAGE_DENOM}`
       : A_TYPE_MODE
       ? `Aタイプ:BB純増${A_TYPE_PAYOUTS.BIG}pt/RB純増${A_TYPE_PAYOUTS.MID}pt/ブドウ${A_TYPE_PAYOUTS.GRAPE}pt/ベル${A_TYPE_PAYOUTS.BELL}pt/ゾウリプレイ${A_TYPE_PAYOUTS.REPLAY}pt/宗介特殊役${A_TYPE_PAYOUTS.SMALL}pt/チェリー中段1pt・上下段2pt`
       : `通常:ベル${NORMAL_ROLE_PAYOUTS.BELL}pt/スイカ${NORMAL_ROLE_PAYOUTS.SUICA}pt/チェリー${NORMAL_ROLE_PAYOUTS.CHERRY_ANY}pt/リプレイ${NORMAL_ROLE_PAYOUTS.REPLAY}pt/REG${NORMAL_ROLE_PAYOUTS.MID}pt / 通常小役${Math.round(NORMAL_ROLE_RATE * 100)}% / 高確小役${Math.round(HIGH_ROLE_RATE * 100)}% / ATベル${ROLE_PAYOUTS.BELL}pt/斜めベル${ROLE_PAYOUTS.BELL3}pt / 平均継続${formatRate(averageContinuationRate(settings.setting))}`;
@@ -15486,23 +15548,28 @@ html{
 
     if(JACKSPOT_SINGLE_LINE_MODE){
       const sharedPoolActive = jackspotPoolState.online && sharedJackpotPoolEligible();
-      let html = `<tr><td>設定</td><td>特性</td><td>機械割</td><td>777確率 0G</td><td>777確率 400G+</td><td>平均払出 0G→400G+</td><td>5,000pt以上 0G→400G+</td></tr>`;
+      let html = `<tr><td>設定</td><td>制御特性</td><td>機械割（1000G基準）</td><td>差枚上限</td><td>777確率 0G</td><td>777確率 400G+</td><td>平均払出 0G→400G+</td><td>1st突破 0G→400G+</td><td>5,000pt以上 0G→400G+</td></tr>`;
       for(const i of [1,2,3,4,5,6]){
-        const probability0 = jackspotHitProbability(i, false, 0, sharedPoolActive);
-        const probabilityMax = jackspotHitProbability(i, false, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive);
-        const averagePayout0 = jackspotAveragePayout(i, 0, sharedPoolActive);
-        const averagePayoutMax = jackspotAveragePayout(i, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive);
-        const weights0 = jackspotPayoutWeights(i, 0);
-        const weightsMax = jackspotPayoutWeights(i, JACKSPOT_HIGH_VALUE_MAX_GAMES);
+        const profile = jackspotControlProfile(i);
+        const probability0 = jackspotHitProbability(i, false, 0, sharedPoolActive, 0);
+        const probabilityMax = jackspotHitProbability(i, false, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive, 0);
+        const averagePayout0 = jackspotAveragePayout(i, 0, sharedPoolActive, 0);
+        const averagePayoutMax = jackspotAveragePayout(i, JACKSPOT_HIGH_VALUE_MAX_GAMES, sharedPoolActive, 0);
+        const weights0 = jackspotPayoutWeights(i, 0, 0);
+        const weightsMax = jackspotPayoutWeights(i, JACKSPOT_HIGH_VALUE_MAX_GAMES, 0);
+        const stage1UpRate0 = weights0.slice(3).reduce((sum,value)=>sum + (Number(value) || 0), 0);
+        const stage1UpRateMax = weightsMax.slice(3).reduce((sum,value)=>sum + (Number(value) || 0), 0);
         const highPayoutRate0 = (Number(weights0[6]) || 0) + (Number(weights0[7]) || 0);
         const highPayoutRateMax = (Number(weightsMax[6]) || 0) + (Number(weightsMax[7]) || 0);
         html += `<tr>
           <td>${i}</td>
-          <td>${i % 2 ? "重い・高額寄り" : "軽い・安定寄り"}</td>
+          <td>${profile.label}</td>
           <td>${targetRtpText(i)}</td>
+          <td>+${profile.cap.toLocaleString()}pt</td>
           <td>1/${(1 / probability0).toFixed(2)}</td>
           <td>1/${(1 / probabilityMax).toFixed(2)}</td>
           <td>${averagePayout0.toLocaleString(undefined,{maximumFractionDigits:0})}→${averagePayoutMax.toLocaleString(undefined,{maximumFractionDigits:0})}pt</td>
+          <td>${(stage1UpRate0 * 100).toFixed(1)}→${(stage1UpRateMax * 100).toFixed(1)}%</td>
           <td>${(highPayoutRate0 * 100).toFixed(1)}→${(highPayoutRateMax * 100).toFixed(1)}%</td>
         </tr>`;
       }
@@ -15617,6 +15684,7 @@ html{
     jackspotLastGamePayout = 0;
     jackspotLastBonusPayout = 0;
     jackspotSpinsSinceHit = 0;
+    jackspotControlExemptPayoutPt = 0;
     jackspotPoolReservedForCurrentSpin = false;
     jackspotCurrentSpinEventId = "";
     jackspotChanceHold = false;
@@ -15677,6 +15745,7 @@ html{
     jackspotLastGamePayout = 0;
     jackspotLastBonusPayout = 0;
     jackspotSpinsSinceHit = 0;
+    jackspotControlExemptPayoutPt = 0;
     jackspotPoolReservedForCurrentSpin = false;
     jackspotCurrentSpinEventId = "";
     jackspotChanceHold = false;
@@ -16924,11 +16993,15 @@ html{
         spinCanStop = false;
         $("spinBtn").disabled = true;
         stopBtns.forEach(button=>button.disabled = true);
-        runJackspotPayoutRoulette().then(payout=>{
+        runJackspotPayoutRoulette().then(settlement=>{
           if(!currentSpin) return;
+          const payout = settlement && typeof settlement === "object"
+            ? Math.max(0, Number(settlement.payout) || 0)
+            : Math.max(0, Number(settlement) || 0);
+          const sharedJackpotWin = !!(settlement && typeof settlement === "object" && settlement.sharedJackpotWin);
           currentSpin.jackspotRoulettePending = false;
           currentSpin.jackspotRouletteResolved = true;
-          prepareJackspotRouletteSettlement(resolved, payout);
+          prepareJackspotRouletteSettlement(resolved, payout, {sharedJackpotWin});
           finishSpin(result, resolved, 1);
         });
         return;

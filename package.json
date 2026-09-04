@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "node server.js",
-    "check": "node --check server.js && node --check api/index.mjs && node --check api/health.mjs"
+    "check": "node --check server.js && node --check api/index.mjs && node --check api/health.mjs",
+    "simulate:control": "node tools/simulate_jackspot_control.cjs"
   },
   "engines": {
     "node": "20.x"
